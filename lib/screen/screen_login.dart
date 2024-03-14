@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:successage/screen/screen_login_form.dart';
 
 class ScreenLogin extends StatelessWidget {
   const ScreenLogin({super.key});
@@ -9,7 +10,7 @@ class ScreenLogin extends StatelessWidget {
       body: Column(
         mainAxisAlignment: MainAxisAlignment.center,
         children: [
-          Text(
+          const Text(
             'Welcome to',
             style: TextStyle(
               fontSize: 60,
@@ -22,7 +23,9 @@ class ScreenLogin extends StatelessWidget {
             ],
           ),
           ElevatedButton(
-            onPressed: () {},
+            onPressed: () {
+              login(context);
+            },
             child: Text("Login", style: TextStyle(color: Colors.white)),
             style: const ButtonStyle(
                 backgroundColor:
@@ -30,7 +33,7 @@ class ScreenLogin extends StatelessWidget {
           ),
           ElevatedButton(
               onPressed: () {},
-              child: Text(
+              child: const Text(
                 "Signup",
                 style: TextStyle(color: Colors.white),
               ),
@@ -40,5 +43,10 @@ class ScreenLogin extends StatelessWidget {
         ],
       ),
     );
+  }
+
+  void login(BuildContext context) {
+    Navigator.of(context)
+        .push(MaterialPageRoute(builder: (ctx) => ScreenLoginForm()));
   }
 }

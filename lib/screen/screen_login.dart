@@ -23,7 +23,7 @@ class ScreenLogin extends StatelessWidget {
           ),
           ElevatedButton(
             onPressed: () {},
-            child: Text("Mentor", style: TextStyle(color: Colors.white)),
+            child: Text("Login", style: TextStyle(color: Colors.white)),
             style: const ButtonStyle(
                 backgroundColor:
                     MaterialStatePropertyAll(Color.fromARGB(255, 47, 38, 94))),
@@ -31,7 +31,7 @@ class ScreenLogin extends StatelessWidget {
           ElevatedButton(
               onPressed: () {},
               child: Text(
-                "Mentee",
+                "Signup",
                 style: TextStyle(color: Colors.white),
               ),
               style: const ButtonStyle(

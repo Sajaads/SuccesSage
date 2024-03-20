@@ -26,10 +26,10 @@ class ScreenLogin extends StatelessWidget {
             onPressed: () {
               login(context);
             },
-            child: Text("Login", style: TextStyle(color: Colors.white)),
             style: const ButtonStyle(
                 backgroundColor:
                     MaterialStatePropertyAll(Color.fromARGB(255, 47, 38, 94))),
+            child: Text("Login", style: TextStyle(color: Colors.white)),
           ),
           ElevatedButton(
               onPressed: () {},

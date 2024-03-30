@@ -2,12 +2,16 @@ import 'package:flutter/material.dart';
 import 'package:successage/screen/screen_splash.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'firebase_options.dart';
+import 'package:flutter/services.dart';
 
 Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized();
   await Firebase.initializeApp(
     options: DefaultFirebaseOptions.currentPlatform,
   );
+  SystemChrome.setPreferredOrientations([
+    DeviceOrientation.portraitUp,
+  ]);
   runApp(const MyApp());
 }
 
@@ -19,8 +23,8 @@ class MyApp extends StatelessWidget {
     return MaterialApp(
       theme: ThemeData(
           splashColor: Colors.amber,
-          scaffoldBackgroundColor: Color.fromARGB(255, 201, 225, 237)),
-      home: ScreenSplash(),
+          scaffoldBackgroundColor: const Color.fromARGB(255, 231, 231, 231)),
+      home: const ScreenSplash(),
     );
   }
 }

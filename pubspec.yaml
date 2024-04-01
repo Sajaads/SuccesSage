@@ -40,6 +40,7 @@ dependencies:
   google_sign_in: ^6.2.1
   firebase_analytics: ^10.8.10
   cloud_firestore: ^4.15.10
+  fluentui_icons: ^1.0.0
 
 dev_dependencies:
   flutter_test:

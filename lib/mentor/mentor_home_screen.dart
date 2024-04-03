@@ -2,22 +2,15 @@ import 'package:fluentui_icons/fluentui_icons.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
-import 'package:successage/mentee/mentee_higlighted_mentor.dart';
-import 'package:successage/mentee/mentee_mentor_list.dart';
-import 'package:successage/mentee/mentee_profile.dart';
-import 'package:successage/utils/app_layouts.dart';
-import 'package:successage/utils/suggestion_button.dart';
-import 'package:successage/utils/app_info_list.dart';
+import 'package:successage/mentor/Mentor_oldmentee.dart';
+import 'package:successage/mentor/mentee_list.dart';
+import 'package:successage/mentor/request_of_mentee.dart';
 
-class HomeMentee extends StatefulWidget {
-  const HomeMentee({Key? key}) : super(key: key);
+import '../utils/app_layouts.dart';
 
-  @override
-  State<HomeMentee> createState() => _HomeMenteeState();
-}
+class MentorHomeScreen extends StatelessWidget {
+  const MentorHomeScreen({Key? key}) : super(key: key);
 
-
-class _HomeMenteeState extends State<HomeMentee> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -29,7 +22,8 @@ class _HomeMenteeState extends State<HomeMentee> {
               children: <Widget>[
                 SizedBox(height: 12,),
                 Row(
-                  children: [Container(
+                  children: [
+                    Container(
                     height: 50,
                     width: 50,
                     decoration: BoxDecoration(
@@ -44,15 +38,10 @@ class _HomeMenteeState extends State<HomeMentee> {
                     ),
                   ),
                     SizedBox(width: 5,),
-                    Text("Welcome,Abhinav",style: Styles.headline2,),
+                    Text(
+                        "Welcome,Nikhil"),
 
 
-                  ],
-                ),
-                SizedBox(height: 12,),
-                Row(
-                  children: [
-                    Text("Let's find great mentors",style: Styles.headline1,)
                   ],
                 ),
                 SizedBox(height: 12,),
@@ -79,48 +68,56 @@ class _HomeMenteeState extends State<HomeMentee> {
                 const Row(
                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
                   children: [
-                    SuggestionButton(),
-                    SuggestionButton(),
-                    SuggestionButton(),
-                  ],
-                ),
-                SizedBox(height: 12,),
-                Row(
-                  children: [
-                    Text("Mentors in your field",style: Styles.headline1,)
-                  ],
-                ),
-                SizedBox(height: 15,),
-                Column(
-                  children: [HighlightedMentee(Mentor: mentorList.first)],
-                ),
-                SizedBox(height: 12,),
-                Row(
-                  children: [
-                    Text("All Mentors",style: Styles.headline1,),
-                  ],
-                ),
-                SizedBox(height: 15,),
-                SingleChildScrollView(
-                  scrollDirection: Axis.vertical,
-                  padding: const EdgeInsets.only(left: 20),
-                  child: Column(
-                    children: mentorList.map((singleMentor) {
-                      return Column(
-                        children: [
-                          GestureDetector(
-                            onTap: (){
-                              Navigator.push(context, MaterialPageRoute(builder: (context) => MentorProfile()));
-                            },
-                            child: MentorList(Mentor: singleMentor),
-                          ),
-                          SizedBox(height: 10), // Add a SizedBox for vertical spacing
-                        ],
-                      );
-                    }).toList(),
 
+                  ],
+                ),
+                SizedBox(height: 12,),
+                Row(
+                  children: [
+                    Text("Appointments today",style: Styles.headline1,),
+                  ],
+                ),
+                SizedBox(height: 12,),
+                MenteeList(),
+                SizedBox(height: 4,),
+                MenteeList(),
+                SizedBox(height: 12,),
+                Row(
+                  children: [
+                    Text("Connection Requests",style: Styles.headline1,),
+                  ],
+                ),
+                SizedBox(height: 10,),
+                SingleChildScrollView(
+                  scrollDirection: Axis.horizontal,
+                  child: Row(
+                    children: [
+                      RequestOfMentee(),
+                      SizedBox(width: 10,),
+                      RequestOfMentee(),
+                      SizedBox(width: 10,),
+                      RequestOfMentee(),
+                    ],
                   ),
                 ),
+                SizedBox(height: 15,),
+                Row(
+                  children: [
+                    Text("My Mentees",style: Styles.headline1,),
+                  ],
+                ),
+                SizedBox(height: 10,),
+                SingleChildScrollView(
+                  child: Column(
+                    children: [
+                      MentorOldMentee(),
+                      SizedBox(height: 4,),
+                      MentorOldMentee(),
+                      SizedBox(height: 4,),
+                      MentorOldMentee()
+                    ],
+                  ),
+                )
               ],
             ),
           )

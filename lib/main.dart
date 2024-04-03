@@ -1,4 +1,8 @@
 import 'package:flutter/material.dart';
+import 'package:successage/mentee/Mentee_session_booking.dart';
+import 'package:successage/mentee/mentee_home_screen.dart';
+import 'package:successage/mentee/mentee_profile.dart';
+import 'package:successage/mentor/mentor_home_screen.dart';
 import 'package:successage/screen/bottom_bar.dart';
 import 'package:successage/screen/screen_splash.dart';
 import 'package:firebase_core/firebase_core.dart';
@@ -25,7 +29,7 @@ class MyApp extends StatelessWidget {
       theme: ThemeData(
           splashColor: Colors.amber,
           scaffoldBackgroundColor: const Color.fromARGB(255, 231, 231, 231)),
-      home: BottomBar(),
+      home: MentorHomeScreen(),
     );
   }
 }

@@ -18,3 +18,21 @@ List<Map<String,dynamic>> mentorList =[
     'rating' : 5
   },
 ];
+List<Map<String,dynamic>> courseList =[
+  {
+    'course' : 'Resume Review',
+    'rate': 'free'
+  },
+{
+'course' : 'Mock Interview',
+'rate': '150/-'
+},
+{
+'course' : 'GD Training',
+'rate': '150/-'
+},
+{
+'course' : 'Competitive Coding',
+'rate': '150/-'
+},
+];

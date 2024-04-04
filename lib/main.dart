@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:successage/screen/bottom_bar.dart';
 import 'package:successage/screen/screen_splash.dart';
 import 'package:successage/mentee/mentee_detail.dart';
 import 'package:firebase_core/firebase_core.dart';
@@ -26,8 +25,8 @@ class MyApp extends StatelessWidget {
       debugShowCheckedModeBanner: false,
       theme: ThemeData(
           splashColor: Colors.amber,
-          scaffoldBackgroundColor: const Color.fromARGB(255, 231, 231, 231)),
-      home: const MenteeDataCollection(),
+          scaffoldBackgroundColor: const Color(0xFF8ECAE6)),
+      home: ScreenSplash(),
     );
   }
 }

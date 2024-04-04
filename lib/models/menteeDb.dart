@@ -7,6 +7,7 @@ class Mentee {
   String? lname;
   String? edq;
   num? phnno;
+  String? ppic;
 
   Mentee(
       {required this.uid,
@@ -14,7 +15,8 @@ class Mentee {
       this.fname,
       this.lname,
       this.edq,
-      this.phnno});
+      this.phnno,
+      this.ppic});
   Map<String, dynamic> toMap() {
     return {
       'uid': uid,
@@ -22,14 +24,20 @@ class Mentee {
       'fname': fname,
       'lname': lname,
       'education': edq,
-      'phone no': phnno
+      'phone no': phnno,
+      'ppic': ppic
       // Add more properties as needed
     };
   }
 }
 
 void addMenteeToFirestore(String uid,
-    {String? email, String? fname, String? lname, String? edq, num? phnno}) {
+    {String? email,
+    String? fname,
+    String? lname,
+    String? edq,
+    num? phnno,
+    String? ppic}) {
   // Initialize Firestore
   FirebaseFirestore firestore = FirebaseFirestore.instance;
 
@@ -39,7 +47,8 @@ void addMenteeToFirestore(String uid,
       fname: fname,
       lname: lname,
       edq: edq,
-      phnno: phnno);
+      phnno: phnno,
+      ppic: ppic);
 
   firestore
       .collection('mentee') // Replace 'mentees' with your collection name

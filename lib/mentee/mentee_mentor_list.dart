@@ -1,5 +1,6 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:successage/utils/app_layouts.dart';
 
 class MentorList extends StatefulWidget {
   final Map<String,dynamic> Mentor;
@@ -32,9 +33,9 @@ class _MentorListState extends State<MentorList> {
           ),
           Column(
             children: [
-              Text(widget.Mentor['name']),
+              Text(widget.Mentor['name'],style: Styles.headline2,),
               SizedBox(height: 3,),
-              Text(widget.Mentor['title']),
+              Text(widget.Mentor['title'],style: Styles.headline3,),
             ],
           ),
           Container(

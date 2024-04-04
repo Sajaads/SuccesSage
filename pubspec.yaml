@@ -41,6 +41,10 @@ dependencies:
   firebase_analytics: ^10.8.10
   cloud_firestore: ^4.15.10
   fluentui_icons: ^1.0.0
+  persistent_bottom_nav_bar_v2: ^5.1.0
+  sign_in_button: ^3.2.0
+  image_picker: ^1.0.7
+  firebase_storage: ^11.7.0
 
 dev_dependencies:
   flutter_test:

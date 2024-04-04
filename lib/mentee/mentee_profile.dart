@@ -12,6 +12,7 @@ class MentorProfile extends StatefulWidget {
 }
 
 class _MentorProfileState extends State<MentorProfile> {
+  bool showConnectionButton=true;
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -80,15 +81,60 @@ class _MentorProfileState extends State<MentorProfile> {
                           SuggestionButton(),
                         ],
                       ),
-                      SuggestionButton(),
+                      if(showConnectionButton)
+                        ElevatedButton(
+                          onPressed: (){
+                            setState(() {
+                              showConnectionButton =  false;
+                            });
+                          },
+                          style: OutlinedButton.styleFrom(
+                            backgroundColor: Colors.white
+                          ),
+                          child: Row(
+                            mainAxisAlignment: MainAxisAlignment.center,
+                            children: [
+                              Icon(Icons.group_add,color: Colors.orange,),
+                              SizedBox(width: 8,),
+                              Text("Connect")
+                            ],
+                          ),
+                        ),
+                      if(!showConnectionButton)
+                        Row(
+                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                          children: [
+                            ElevatedButton(
+                                onPressed: (){},
+                              style: OutlinedButton.styleFrom(
+                                  foregroundColor: Colors.white,
+                                  backgroundColor: Color(0x622FD3FD3)
+                              ),
+                                child: Text("Message"),
+                            ),
+                            ElevatedButton(
+                                onPressed: (){},
+                              style: OutlinedButton.styleFrom(
+                                  foregroundColor: Colors.white,
+                                  backgroundColor: Color(0x622FD3FD3)
+                              ),
+                                child: Text("Book Session"),
+                            ),
+                          ],
+                        )
                     ],
                   ),
                 ),
                 SizedBox(height: 12,),
-                Row(
-                  children: [
-
-                  ],
+                Padding(
+                  padding: const EdgeInsets.all(13.0),
+                  child: Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                    children: [
+                        Text("Experience"),
+                        Text("Reviews")
+                    ],
+                  ),
                 )
               ],
             ),

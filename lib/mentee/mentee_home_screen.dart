@@ -5,10 +5,12 @@ import 'package:flutter/widgets.dart';
 import 'package:successage/mentee/mentee_higlighted_mentor.dart';
 import 'package:successage/mentee/mentee_mentor_list.dart';
 import 'package:successage/mentee/mentee_profile.dart';
+import 'package:successage/utils/app_layouts.dart';
 import 'package:successage/utils/suggestion_button.dart';
 import 'package:successage/utils/app_info_list.dart';
 
 class HomeMentee extends StatefulWidget {
+
   final String? uid;
   final String? collection;
 
@@ -19,6 +21,7 @@ class HomeMentee extends StatefulWidget {
   State<HomeMentee> createState() => _HomeMenteeState();
 }
 
+
 class _HomeMenteeState extends State<HomeMentee> {
   late Future<String> _userSnapshotFuture;
 
@@ -27,7 +30,6 @@ class _HomeMenteeState extends State<HomeMentee> {
     super.initState();
     _userSnapshotFuture = _fetchUserSnapshot();
   }
-
   Future<String> _fetchUserSnapshot() async {
     DocumentSnapshot snapshot = await FirebaseFirestore.instance
         .collection(widget.collection!)
@@ -153,6 +155,7 @@ class _HomeMenteeState extends State<HomeMentee> {
             }
           },
         ),
+
       ),
     );
   }

@@ -31,8 +31,10 @@ class ScreenRole extends StatelessWidget {
             ElevatedButton(
               onPressed: () {
                 if (toggle) {
-                  Navigator.of(context).push(
-                      MaterialPageRoute(builder: ((context) => Loginform())));
+                  Navigator.of(context).push(MaterialPageRoute(
+                      builder: ((context) => Loginform(
+                            role: 'mentor',
+                          ))));
                 } else {
                   Navigator.of(context).push(MaterialPageRoute(
                       builder: ((context) => ScreenLoginForm(
@@ -61,8 +63,10 @@ class ScreenRole extends StatelessWidget {
             ElevatedButton(
               onPressed: () {
                 if (toggle) {
-                  Navigator.of(context).push(
-                      MaterialPageRoute(builder: ((context) => Loginform())));
+                  Navigator.of(context).push(MaterialPageRoute(
+                      builder: ((context) => Loginform(
+                            role: 'mentee',
+                          ))));
                 } else {
                   Navigator.of(context).push(MaterialPageRoute(
                       builder: ((context) => ScreenLoginForm(

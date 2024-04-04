@@ -23,7 +23,7 @@ class MyApp extends StatelessWidget {
     return MaterialApp(
       theme: ThemeData(
           splashColor: Colors.amber,
-          scaffoldBackgroundColor: const Color.fromARGB(255, 231, 231, 231)),
+          scaffoldBackgroundColor: const Color(0xFF8ECAE6)),
       home: ScreenSplash(),
     );
   }

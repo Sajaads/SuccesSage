@@ -4,16 +4,15 @@ import 'package:successage/mentee/mentee_mentor_list.dart';
 import 'package:successage/utils/app_info_list.dart';
 
 class HighlightedMentee extends StatelessWidget {
-  final Map<String,dynamic> Mentor;
-  const HighlightedMentee({Key? key,required this.Mentor}) : super(key: key);
+  final Map<String, dynamic> Mentor;
+  const HighlightedMentee({super.key, required this.Mentor});
 
   @override
   Widget build(BuildContext context) {
     return Container(
       decoration: BoxDecoration(
-          color: Colors.lightBlueAccent,
-          borderRadius: BorderRadius.circular(12)
-      ),
+          color: const Color.fromRGBO(64, 196, 255, 1),
+          borderRadius: BorderRadius.circular(12)),
       child: Row(
         children: [
           Container(
@@ -28,12 +27,7 @@ class HighlightedMentee extends StatelessWidget {
                           borderRadius: BorderRadius.circular(10),
                           image: DecorationImage(
                               fit: BoxFit.fitHeight,
-                              image: AssetImage(
-                                  "assets/${Mentor['image']}"
-                              )
-                          )
-
-                      ),
+                              image: AssetImage("assets/${Mentor['image']}"))),
                     ),
                     Column(
                       mainAxisAlignment: MainAxisAlignment.spaceBetween,
@@ -42,15 +36,31 @@ class HighlightedMentee extends StatelessWidget {
                         Text(Mentor['title']),
                         Row(
                           children: [
-                            Icon(Icons.star,color: Colors.orange,),
-                            Icon(Icons.star,color: Colors.orange,),
-                            Icon(Icons.star,color: Colors.orange,),
-                            Icon(Icons.star,color: Colors.orange,),
-                            Icon(Icons.star,color: Colors.orange,),
-                            SizedBox(width: 5.0,),
+                            const Icon(
+                              Icons.star,
+                              color: Colors.orange,
+                            ),
+                            const Icon(
+                              Icons.star,
+                              color: Colors.orange,
+                            ),
+                            const Icon(
+                              Icons.star,
+                              color: Colors.orange,
+                            ),
+                            const Icon(
+                              Icons.star,
+                              color: Colors.orange,
+                            ),
+                            const Icon(
+                              Icons.star,
+                              color: Colors.orange,
+                            ),
+                            const SizedBox(
+                              width: 5.0,
+                            ),
                             Text(Mentor['rating'].toString())
                           ],
-
                         ),
                       ],
                     ),
@@ -60,25 +70,21 @@ class HighlightedMentee extends StatelessWidget {
                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
                   children: [
                     ElevatedButton(
-                      onPressed: (){},
+                      onPressed: () {},
                       style: OutlinedButton.styleFrom(
-                          backgroundColor: Colors.blueAccent
-                      ),
-                      child: Text('View Profile'),
+                          backgroundColor: Colors.blueAccent),
+                      child: const Text('View Profile'),
                     ),
                     ElevatedButton(
-                      onPressed: (){},
+                      onPressed: () {},
                       style: OutlinedButton.styleFrom(
-                          backgroundColor: Colors.lightBlue
-                      ),
-                      child: Text('Book Session'),
+                          backgroundColor: Colors.lightBlue),
+                      child: const Text('Book Session'),
                     ),
                   ],
                 ),
-
               ],
             ),
-
           )
         ],
       ),

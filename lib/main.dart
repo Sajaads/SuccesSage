@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:successage/screen/bottom_bar.dart';
 import 'package:successage/screen/screen_splash.dart';
+import 'package:successage/mentee/mentee_detail.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'firebase_options.dart';
 import 'package:flutter/services.dart';
@@ -22,10 +23,11 @@ class MyApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
+      debugShowCheckedModeBanner: false,
       theme: ThemeData(
           splashColor: Colors.amber,
           scaffoldBackgroundColor: const Color.fromARGB(255, 231, 231, 231)),
-      home: BottomBar(),
+      home: const MenteeDataCollection(),
     );
   }
 }

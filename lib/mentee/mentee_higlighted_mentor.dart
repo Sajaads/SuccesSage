@@ -6,12 +6,14 @@ import 'package:successage/utils/app_layouts.dart';
 
 class HighlightedMentee extends StatelessWidget {
   final Map<String, dynamic> Mentor;
+
   const HighlightedMentee({Key? key, required this.Mentor}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
     return Container(
       decoration: BoxDecoration(
+
           boxShadow: [
             BoxShadow(
               color: Colors.grey.withOpacity(0.5), // Shadow color

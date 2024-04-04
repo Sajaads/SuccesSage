@@ -3,6 +3,7 @@ import 'dart:io';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:flutter/material.dart';
+import 'package:successage/mentee/mentee_detail.dart';
 import 'package:successage/models/menteeDb.dart';
 import 'package:firebase_storage/firebase_storage.dart' as firebase_storage;
 
@@ -77,7 +78,7 @@ class _ScreenSignupInfoState extends State<ScreenSignupInfo> {
               padding: const EdgeInsets.symmetric(horizontal: 20.0),
               child: Column(
                 children: [
-                  Image.asset('assets/Logo 1.png'),
+                  Image.asset('assets/Logo1.png'),
                   Text('Let us know more about you'),
                   SizedBox(height: 20),
                   Container(
@@ -307,6 +308,11 @@ class _ScreenSignupInfoState extends State<ScreenSignupInfo> {
                   ),
                   SizedBox(height: 20),
                   ElevatedButton(
+                    style: ElevatedButton.styleFrom(
+                      foregroundColor: Colors.white,
+                      backgroundColor:
+                          const Color.fromARGB(255, 2, 48, 71), // Text color
+                    ),
                     onPressed: () {
                       showModalBottomSheet(
                         context: context,
@@ -340,6 +346,11 @@ class _ScreenSignupInfoState extends State<ScreenSignupInfo> {
                     child: Text('Upload Image'),
                   ),
                   ElevatedButton(
+                    style: ElevatedButton.styleFrom(
+                      foregroundColor: Colors.white,
+                      backgroundColor:
+                          const Color.fromARGB(255, 2, 48, 71), // Text color
+                    ),
                     onPressed: () async {
                       await uploadImageToFirebaseStorage();
                       if (button && _imageUrl != null) {
@@ -352,6 +363,10 @@ class _ScreenSignupInfoState extends State<ScreenSignupInfo> {
                           edq: edq,
                           ppic: _imageUrl!,
                         );
+                        Navigator.of(context)
+                            .push(MaterialPageRoute(builder: ((context) {
+                          return MenteeDataCollection();
+                        })));
                       } else {
                         ScaffoldMessenger.of(context).showSnackBar(
                           SnackBar(

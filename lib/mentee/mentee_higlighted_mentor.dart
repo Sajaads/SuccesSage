@@ -1,6 +1,5 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:successage/mentee/mentee_mentor_list.dart';
 import 'package:successage/utils/app_info_list.dart';
 import 'package:successage/utils/app_layouts.dart';
 
@@ -13,7 +12,6 @@ class HighlightedMentee extends StatelessWidget {
   Widget build(BuildContext context) {
     return Container(
       decoration: BoxDecoration(
-
           boxShadow: [
             BoxShadow(
               color: Colors.grey.withOpacity(0.5), // Shadow color

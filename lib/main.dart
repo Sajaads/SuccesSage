@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:successage/screen/screen_splash.dart';
-import 'package:successage/mentee/mentee_detail.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'firebase_options.dart';
 import 'package:flutter/services.dart';
@@ -26,7 +25,7 @@ class MyApp extends StatelessWidget {
       theme: ThemeData(
           splashColor: Colors.amber,
           scaffoldBackgroundColor: const Color(0xFF8ECAE6)),
-      home: ScreenSplash(),
+      home: const ScreenSplash(),
     );
   }
 }

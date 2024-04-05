@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:successage/screen/screen_role.dart';
+import 'package:successage/screen/screen_signuporlogin.dart';
 
 class ScreenLogin extends StatelessWidget {
   const ScreenLogin({Key? key});
@@ -32,13 +32,13 @@ class ScreenLogin extends StatelessWidget {
             onPressed: () {
               Navigator.of(context).push(MaterialPageRoute(
                 builder: (ctx) => ScreenRole(
-                  toggle: false,
+                  collection: "mentor",
                 ),
               ));
             },
             style: ElevatedButton.styleFrom(
-                backgroundColor:
-                    Color.fromARGB(255, 47, 38, 94), // Stylish button color
+                backgroundColor: const Color.fromARGB(
+                    255, 2, 48, 71), // Stylish button color
                 padding: EdgeInsets.symmetric(
                     horizontal: 80, vertical: 16), // Button padding
                 shape: RoundedRectangleBorder(
@@ -47,7 +47,7 @@ class ScreenLogin extends StatelessWidget {
                 ),
                 elevation: 10),
             child: Text(
-              "Signup",
+              "Mentor",
               style: TextStyle(
                 color: Colors.white,
                 fontSize: 16,
@@ -61,13 +61,13 @@ class ScreenLogin extends StatelessWidget {
             onPressed: () {
               Navigator.of(context).push(MaterialPageRoute(
                 builder: (ctx) => ScreenRole(
-                  toggle: true,
+                  collection: "mentee",
                 ),
               ));
             },
             style: ElevatedButton.styleFrom(
-                backgroundColor:
-                    Color.fromARGB(255, 47, 38, 94), // Stylish button color
+                backgroundColor: const Color.fromARGB(
+                    255, 2, 48, 71), // Stylish button color
                 padding: EdgeInsets.symmetric(
                     horizontal: 80, vertical: 16), // Button padding
                 shape: RoundedRectangleBorder(
@@ -76,7 +76,7 @@ class ScreenLogin extends StatelessWidget {
                 ),
                 elevation: 10),
             child: Text(
-              "Login",
+              "Mentee",
               style: TextStyle(
                 color: Colors.white,
                 fontSize: 16,

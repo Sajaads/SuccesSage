@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:successage/screen/screen_loginorsignup.dart';
+import 'package:successage/screen/screen_mentor_or_mentee.dart';
 
 class ScreenSplash extends StatefulWidget {
   const ScreenSplash({super.key});

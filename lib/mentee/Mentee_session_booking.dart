@@ -11,7 +11,7 @@ class SessionBooking extends StatefulWidget {
 }
 
 class _SessionBookingState extends State<SessionBooking> {
-  String? _selectedOption;
+  int selectedOption = 0;
   @override
   Widget build(BuildContext context) {
     return Scaffold(

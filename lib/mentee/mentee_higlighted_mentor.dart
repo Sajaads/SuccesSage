@@ -62,7 +62,7 @@ class HighlightedMentee extends StatelessWidget {
                   ),
                 ),
                 Row(
-                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  mainAxisAlignment: MainAxisAlignment.spaceEvenly ,
                   children: [
                     ElevatedButton(
                       onPressed: (){},

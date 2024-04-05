@@ -17,13 +17,14 @@ class _MenteeSessionCardState extends State<MenteeSessionCard> {
     return Container(
       padding: EdgeInsets.symmetric(vertical: 10,horizontal: 10),
       height: 70,
-      width: 100,
+      width: 80,
       margin: EdgeInsets.symmetric(vertical: 12,horizontal: 12),
       decoration: BoxDecoration(
           color: Styles.primaryColor,
           borderRadius: BorderRadius.circular(12)
       ),
       child: Row(
+        mainAxisAlignment: MainAxisAlignment.spaceEvenly,
         children: [
           Column(
             children: [

@@ -29,7 +29,7 @@ class MyApp extends StatelessWidget {
       theme: ThemeData(
           splashColor: Colors.amber,
           scaffoldBackgroundColor: const Color.fromARGB(255, 231, 231, 231)),
-      home: MentorHomeScreen(),
+      home: BottomBar(),
     );
   }
 }

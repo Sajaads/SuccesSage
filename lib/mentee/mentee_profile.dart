@@ -1,5 +1,6 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:successage/mentee/Mentee_Mentor_experience.dart';
 import 'package:successage/utils//suggestion_button.dart';
 
 import '../utils/app_layouts.dart';
@@ -30,9 +31,10 @@ class _MentorProfileState extends State<MentorProfile> {
                 ),
                 SizedBox(height: 20,),
                 Container(
+                  margin: EdgeInsets.symmetric(vertical: 10,horizontal: 10),
                   padding: EdgeInsets.symmetric(vertical: 12,horizontal: 12),
                   decoration: BoxDecoration(
-                      color: Styles.highlighedbuttonColor,
+                      color: Styles.cardColor,
                       borderRadius: BorderRadius.circular(12)
                   ),
                   child: Column(
@@ -52,35 +54,35 @@ class _MentorProfileState extends State<MentorProfile> {
                                 )
                             ),
                           ),
-                          const Column(
+                          Column(
                             children: [
-                              Text("Sajad"),
-                              Text("Happy to help you in"),
-                              Text("volunteering fields"),
-                              Row(
+                              Text("Sajad",style: Styles.ProfileName),
+                              Text("Happy to help you in",style: Styles.headline2,),
+                              Text("volunteering fields",style: Styles.headline2,),
+                              const Row(
                                 children: [
                                   Icon(Icons.star,color: Colors.orange,),
                                   Icon(Icons.star,color: Colors.orange,),
                                   Icon(Icons.star,color: Colors.orange,),
                                   Icon(Icons.star,color: Colors.orange,),
-                                  Icon(Icons.star,color: Colors.orange,),
+                                  Icon(Icons.star_half,color: Colors.orange,),
                                   SizedBox(width: 5.0,),
                                   Text("5.0")
                                 ],
-
                               ),
                             ],
                           ),
                         ],
                       ),
                       Row(
-                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                        mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                         children: [
                           SuggestionButton(),
                           SuggestionButton(),
                           SuggestionButton(),
                         ],
                       ),
+                      SizedBox(height: 10,),
                       if(showConnectionButton)
                         ElevatedButton(
                           onPressed: (){
@@ -102,13 +104,13 @@ class _MentorProfileState extends State<MentorProfile> {
                         ),
                       if(!showConnectionButton)
                         Row(
-                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                          mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                           children: [
                             ElevatedButton(
                                 onPressed: (){},
                               style: OutlinedButton.styleFrom(
                                   foregroundColor: Colors.white,
-                                  backgroundColor: Color(0x622FD3FD3)
+                                  backgroundColor: Colors.blue
                               ),
                                 child: Text("Message"),
                             ),
@@ -116,7 +118,7 @@ class _MentorProfileState extends State<MentorProfile> {
                                 onPressed: (){},
                               style: OutlinedButton.styleFrom(
                                   foregroundColor: Colors.white,
-                                  backgroundColor: Color(0x622FD3FD3)
+                                  backgroundColor: Color(0xF45F84F4)
                               ),
                                 child: Text("Book Session"),
                             ),
@@ -125,14 +127,83 @@ class _MentorProfileState extends State<MentorProfile> {
                     ],
                   ),
                 ),
+                Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                  children: [
+                    Container(
+                      height: 50,
+                      width: 50,
+                      decoration: const BoxDecoration(
+                          shape: BoxShape.circle,
+                          image: DecorationImage(
+                              fit: BoxFit.fitHeight,
+                              image: AssetImage(
+                                  "assets/linkedIn.png"
+                              )
+                          )
+                      ),
+                    ),
+                    Container(
+                      height: 50,
+                      width: 50,
+                      decoration: const BoxDecoration(
+                          shape: BoxShape.circle,
+                          image: DecorationImage(
+                              fit: BoxFit.fitHeight,
+                              image: AssetImage(
+                                  "assets/fb.png"
+                              )
+                          )
+                      ),
+                    ),
+                  ],
+                ),
                 SizedBox(height: 12,),
                 Padding(
                   padding: const EdgeInsets.all(13.0),
-                  child: Row(
-                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  child: Column(
                     children: [
-                        Text("Experience"),
-                        Text("Reviews")
+                      DefaultTabController(
+                        length: 2,
+                        child: Column(
+                          children: [
+                            TabBar(
+                              tabs: [
+                                Tab(
+                                  child: Text("Experience 1",style: Styles.headline2,),
+                                ),
+                                Tab(
+                                  child: Text("Experience 2",style: Styles.headline2,),
+                                )
+                              ],
+                            ),
+                            SizedBox(
+                              height: 700, // Adjust the height of TabBarView as needed
+                              child: TabBarView(
+                                children: [
+                                  // Content for the first tab "Experience 1"
+                                  const SingleChildScrollView(
+                                    child: Column(
+                                      children: [
+                                        MenteeMentorExperience(),
+                                        MenteeMentorExperience(),
+                                        MenteeMentorExperience(),
+                                        MenteeMentorExperience(),
+                                        MenteeMentorExperience(),
+                                        MenteeMentorExperience(),
+
+                                      ],
+                                    ),
+                                  ),
+
+                                  // Content for the second tab "Experience 2"
+                                  Text("Reviews...")
+                                ],
+                              ),
+                            ),
+                          ],
+                        ),
+                      )
                     ],
                   ),
                 )

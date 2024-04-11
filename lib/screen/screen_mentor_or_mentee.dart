@@ -10,15 +10,6 @@ class ScreenLogin extends StatelessWidget {
       body: Column(
         mainAxisAlignment: MainAxisAlignment.center,
         children: [
-          Text(
-            'Welcome to',
-            style: TextStyle(
-              fontSize: 50,
-              color: Color.fromARGB(255, 29, 24, 101),
-              fontWeight: FontWeight.w700,
-              fontFamily: 'Circular', // Use a round font
-            ),
-          ),
           Row(
             mainAxisAlignment: MainAxisAlignment.center,
             children: [

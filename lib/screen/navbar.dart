@@ -11,34 +11,36 @@ class PersistenBottomNavBarDemo extends StatelessWidget {
   PersistenBottomNavBarDemo(
       {Key? key, required this.uid, required this.collection});
   Widget build(BuildContext context) {
-    return MaterialApp(
-      title: 'Persistent Bottom Navigation Bar Demo',
-      home: PersistentTabView(
-        tabs: [
-          PersistentTabConfig(
-            screen: HomeMentee(uid: uid, collection: collection),
-            item: ItemConfig(
-              icon: Icon(Icons.home),
-              title: "Home",
+    return PopScope(
+      canPop: false,
+      child: MaterialApp(
+        home: PersistentTabView(
+          tabs: [
+            PersistentTabConfig(
+              screen: HomeMentee(uid: uid, collection: collection),
+              item: ItemConfig(
+                icon: Icon(Icons.home),
+                title: "Home",
+              ),
             ),
-          ),
-          PersistentTabConfig(
-            screen: MyWidget(),
-            item: ItemConfig(
-              icon: Icon(Icons.message),
-              title: "Messages",
+            PersistentTabConfig(
+              screen: MyWidget(),
+              item: ItemConfig(
+                icon: Icon(Icons.message),
+                title: "Messages",
+              ),
             ),
-          ),
-          PersistentTabConfig(
-            screen: MyWidget2(),
-            item: ItemConfig(
-              icon: Icon(Icons.settings),
-              title: "Settings",
+            PersistentTabConfig(
+              screen: MyWidget2(),
+              item: ItemConfig(
+                icon: Icon(Icons.settings),
+                title: "Settings",
+              ),
             ),
+          ],
+          navBarBuilder: (navBarConfig) => Style1BottomNavBar(
+            navBarConfig: navBarConfig,
           ),
-        ],
-        navBarBuilder: (navBarConfig) => Style1BottomNavBar(
-          navBarConfig: navBarConfig,
         ),
       ),
     );

@@ -1,7 +1,5 @@
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:successage/utils/app_info_list.dart';
-import 'package:successage/utils/app_layouts.dart';
+import 'package:successage/mentee/mentee_profile.dart';
 
 class HighlightedMentee extends StatelessWidget {
   final Map<String, dynamic> Mentor;
@@ -10,95 +8,78 @@ class HighlightedMentee extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Container(
-      decoration: BoxDecoration(
-          boxShadow: [
-            BoxShadow(
-              color: Colors.grey.withOpacity(0.5), // Shadow color
-              spreadRadius: 2, // Spread radius
-              blurRadius: 7, // Blur radius
-              offset: Offset(0, 3), // Offset in x and y directions
+    return Padding(
+      padding: const EdgeInsets.symmetric(horizontal: 18),
+      child: Container(
+        width: MediaQuery.of(context).size.width,
+        child: Padding(
+          padding: const EdgeInsets.all(10.0),
+          child: Container(
+            decoration: BoxDecoration(
+              boxShadow: [
+                BoxShadow(
+                  color: Colors.grey.withOpacity(0.5),
+                  spreadRadius: 2,
+                  blurRadius: 7,
+                  offset: Offset(0, 3),
+                ),
+              ],
+              color: Color.fromARGB(149, 153, 202, 223),
+              borderRadius: BorderRadius.circular(12),
             ),
-          ],
-          color: const Color.fromARGB(255, 161, 198, 215),
-          borderRadius: BorderRadius.circular(12)),
-      child: Row(
-        children: [
-          Container(
             child: Column(
               children: <Widget>[
-                Center(
-                  child: Row(
-                    children: [
-                      Padding(
-                        padding: const EdgeInsets.all(8.0),
-                        child: Container(
-                          height: 75,
-                          width: 75,
-                          decoration: BoxDecoration(
-                              borderRadius: BorderRadius.circular(10),
-                              image: DecorationImage(
-                                  fit: BoxFit.fitHeight,
-                                  image:
-                                      AssetImage("assets/${Mentor['image']}"))),
-                        ),
-                      ),
-                      Column(
-                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                        children: [
-                          Text(
-                            Mentor['name'],
-                            style: Styles.headline2,
-                          ),
-                          Text(
-                            Mentor['title'],
-                            style: Styles.headline3,
-                          ),
-                          Row(
-                            children: [
-                              Icon(
-                                Icons.star,
-                                color: Colors.orange,
-                              ),
-                              Icon(
-                                Icons.star,
-                                color: Colors.orange,
-                              ),
-                              Icon(
-                                Icons.star,
-                                color: Colors.orange,
-                              ),
-                              Icon(
-                                Icons.star,
-                                color: Colors.orange,
-                              ),
-                              Icon(
-                                Icons.star,
-                                color: Colors.orange,
-                              ),
-                              SizedBox(
-                                width: 5.0,
-                              ),
-                              Text(Mentor['rating'].toString())
-                            ],
-                          ),
-                        ],
-                      ),
-                    ],
-                  ),
-                ),
                 Row(
                   children: [
-                    SizedBox(width: 20),
+                    Padding(
+                      padding: const EdgeInsets.all(8.0),
+                      child: CircleAvatar(
+                        radius: 40,
+                        backgroundImage: NetworkImage(Mentor['ppic']),
+                      ),
+                    ),
+                    Column(
+                      children: [
+                        Text(
+                          '${Mentor['fname']} ${Mentor['lname']}',
+                          style: TextStyle(
+                              fontSize: 18, fontWeight: FontWeight.bold),
+                        ),
+                        Text('${Mentor['designation']}')
+                      ],
+                    ),
+                  ],
+                ),
+                SizedBox(height: 10),
+                Row(
+                  mainAxisAlignment:
+                      MainAxisAlignment.spaceEvenly, // Adjust alignment here
+                  children: [
                     Padding(
                       padding: const EdgeInsets.all(8.0),
                       child: ElevatedButton(
-                        onPressed: () {},
-                        style: OutlinedButton.styleFrom(
-                            backgroundColor: Colors.blueAccent),
+                        onPressed: () {
+                          Navigator.of(context)
+                              .push(MaterialPageRoute(builder: ((context) {
+                            return MentorProfile(
+                              Mentor: Mentor,
+                            );
+                          })));
+                        },
+                        style: ElevatedButton.styleFrom(
+                          backgroundColor: const Color.fromARGB(
+                              255, 2, 48, 71), // Stylish button color
+                          padding: EdgeInsets.symmetric(
+                              horizontal: 30, vertical: 10), // Button padding
+                          shape: RoundedRectangleBorder(
+                            borderRadius: BorderRadius.circular(
+                                30), // Rounded button corners
+                          ),
+                          elevation: 10,
+                        ),
                         child: Text(
                           'View Profile',
-                          style: Styles.ButtonText,
+                          style: TextStyle(color: Colors.white),
                         ),
                       ),
                     ),
@@ -106,11 +87,20 @@ class HighlightedMentee extends StatelessWidget {
                       padding: const EdgeInsets.all(8.0),
                       child: ElevatedButton(
                         onPressed: () {},
-                        style: OutlinedButton.styleFrom(
-                            backgroundColor: Colors.lightBlue),
+                        style: ElevatedButton.styleFrom(
+                          backgroundColor: const Color.fromARGB(
+                              255, 223, 245, 255), // Stylish button color
+                          padding: EdgeInsets.symmetric(
+                              horizontal: 30, vertical: 10), // Button padding
+                          shape: RoundedRectangleBorder(
+                            borderRadius: BorderRadius.circular(
+                                30), // Rounded button corners
+                          ),
+                          elevation: 10,
+                        ),
                         child: Text(
                           'Book Session',
-                          style: Styles.ButtonText,
+                          style: TextStyle(color: Colors.black),
                         ),
                       ),
                     ),
@@ -118,8 +108,8 @@ class HighlightedMentee extends StatelessWidget {
                 ),
               ],
             ),
-          )
-        ],
+          ),
+        ),
       ),
     );
   }

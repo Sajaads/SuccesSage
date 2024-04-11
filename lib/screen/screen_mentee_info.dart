@@ -3,6 +3,7 @@ import 'dart:io';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:flutter/material.dart';
+import 'package:simple_circular_progress_bar/simple_circular_progress_bar.dart';
 import 'package:successage/mentee/mentee_detail.dart';
 import 'package:successage/models/menteeDb.dart';
 import 'package:firebase_storage/firebase_storage.dart' as firebase_storage;
@@ -24,6 +25,7 @@ class _ScreenSignupInfoState extends State<ScreenSignupInfo> {
   bool button = false;
   File? _image;
   String? _imageUrl;
+  bool _loading = false;
 
   final picker = ImagePicker();
 
@@ -222,7 +224,7 @@ class _ScreenSignupInfoState extends State<ScreenSignupInfo> {
                             phnno = null;
                             ScaffoldMessenger.of(context).showSnackBar(SnackBar(
                               content: Text("Enter a valid number"),
-                              duration: Duration(seconds: 2),
+                              duration: Duration(seconds: 1),
                             ));
                           }
                           checkbutton();
@@ -352,6 +354,10 @@ class _ScreenSignupInfoState extends State<ScreenSignupInfo> {
                           const Color.fromARGB(255, 2, 48, 71), // Text color
                     ),
                     onPressed: () async {
+                      checkbutton();
+                      setState(() {
+                        _loading = true;
+                      });
                       await uploadImageToFirebaseStorage();
                       if (button && _imageUrl != null) {
                         addMenteeToFirestore(
@@ -363,11 +369,21 @@ class _ScreenSignupInfoState extends State<ScreenSignupInfo> {
                           edq: edq,
                           ppic: _imageUrl!,
                         );
+
                         Navigator.of(context)
                             .push(MaterialPageRoute(builder: ((context) {
-                          return MenteeDataCollection();
+                          return MenteeDataCollection(
+                            uid: widget.id,
+                            collection: "mentee",
+                          );
                         })));
+                        setState(() {
+                          _loading = false;
+                        });
                       } else {
+                        setState(() {
+                          _loading = false;
+                        });
                         ScaffoldMessenger.of(context).showSnackBar(
                           SnackBar(
                             content: Text(
@@ -379,6 +395,20 @@ class _ScreenSignupInfoState extends State<ScreenSignupInfo> {
                     },
                     child: Text('Next'),
                   ),
+                  SizedBox(
+                    height: 10,
+                  ),
+                  if (_loading)
+                    Container(
+                      child: Center(
+                        child: SimpleCircularProgressBar(
+                          size: 50,
+                        ),
+                      ),
+                    ),
+                  SizedBox(
+                    height: 10,
+                  )
                 ],
               ),
             ),
@@ -390,11 +420,15 @@ class _ScreenSignupInfoState extends State<ScreenSignupInfo> {
 
   void checkbutton() {
     setState(() {
-      button = lname != null &&
-          fname != null &&
+      button = fname != null &&
+          fname!.isNotEmpty &&
+          lname != null &&
+          lname!.isNotEmpty &&
           mail != null &&
+          mail!.isNotEmpty &&
           phnno != null &&
-          edq != null;
+          edq != null &&
+          edq!.isNotEmpty;
     });
   }
 }

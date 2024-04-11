@@ -17,103 +17,133 @@ class MentorHomeScreen extends StatelessWidget {
       body: ListView(
         children: [
           Container(
-            padding: EdgeInsets.symmetric(horizontal: 12,vertical: 12),
+            padding: EdgeInsets.symmetric(horizontal: 12, vertical: 12),
             child: Column(
               children: <Widget>[
-                SizedBox(height: 12,),
-                Row(
-                  children: [
-                    Container(
-                    height: 50,
-                    width: 50,
-                    decoration: BoxDecoration(
-                        borderRadius: BorderRadius.circular(10),
-                        image: const DecorationImage(
-                            fit: BoxFit.fitHeight,
-                            image: AssetImage(
-                                "assets/person_logo.jpg"
-                            )
-                        )
-
-                    ),
-                  ),
-                    SizedBox(width: 5,),
-                    Text(
-                        "Welcome,Nikhil"),
-
-
-                  ],
+                SizedBox(
+                  height: 12,
                 ),
-                SizedBox(height: 12,),
                 Row(
                   children: [
                     Container(
-                      width: 350,
+                      height: 50,
+                      width: 50,
                       decoration: BoxDecoration(
-                          borderRadius: BorderRadius.circular(12),
-                          color: const Color(0xFFF4F6FD)
-                      ),
-                      child: const Row(
-                        children: [
-                          Icon(FluentSystemIcons.ic_fluent_search_regular,color: Color(0xFFBFC205)),
-                          Text(
-                            "Search",
-                          ),
-                        ],
+                          borderRadius: BorderRadius.circular(10),
+                          image: const DecorationImage(
+                              fit: BoxFit.fitHeight,
+                              image: AssetImage("assets/person_logo.jpg"))),
+                    ),
+                    SizedBox(
+                      width: 5,
+                    ),
+                    Text("Welcome,Nikhil"),
+                  ],
+                ),
+                SizedBox(
+                  height: 12,
+                ),
+                Row(
+                  children: [
+                    Expanded(
+                      child: Container(
+                        decoration: BoxDecoration(
+                            borderRadius: BorderRadius.circular(12),
+                            color: const Color(0xFFF4F6FD)),
+                        child: Row(
+                          children: [
+                            Icon(FluentSystemIcons.ic_fluent_search_regular,
+                                color: Color(0xFFBFC205)),
+                            Text(
+                              "Search",
+                            ),
+                          ],
+                        ),
                       ),
                     ),
                   ],
                 ),
-                const SizedBox(height: 12,),
+                const SizedBox(
+                  height: 12,
+                ),
                 const Row(
                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                  children: [
-
-                  ],
+                  children: [],
                 ),
-                SizedBox(height: 12,),
+                SizedBox(
+                  height: 12,
+                ),
                 Row(
                   children: [
-                    Text("Appointments today",style: Styles.headline1,),
+                    Text(
+                      "Appointments today",
+                      style: Styles.headline1,
+                    ),
                   ],
                 ),
-                SizedBox(height: 12,),
+                SizedBox(
+                  height: 12,
+                ),
                 MenteeList(),
-                SizedBox(height: 4,),
+                SizedBox(
+                  height: 4,
+                ),
                 MenteeList(),
-                SizedBox(height: 12,),
+                SizedBox(
+                  height: 12,
+                ),
                 Row(
                   children: [
-                    Text("Connection Requests",style: Styles.headline1,),
+                    Text(
+                      "Connection Requests",
+                      style: Styles.headline1,
+                    ),
                   ],
                 ),
-                SizedBox(height: 10,),
+                SizedBox(
+                  height: 10,
+                ),
                 SingleChildScrollView(
                   scrollDirection: Axis.horizontal,
                   child: Row(
                     children: [
                       RequestOfMentee(),
-                      SizedBox(width: 10,),
+                      SizedBox(
+                        width: 10,
+                      ),
                       RequestOfMentee(),
-                      SizedBox(width: 10,),
+                      SizedBox(
+                        width: 10,
+                      ),
                       RequestOfMentee(),
                     ],
                   ),
                 ),
-                SizedBox(height: 15,),
+                SizedBox(
+                  height: 15,
+                ),
                 Row(
                   children: [
-                    Text("My Mentees",style: Styles.headline1,),
+                    Text(
+                      "My Mentees",
+                      style: Styles.headline1,
+                    ),
                   ],
                 ),
-                SizedBox(height: 10,),
+                SizedBox(
+                  height: 10,
+                ),
                 SingleChildScrollView(
                   child: Column(
                     children: [
                       MentorOldMentee(),
-                      SizedBox(height: 4,),
+                      SizedBox(
+                        height: 4,
+                      ),
                       MentorOldMentee(),
-                      SizedBox(height: 4,),
+                      SizedBox(
+                        height: 4,
+                      ),
                       MentorOldMentee()
                     ],
                   ),

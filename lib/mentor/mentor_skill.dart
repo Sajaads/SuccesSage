@@ -1,19 +1,19 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
-import 'package:successage/mentee/mentee_reg_success.dart';
+import 'package:flutter/widgets.dart';
 import 'package:successage/mentor/mentor_reg_success.dart';
-import 'package:successage/models/menteeDb.dart';
+import 'package:successage/models/mentordb.dart';
 
-class MenteeDataCollection extends StatefulWidget {
+class MentorSkill extends StatefulWidget {
   final String uid;
-  String collection;
-  MenteeDataCollection({Key? key, required this.uid, required this.collection});
+  MentorSkill({Key? key, required this.uid});
 
   @override
-  State<MenteeDataCollection> createState() => _MenteeDataCollectionState();
+  State<MentorSkill> createState() => _MentorSkillState();
 }
 
-class _MenteeDataCollectionState extends State<MenteeDataCollection> {
+class _MentorSkillState extends State<MentorSkill> {
   String? _selectedFirstOption;
   List<String> _secondOptions = [];
   List<String> itembox = [];
@@ -41,7 +41,7 @@ class _MenteeDataCollectionState extends State<MenteeDataCollection> {
               Padding(
                 padding: const EdgeInsets.all(8.0),
                 child: Text(
-                  'Area of interest:',
+                  'Area of Expertise',
                   style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
                 ),
               ),
@@ -62,8 +62,10 @@ class _MenteeDataCollectionState extends State<MenteeDataCollection> {
                       spacing: 10,
                       children: interests.map((interest) {
                         return ChoiceChip(
+                          side: BorderSide.none,
+                          backgroundColor: Color.fromARGB(255, 51, 113, 131),
                           elevation: 5,
-                          shadowColor: Colors.black,
+                          shadowColor: const Color.fromARGB(255, 0, 0, 0),
                           label: Text(interest),
                           selected: _selectedFirstOption == interest,
                           onSelected: (selected) {
@@ -91,7 +93,7 @@ class _MenteeDataCollectionState extends State<MenteeDataCollection> {
                           Padding(
                             padding: const EdgeInsets.all(8.0),
                             child: Text(
-                              'Topic of interest',
+                              'Specialized In ',
                               style: TextStyle(
                                   fontSize: 18, fontWeight: FontWeight.bold),
                             ),
@@ -100,6 +102,7 @@ class _MenteeDataCollectionState extends State<MenteeDataCollection> {
                             spacing: 10,
                             children: _secondOptions.map((option) {
                               return FilterChip(
+                                side: BorderSide.none,
                                 elevation: 5,
                                 shadowColor: Colors.black,
                                 label: Text(option),
@@ -117,7 +120,7 @@ class _MenteeDataCollectionState extends State<MenteeDataCollection> {
                           ),
                           const Text(
                             textAlign: TextAlign.center,
-                            'Give a bio so that mentors can understand you well.',
+                            'Give a bio so that mentees can understand you well.',
                             style: TextStyle(
                               fontSize: 18,
                               color: Colors.black,
@@ -129,6 +132,7 @@ class _MenteeDataCollectionState extends State<MenteeDataCollection> {
                           TextField(
                             decoration: InputDecoration(
                               border: OutlineInputBorder(
+                                borderSide: BorderSide.none,
                                 borderRadius: BorderRadius.circular(20.0),
                               ),
                               filled: true,
@@ -147,14 +151,12 @@ class _MenteeDataCollectionState extends State<MenteeDataCollection> {
                                 if (_selectedFirstOption != null &&
                                     bio != null &&
                                     bio!.isNotEmpty) {
-                                  // Ensure the user has selected an interest and provided a non-null and non-empty bio
-                                  addMenteeinterest(widget.uid,
+                                  addMentorSkill(widget.uid,
                                       bio: bio, interest: _selectedFirstOption);
                                   Navigator.of(context).push(MaterialPageRoute(
-                                      builder: ((context) => MenteeRegSuccess(
-                                            uid: widget.uid,
-                                            collection: widget.collection,
-                                          ))));
+                                      builder: (context) =>
+                                          MentorRegistrationSuccess()));
+                                  // Ensure the user has selected an interest and provided a non-null and non-empty bio
                                 } else {
                                   // Display a message or perform some action to indicate that the user needs to provide required inputs
                                   ScaffoldMessenger.of(context)

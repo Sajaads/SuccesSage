@@ -1,4 +1,7 @@
 import 'package:flutter/material.dart';
+import 'package:google_fonts/google_fonts.dart';
+import 'package:successage/mentee/mentee_detail.dart';
+import 'package:successage/screen/screen_mentor_or_mentee.dart';
 import 'package:successage/screen/screen_splash.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'firebase_options.dart';
@@ -23,6 +26,7 @@ class MyApp extends StatelessWidget {
     return MaterialApp(
       debugShowCheckedModeBanner: false,
       theme: ThemeData(
+          textTheme: GoogleFonts.firaSansTextTheme(),
           splashColor: Colors.amber,
           scaffoldBackgroundColor: const Color(0xFF8ECAE6)),
       home: const ScreenSplash(),

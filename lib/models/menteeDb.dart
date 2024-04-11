@@ -8,6 +8,8 @@ class Mentee {
   String? edq;
   num? phnno;
   String? ppic;
+  String? bio;
+  String? interest;
 
   Mentee(
       {required this.uid,
@@ -16,7 +18,9 @@ class Mentee {
       this.lname,
       this.edq,
       this.phnno,
-      this.ppic});
+      this.ppic,
+      this.bio,
+      this.interest});
   Map<String, dynamic> toMap() {
     return {
       'uid': uid,
@@ -25,7 +29,9 @@ class Mentee {
       'lname': lname,
       'education': edq,
       'phone no': phnno,
-      'ppic': ppic
+      'ppic': ppic,
+      'bio': bio,
+      'interest': interest
       // Add more properties as needed
     };
   }
@@ -56,4 +62,24 @@ void addMenteeToFirestore(String uid,
       .set(mentee.toMap())
       .then((value) => print("Mentee added successfully"))
       .catchError((error) => print("Failed to add mentee: $error"));
+}
+
+void addMenteeinterest(String uid, {String? bio, String? interest}) {
+  // Initialize Firestore
+  FirebaseFirestore firestore = FirebaseFirestore.instance;
+
+  Map<String, dynamic> dataToUpdate = {};
+  if (bio != null) {
+    dataToUpdate['bio'] = bio;
+  }
+  if (interest != null) {
+    dataToUpdate['interest'] = interest;
+  }
+
+  firestore
+      .collection('mentee')
+      .doc(uid)
+      .update(dataToUpdate)
+      .then((value) => print("Mentee updated successfully"))
+      .catchError((error) => print("Failed to update mentee: $error"));
 }

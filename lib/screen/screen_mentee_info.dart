@@ -402,7 +402,7 @@ class _ScreenSignupInfoState extends State<ScreenSignupInfo> {
                     Container(
                       child: Center(
                         child: SimpleCircularProgressBar(
-                          size: 50,
+                          size: 40,
                         ),
                       ),
                     ),

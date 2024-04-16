@@ -48,6 +48,7 @@ dependencies:
   simple_circular_progress_bar: ^1.0.2
   vs_scrollbar: ^1.0.0
   google_fonts: ^6.2.1
+  firebase_app_check: ^0.2.2+1
  
 
 dev_dependencies:

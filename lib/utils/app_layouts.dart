@@ -8,12 +8,12 @@ class Styles {
   static Color cardColor = const Color(0x4B4B9FC6);
   static TextStyle headline1 = TextStyle(
       fontSize: 30,
-      color: const Color.fromARGB(255, 208, 204, 204),
+      color: Color.fromARGB(255, 0, 0, 0),
       fontWeight: FontWeight.w500,
       decoration: TextDecoration.none);
   static TextStyle headline2 = TextStyle(
       fontSize: 16,
-      color: const Color.fromARGB(255, 188, 23, 23),
+      color: Color.fromARGB(255, 0, 0, 0),
       fontWeight: FontWeight.w400);
   static TextStyle headline3 =
       TextStyle(fontSize: 15, color: Colors.grey, fontWeight: FontWeight.w400);

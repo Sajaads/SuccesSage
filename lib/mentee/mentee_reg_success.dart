@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:successage/mentee/mentee_home_screen.dart';
 import 'package:successage/screen/navbar.dart';
 
 class MenteeRegSuccess extends StatefulWidget {
@@ -60,6 +61,5 @@ class _MenteeRegSuccessState extends State<MenteeRegSuccess> {
 Future<void> gotologin(BuildContext context, uid, collection) async {
   await Future.delayed(Duration(seconds: 3));
   Navigator.of(context).push(MaterialPageRoute(
-      builder: (fcd) =>
-          PersistenBottomNavBarDemo(uid: uid, collection: collection)));
+      builder: (fcd) => HomeMentee(uid: uid, collection: collection)));
 }

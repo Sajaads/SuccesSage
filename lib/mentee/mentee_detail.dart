@@ -62,6 +62,7 @@ class _MenteeDataCollectionState extends State<MenteeDataCollection> {
                       spacing: 10,
                       children: interests.map((interest) {
                         return ChoiceChip(
+                          side: BorderSide.none,
                           elevation: 5,
                           shadowColor: Colors.black,
                           label: Text(interest),
@@ -100,6 +101,7 @@ class _MenteeDataCollectionState extends State<MenteeDataCollection> {
                             spacing: 10,
                             children: _secondOptions.map((option) {
                               return FilterChip(
+                                side: BorderSide.none,
                                 elevation: 5,
                                 shadowColor: Colors.black,
                                 label: Text(option),

@@ -7,8 +7,10 @@ import 'package:successage/mentor/mentor_home_screen.dart';
 import 'package:successage/mentor/mentor_personal_data.dart';
 import 'package:successage/models/menteeDb.dart';
 import 'package:successage/models/mentordb.dart';
+import 'package:successage/screen/emailandpassword.dart';
 import 'package:successage/screen/navbar.dart';
 import 'package:successage/screen/screen_mentee_info.dart';
+import 'package:successage/screen/auth.dart';
 
 class ScreenRole extends StatefulWidget {
   final String collection;
@@ -39,31 +41,74 @@ class _ScreenRoleState extends State<ScreenRole> {
           children: [
             Image.asset(
               "assets/Logo1.png",
-              height: 100, // Adjust image height as needed
+              scale: .7, // Adjust image height as needed
             ),
             SizedBox(height: 20),
-            Text(
-              'something',
-              style: TextStyle(
-                fontSize: 30, // Larger font size
-                fontWeight: FontWeight.bold, // Bold text
+            Padding(
+              padding: const EdgeInsets.all(8.0),
+              child: Text(
+                'Mentorship is a shared journey where success is not just about reaching the destination, but about empowering others along the way',
+                textAlign: TextAlign.center,
+                style: TextStyle(
+                  fontSize: 16.0,
+                  fontWeight: FontWeight.bold,
+                  color: Color.fromRGBO(43, 44, 141, 0.882),
+                ),
               ),
             ),
             SizedBox(height: 20),
-            SignInButton(
-              Buttons.google,
-              text: "SignUp with Google",
+            ElevatedButton(
               onPressed: () {
-                signInWithGoogle(widget.collection);
+                Navigator.of(context).push(MaterialPageRoute(
+                    builder: ((context) => EmailAndPassword(
+                          collection: widget.collection,
+                          loginorsignup: "signup",
+                        ))));
               },
+              style: ElevatedButton.styleFrom(
+                  backgroundColor: Color.fromARGB(
+                      255, 255, 255, 255), // Stylish button color
+                  padding: EdgeInsets.symmetric(
+                      horizontal: 80, vertical: 16), // Button padding
+                  shape: RoundedRectangleBorder(
+                    borderRadius:
+                        BorderRadius.circular(30), // Rounded button corners
+                  ),
+                  elevation: 10),
+              child: Text(
+                "Signup",
+                style: TextStyle(
+                  color: Color.fromARGB(255, 0, 0, 0),
+                  fontSize: 16,
+                ),
+              ),
             ),
             SizedBox(height: 20),
-            SignInButton(
-              Buttons.googleDark,
-              text: "Login with Google",
+            ElevatedButton(
               onPressed: () {
-                LoginWithGoogle(widget.collection);
+                Navigator.of(context).push(MaterialPageRoute(
+                    builder: ((context) => EmailAndPassword(
+                          collection: widget.collection,
+                          loginorsignup: "login",
+                        ))));
               },
+              style: ElevatedButton.styleFrom(
+                  backgroundColor: const Color.fromARGB(
+                      255, 2, 48, 71), // Stylish button color
+                  padding: EdgeInsets.symmetric(
+                      horizontal: 80, vertical: 16), // Button padding
+                  shape: RoundedRectangleBorder(
+                    borderRadius:
+                        BorderRadius.circular(30), // Rounded button corners
+                  ),
+                  elevation: 10),
+              child: Text(
+                "Login",
+                style: TextStyle(
+                  color: Colors.white,
+                  fontSize: 16,
+                ),
+              ),
             ),
             SizedBox(height: 20),
             FutureBuilder(
@@ -90,149 +135,5 @@ class _ScreenRoleState extends State<ScreenRole> {
         ),
       ),
     );
-  }
-
-  Future<dynamic> signInWithGoogle(String collection) async {
-    setState(() {
-      _signInFuture = _performSignIn(collection);
-    });
-    return _signInFuture;
-  }
-
-  Future<dynamic> LoginWithGoogle(String collection) async {
-    setState(() {
-      _loginFuture = _performLogin(collection);
-    });
-    return _loginFuture;
-  }
-
-  Future<dynamic> _performSignIn(String collection) async {
-    try {
-      GoogleSignIn googleSignIn = GoogleSignIn();
-      FirebaseAuth auth = FirebaseAuth.instance;
-      if (FirebaseAuth.instance.currentUser != null) {
-        await auth.signOut();
-        await googleSignIn.signOut();
-      }
-
-      final GoogleSignInAccount? googleUser = await GoogleSignIn().signIn();
-
-      if (googleUser == null) {
-        return null;
-      }
-
-      final GoogleSignInAuthentication googleAuth =
-          await googleUser.authentication;
-
-      final credential = GoogleAuthProvider.credential(
-        accessToken: googleAuth.accessToken,
-        idToken: googleAuth.idToken,
-      );
-      final UserCredential userCredential =
-          await auth.signInWithCredential(credential);
-      final User? user = userCredential.user;
-
-      if (user != null) {
-        DocumentSnapshot userSnapshot = await FirebaseFirestore.instance
-            .collection(collection)
-            .doc(user.uid)
-            .get();
-        Map<String, dynamic>? userData =
-            userSnapshot.data() as Map<String, dynamic>?;
-        dynamic value = userData?['fname'];
-
-        if (!userSnapshot.exists || value == null) {
-          String uid = user.uid;
-          if (collection == "mentor") {
-            addMentorToFirestore(uid);
-            Navigator.of(context).push(MaterialPageRoute(
-                builder: ((context) => MentorPersonalData(uid: uid))));
-          } else {
-            addMenteeToFirestore(uid);
-            Navigator.push(
-              context,
-              MaterialPageRoute(
-                  builder: (context) => ScreenSignupInfo(id: uid)),
-            );
-          }
-        } else {
-          ScaffoldMessenger.of(context).showSnackBar(
-            SnackBar(
-              content: Text('User Already exists'),
-              duration: Duration(seconds: 4),
-            ),
-          );
-        }
-      }
-
-      return await FirebaseAuth.instance.signInWithCredential(credential);
-    } on Exception catch (e) {
-      print('Exception during sign-in: $e');
-      return null;
-    }
-  }
-
-  Future<dynamic> _performLogin(String collection) async {
-    try {
-      GoogleSignIn googleSignIn = GoogleSignIn();
-      FirebaseAuth auth = FirebaseAuth.instance;
-      if (FirebaseAuth.instance.currentUser != null) {
-        await auth.signOut();
-        await googleSignIn.signOut();
-      }
-
-      final GoogleSignInAccount? googleUser = await GoogleSignIn().signIn();
-
-      if (googleUser == null) {
-        return null;
-      }
-
-      final GoogleSignInAuthentication googleAuth =
-          await googleUser.authentication;
-
-      final credential = GoogleAuthProvider.credential(
-        accessToken: googleAuth.accessToken,
-        idToken: googleAuth.idToken,
-      );
-      final UserCredential userCredential =
-          await auth.signInWithCredential(credential);
-      final User? user = userCredential.user;
-
-      if (user != null) {
-        DocumentSnapshot userSnapshot = await FirebaseFirestore.instance
-            .collection(collection)
-            .doc(user.uid)
-            .get();
-        Map<String, dynamic>? userData =
-            userSnapshot.data() as Map<String, dynamic>?;
-        dynamic value = userData?['fname'];
-
-        switch (userSnapshot.exists && value != null) {
-          case true:
-            switch (collection == "mentee") {
-              case true:
-                Navigator.of(context).push(MaterialPageRoute(
-                    builder: (ctc) => PersistenBottomNavBarDemo(
-                          uid: user.uid,
-                          collection: collection,
-                        )));
-              case false:
-                Navigator.of(context).push(MaterialPageRoute(
-                    builder: (context) => MentorHomeScreen()));
-            }
-
-          case false:
-            ScaffoldMessenger.of(context).showSnackBar(const SnackBar(
-              content: Text('User does not exist'),
-              duration: Duration(seconds: 2),
-            ));
-        }
-      }
-
-      return await FirebaseAuth.instance.signInWithCredential(credential);
-    } on Exception catch (e) {
-      print('Exception during sign-in: $e');
-      return null;
-    }
   }
 }

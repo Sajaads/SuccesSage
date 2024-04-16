@@ -3,8 +3,10 @@ import 'package:successage/mentee/mentee_profile.dart';
 
 class HighlightedMentee extends StatelessWidget {
   final Map<String, dynamic> Mentor;
+  final String menteeid;
 
-  const HighlightedMentee({Key? key, required this.Mentor}) : super(key: key);
+  const HighlightedMentee(
+      {Key? key, required this.Mentor, required this.menteeid});
 
   @override
   Widget build(BuildContext context) {
@@ -32,18 +34,21 @@ class HighlightedMentee extends StatelessWidget {
                 Row(
                   children: [
                     Padding(
-                      padding: const EdgeInsets.all(8.0),
+                      padding: const EdgeInsets.all(20.0),
                       child: CircleAvatar(
                         radius: 40,
                         backgroundImage: NetworkImage(Mentor['ppic']),
                       ),
+                    ),
+                    SizedBox(
+                      width: 15,
                     ),
                     Column(
                       children: [
                         Text(
                           '${Mentor['fname']} ${Mentor['lname']}',
                           style: TextStyle(
-                              fontSize: 18, fontWeight: FontWeight.bold),
+                              fontSize: 20, fontWeight: FontWeight.bold),
                         ),
                         Text('${Mentor['designation']}')
                       ],
@@ -63,6 +68,7 @@ class HighlightedMentee extends StatelessWidget {
                               .push(MaterialPageRoute(builder: ((context) {
                             return MentorProfile(
                               Mentor: Mentor,
+                              menteeid: menteeid,
                             );
                           })));
                         },

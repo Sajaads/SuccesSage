@@ -1,11 +1,13 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:successage/mentee/mentee_profile.dart';
 import 'package:successage/models/mentordb.dart';
 import 'package:successage/utils/app_layouts.dart';
 
 class MentorList extends StatefulWidget {
   final Map<String, dynamic> Mentor;
-  const MentorList({Key? key, required this.Mentor}) : super(key: key);
+  final String menteeid;
+  const MentorList({Key? key, required this.Mentor, required this.menteeid});
 
   @override
   State<MentorList> createState() => _MentorListState();
@@ -14,30 +16,32 @@ class MentorList extends StatefulWidget {
 class _MentorListState extends State<MentorList> {
   @override
   Widget build(BuildContext context) {
-    return Container(
-      padding: EdgeInsets.symmetric(vertical: 8, horizontal: 18),
-      child: Row(
-        children: [
-          CircleAvatar(
-            radius: 30,
-            backgroundImage: NetworkImage(widget.Mentor['ppic']),
+    return Card(
+      elevation: 2,
+      child: ListTile(
+        onTap: () {
+          Navigator.of(context).push(MaterialPageRoute(
+              builder: (context) => MentorProfile(
+                  Mentor: widget.Mentor, menteeid: widget.menteeid)));
+        },
+        contentPadding: EdgeInsets.symmetric(vertical: 8, horizontal: 18),
+        leading: CircleAvatar(
+          radius: 30,
+          backgroundImage: NetworkImage(widget.Mentor['ppic']),
+        ),
+        title: Text(
+          '${widget.Mentor['fname']} ${widget.Mentor['lname']}',
+          style: TextStyle(
+            fontSize: 18,
+            fontWeight: FontWeight.bold,
           ),
-          SizedBox(width: 12),
-          Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              Text(
-                '${widget.Mentor['fname']} ${widget.Mentor['lname']}',
-                style: TextStyle(
-                  fontSize: 18,
-                  fontWeight: FontWeight.bold,
-                ),
-              ),
-              SizedBox(height: 3),
-              // Add additional details if needed
-            ],
-          ),
-        ],
+        ),
+        subtitle: Text(
+          '${widget.Mentor['designation']}',
+          style: TextStyle(color: Colors.grey),
+        ),
+        // You can add trailing widgets if needed
+        // trailing: Icon(Icons.arrow_forward),
       ),
     );
   }

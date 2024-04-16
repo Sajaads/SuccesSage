@@ -7,8 +7,8 @@ import 'package:successage/mentee/mentee_profile.dart';
 import 'package:vs_scrollbar/vs_scrollbar.dart';
 
 class HomeMentee extends StatefulWidget {
-  final String? uid;
-  final String? collection;
+  final String uid;
+  final String collection;
 
   HomeMentee({Key? key, required this.uid, required this.collection});
 
@@ -46,10 +46,12 @@ class _HomeMenteeState extends State<HomeMentee> {
 
     List<Map<String, dynamic>> mentors = snapshot.docs.map((doc) {
       return {
+        "uid": doc['uid'],
         "fname": doc['fname'],
         "lname": doc['lname'],
         "ppic": doc['ppic'],
-        "designation": doc['designation']
+        "designation": doc['designation'],
+        "bio": doc['bio']
       };
     }).toList();
 
@@ -136,7 +138,10 @@ class _HomeMenteeState extends State<HomeMentee> {
                             children: mentors.map((mentor) {
                               return Padding(
                                 padding: const EdgeInsets.only(right: 10),
-                                child: HighlightedMentee(Mentor: mentor),
+                                child: HighlightedMentee(
+                                  Mentor: mentor,
+                                  menteeid: widget.uid,
+                                ),
                               );
                             }).toList(),
                           ),
@@ -180,7 +185,10 @@ class _HomeMenteeState extends State<HomeMentee> {
                           children: mentors.map((mentor) {
                             return Padding(
                               padding: const EdgeInsets.all(8.0),
-                              child: MentorList(Mentor: mentor),
+                              child: MentorList(
+                                Mentor: mentor,
+                                menteeid: widget.uid,
+                              ),
                             );
                           }).toList(),
                         ),

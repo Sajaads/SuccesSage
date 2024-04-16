@@ -1,4 +1,5 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:firebase_core/firebase_core.dart';
 
 class mentor {
   final String uid;
@@ -10,6 +11,8 @@ class mentor {
   String? ppic;
   String? designation;
   String? interest;
+  String? menteeid;
+  String? status;
   mentor(
       {required this.uid,
       this.email,
@@ -19,7 +22,9 @@ class mentor {
       this.phnno,
       this.ppic,
       this.designation,
-      this.interest});
+      this.interest,
+      this.menteeid,
+      this.status});
   Map<String, dynamic> toMap() {
     return {
       'uid': uid,
@@ -83,4 +88,43 @@ void addMentorSkill(String uid, {String? bio, String? interest}) {
       .update(dataToUpdate)
       .then((value) => print("Mentee updated successfully"))
       .catchError((error) => print("Failed to update mentee: $error"));
+}
+
+void sendRequestToMentor(
+    String mentoruid, String menteeuid, String status) async {
+  FirebaseFirestore firestore = FirebaseFirestore.instance;
+
+  // Check if the document with menteeid exists in the collection
+  bool isDocumentExists = await checkDocumentExists(
+      'mentor/$mentoruid/connectionRequests', menteeuid);
+
+  if (!isDocumentExists) {
+    // Create a new document if it does not exist
+    Map<String, dynamic> newRequest = {
+      "mentorid": mentoruid,
+      "menteeid": menteeuid,
+      "status": status,
+    };
+
+    await firestore
+        .collection('mentor')
+        .doc(mentoruid)
+        .collection('connectionRequests')
+        .doc(menteeuid)
+        .set(newRequest);
+  } else {
+    print('Document with menteeid $menteeuid already exists');
+  }
+}
+
+Future<bool> checkDocumentExists(
+    String collectionPath, String documentId) async {
+  FirebaseFirestore firestore = FirebaseFirestore.instance;
+
+  // Get the document snapshot
+  DocumentSnapshot documentSnapshot =
+      await firestore.collection(collectionPath).doc(documentId).get();
+
+  // Check if the document exists
+  return documentSnapshot.exists;
 }

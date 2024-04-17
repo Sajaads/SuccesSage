@@ -18,7 +18,9 @@ class HomeMentee extends StatefulWidget {
 }
 
 class _HomeMenteeState extends State<HomeMentee> {
-  late Future<Map<String, dynamic>> _userSnapshotFuture;
+  late Future<Map<String, dynamic>> _userSnapshotFuture;//the Future class represents a potential value or error that will be
+  // available at some time in the future. It's commonly used for asynchronous operations such as fetching data from a
+  // remote server or performing file I/O.
 
   @override
   void initState() {
@@ -105,7 +107,6 @@ class _HomeMenteeState extends State<HomeMentee> {
                               ),
                             ],
                           ),
-                          SizedBox(height: 12),
                           SizedBox(height: 12),
                           Row(
                             children: [Text("Mentors in your field")],

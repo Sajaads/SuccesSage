@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:persistent_bottom_nav_bar_v2/persistent_bottom_nav_bar_v2.dart';
 import 'package:successage/mentee/mentee_home_screen.dart';
+import 'package:successage/mentor/mentor_home_screen.dart';
 import 'package:successage/screen/demo.dart';
 import 'package:successage/screen/demo1.dart';
 
@@ -16,7 +17,7 @@ class PersistenBottomNavBarDemo extends StatelessWidget {
       home: PersistentTabView(
         tabs: [
           PersistentTabConfig(
-            screen: HomeMentee(uid: uid, collection: collection),
+            screen: MentorHomeScreen(uid: uid, collection: collection),
             item: ItemConfig(
               icon: Icon(Icons.home),
               title: "Home",

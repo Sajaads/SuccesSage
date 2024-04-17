@@ -1,9 +1,10 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:successage/mentee/mentee_higlighted_mentor.dart';
+import 'package:successage/screen/auth.dart';
+import 'package:successage/screen/screen_mentor_or_mentee.dart';
 import 'package:successage/utils/app_info_list.dart';
 import 'package:successage/mentee/mentee_mentor_list.dart';
-import 'package:successage/mentee/mentee_profile.dart';
 import 'package:vs_scrollbar/vs_scrollbar.dart';
 
 class HomeMentee extends StatefulWidget {
@@ -19,6 +20,7 @@ class HomeMentee extends StatefulWidget {
 class _HomeMenteeState extends State<HomeMentee> {
   late Future<Map<String, dynamic>> _userSnapshotFuture;
   late Future<List<Map<String, dynamic>>> _allMentorsFuture;
+  AuthService auth = AuthService();
 
   @override
   void initState() {
@@ -36,13 +38,35 @@ class _HomeMenteeState extends State<HomeMentee> {
     String name = snapshot.get('fname');
     String lname = snapshot.get('lname');
     String ppic = snapshot.get('ppic');
+    String interest = snapshot.get('interest');
 
-    return {"name": name, "lname": lname, "ppic": ppic};
+    return {"name": name, "lname": lname, "ppic": ppic, "interest": interest};
   }
 
   Future<List<Map<String, dynamic>>> _fetchAllMentors() async {
     QuerySnapshot snapshot =
         await FirebaseFirestore.instance.collection('mentor').get();
+
+    List<Map<String, dynamic>> mentors = snapshot.docs.map((doc) {
+      return {
+        "uid": doc['uid'],
+        "fname": doc['fname'],
+        "lname": doc['lname'],
+        "ppic": doc['ppic'],
+        "designation": doc['designation'],
+        "bio": doc['bio']
+      };
+    }).toList();
+
+    return mentors;
+  }
+
+  Future<List<Map<String, dynamic>>> _fetchMentorsinyourfield(
+      String menteeInterest) async {
+    QuerySnapshot snapshot = await FirebaseFirestore.instance
+        .collection('mentor')
+        .where('interest', isEqualTo: menteeInterest)
+        .get();
 
     List<Map<String, dynamic>> mentors = snapshot.docs.map((doc) {
       return {
@@ -64,6 +88,7 @@ class _HomeMenteeState extends State<HomeMentee> {
       canPop: false,
       child: SafeArea(
         child: Scaffold(
+          backgroundColor: Colors.white,
           body: SingleChildScrollView(
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
@@ -116,8 +141,8 @@ class _HomeMenteeState extends State<HomeMentee> {
                     }
                   },
                 ),
-                FutureBuilder<List<Map<String, dynamic>>>(
-                  future: _allMentorsFuture,
+                FutureBuilder<Map<String, dynamic>>(
+                  future: _userSnapshotFuture,
                   builder: (context, snapshot) {
                     if (snapshot.connectionState == ConnectionState.waiting) {
                       return Center(
@@ -128,24 +153,49 @@ class _HomeMenteeState extends State<HomeMentee> {
                         child: Text('Error: ${snapshot.error}'),
                       );
                     } else {
-                      final mentors = snapshot.data!;
-                      return VsScrollbar(
-                        style: VsScrollbarStyle(thickness: 3),
-                        child: SingleChildScrollView(
-                          scrollDirection: Axis.horizontal,
-                          padding: EdgeInsets.all(10),
-                          child: Row(
-                            children: mentors.map((mentor) {
-                              return Padding(
-                                padding: const EdgeInsets.only(right: 10),
-                                child: HighlightedMentee(
-                                  Mentor: mentor,
-                                  menteeid: widget.uid,
+                      String menteeInterest =
+                          snapshot.data!['interest'] as String;
+                      return FutureBuilder<List<Map<String, dynamic>>>(
+                        future: _fetchMentorsinyourfield(menteeInterest),
+                        builder: (context, snapshot) {
+                          if (snapshot.connectionState ==
+                              ConnectionState.waiting) {
+                            return Center(
+                              child: CircularProgressIndicator(),
+                            );
+                          } else if (snapshot.hasError) {
+                            return Center(
+                              child: Text('Error: ${snapshot.error}'),
+                            );
+                          } else if (snapshot.data!.isEmpty) {
+                            return Center(
+                                child: Padding(
+                              padding: const EdgeInsets.all(8.0),
+                              child: Text(
+                                  'Currently, there are no mentors available in your field at the moment.'),
+                            ));
+                          } else {
+                            final mentors = snapshot.data!;
+                            return VsScrollbar(
+                              style: VsScrollbarStyle(thickness: 3),
+                              child: SingleChildScrollView(
+                                scrollDirection: Axis.horizontal,
+                                padding: EdgeInsets.all(10),
+                                child: Row(
+                                  children: mentors.map((mentor) {
+                                    return Padding(
+                                      padding: const EdgeInsets.only(right: 10),
+                                      child: HighlightedMentee(
+                                        Mentor: mentor,
+                                        menteeid: widget.uid,
+                                      ),
+                                    );
+                                  }).toList(),
                                 ),
-                              );
-                            }).toList(),
-                          ),
-                        ),
+                              ),
+                            );
+                          }
+                        },
                       );
                     }
                   },
@@ -198,6 +248,40 @@ class _HomeMenteeState extends State<HomeMentee> {
                 ),
               ],
             ),
+          ),
+          floatingActionButton: FloatingActionButton(
+            onPressed: () {
+              showDialog(
+                context: context,
+                builder: (BuildContext context) {
+                  return AlertDialog(
+                    title: Text('Confirm Sign Out'),
+                    content: Text('Are you sure you want to sign out?'),
+                    actions: <Widget>[
+                      TextButton(
+                        child: Text('No'),
+                        onPressed: () {
+                          Navigator.of(context).pop(); // Close the dialog
+                        },
+                      ),
+                      TextButton(
+                        child: Text('Yes'),
+                        onPressed: () {
+                          auth.signOut();
+                          Navigator.of(context).push(
+                            MaterialPageRoute(
+                                builder: (context) => ScreenLogin()),
+                          );
+                        },
+                      ),
+                    ],
+                  );
+                },
+              );
+            },
+            tooltip: 'Sign Out',
+            child: Icon(Icons.logout),
+            backgroundColor: Colors.red, // Optional: Set your desired color
           ),
         ),
       ),

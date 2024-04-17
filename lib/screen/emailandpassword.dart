@@ -1,3 +1,4 @@
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:successage/mentee/mentee_detail.dart';
@@ -82,8 +83,20 @@ class _EmailAndPasswordState extends State<EmailAndPassword> {
                         _signIn();
                       }
                     },
+                    style: ElevatedButton.styleFrom(
+                        backgroundColor: const Color.fromARGB(
+                            255, 2, 48, 71), // Stylish button color
+                        padding: EdgeInsets.symmetric(
+                            horizontal: 80, vertical: 16), // Button padding
+                        shape: RoundedRectangleBorder(
+                          borderRadius: BorderRadius.circular(
+                              30), // Rounded button corners
+                        ),
+                        elevation: 10),
                     child: Text(
-                        widget.loginorsignup == 'signup' ? 'Signup' : 'Login'),
+                      widget.loginorsignup == 'signup' ? 'Signup' : 'Login',
+                      style: TextStyle(color: Colors.white),
+                    ),
                   ),
                 ],
               ),
@@ -169,19 +182,39 @@ class _EmailAndPasswordState extends State<EmailAndPassword> {
       if (user != null) {
         // Navigate to the next screen after successful signin
         if (widget.collection == 'mentor') {
-          Navigator.of(context).pushReplacement(
-            MaterialPageRoute(
-              builder: (context) => MentorHomeScreen(
-                mentorid: user.uid,
+          DocumentSnapshot snapshot = await FirebaseFirestore.instance
+              .collection('mentor')
+              .doc(user.uid)
+              .get();
+          if (snapshot.exists) {
+            Navigator.of(context).pushReplacement(
+              MaterialPageRoute(
+                builder: (context) => MentorHomeScreen(
+                  mentorid: user.uid,
+                ),
               ),
-            ),
-          );
-        } else {
-          Navigator.of(context).pushReplacement(
-            MaterialPageRoute(
-                builder: (context) =>
-                    HomeMentee(uid: user.uid, collection: widget.collection)),
-          );
+            );
+          } else {
+            ScaffoldMessenger.of(context).showSnackBar(
+              SnackBar(content: Text('User does not exist')),
+            );
+          }
+        } else if (widget.collection == 'mentee') {
+          DocumentSnapshot snapshot = await FirebaseFirestore.instance
+              .collection('mentee')
+              .doc(user.uid)
+              .get();
+          if (snapshot.exists) {
+            Navigator.of(context).pushReplacement(
+              MaterialPageRoute(
+                  builder: (context) =>
+                      HomeMentee(uid: user.uid, collection: widget.collection)),
+            );
+          } else {
+            ScaffoldMessenger.of(context).showSnackBar(
+              SnackBar(content: Text('User does not exist')),
+            );
+          }
         }
       } else {
         // Handle null UID

@@ -1,6 +1,7 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:successage/mentee/Mentee_Mentor_experience.dart';
+import 'package:successage/models/menteeDb.dart';
 import 'package:successage/models/mentordb.dart';
 import 'package:successage/utils//suggestion_button.dart';
 
@@ -22,6 +23,7 @@ class _MentorProfileState extends State<MentorProfile> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      backgroundColor: Colors.white,
       appBar: AppBar(),
       body: ListView(
         children: [
@@ -73,6 +75,8 @@ class _MentorProfileState extends State<MentorProfile> {
                       ElevatedButton(
                         onPressed: () {
                           sendRequestToMentor(
+                              widget.Mentor['uid'], widget.menteeid, "pending");
+                          updatementeeconnection(
                               widget.Mentor['uid'], widget.menteeid, "pending");
                           setState(() {
                             connectionStatus = 'Pending';

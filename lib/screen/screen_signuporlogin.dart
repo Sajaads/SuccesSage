@@ -41,7 +41,7 @@ class _ScreenRoleState extends State<ScreenRole> {
           children: [
             Image.asset(
               "assets/Logo1.png",
-              scale: .7, // Adjust image height as needed
+              scale: 1.5, // Adjust image height as needed
             ),
             SizedBox(height: 20),
             Padding(

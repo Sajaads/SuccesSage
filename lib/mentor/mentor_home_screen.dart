@@ -4,6 +4,7 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:successage/mentor/Mentor_oldmentee.dart';
 import 'package:successage/mentor/mentee_list.dart';
+import 'package:successage/mentor/mentor_schedule.dart';
 import 'package:successage/mentor/request_of_mentee.dart';
 import 'package:successage/screen/screen_mentor_or_mentee.dart';
 import 'package:vs_scrollbar/vs_scrollbar.dart';
@@ -131,18 +132,39 @@ class _MentorHomeScreenState extends State<MentorHomeScreen> {
                           ),
                           SizedBox(height: 12),
                           const SizedBox(height: 12),
-                          const Row(
-                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                            children: [],
-                          ),
-                          SizedBox(height: 12),
-                          Row(
-                            children: [
-                              Text(
-                                "Appointments today",
-                                style: TextStyle(fontSize: 20),
+                          ElevatedButton.icon(
+                              onPressed: () {
+                                Navigator.push(
+                                    context,
+                                    MaterialPageRoute(
+                                        builder: (context) =>
+                                            MentorSchedule()));
+                              },
+                              style: ElevatedButton.styleFrom(
+                                  backgroundColor: const Color.fromARGB(
+                                      255, 2, 48, 71), // Stylish button color
+                                  padding: EdgeInsets.symmetric(
+                                      horizontal: 60,
+                                      vertical: 16), // Button padding
+                                  shape: RoundedRectangleBorder(
+                                    borderRadius: BorderRadius.circular(
+                                        30), // Rounded button corners
+                                  ),
+                                  elevation: 10),
+                              icon: Icon(
+                                Icons.calendar_month,
+                                color: Colors.white,
                               ),
-                            ],
+                              label: Text(
+                                'Schedule Appointment',
+                                style: TextStyle(color: Colors.white),
+                              )),
+                          SizedBox(
+                            height: 15,
+                          ),
+                          Text(
+                            "Appointments today",
+                            style: TextStyle(fontSize: 20),
                           ),
                           SizedBox(height: 12),
                           MenteeList(),

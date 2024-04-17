@@ -83,3 +83,42 @@ void addMenteeinterest(String uid, {String? bio, String? interest}) {
       .then((value) => print("Mentee updated successfully"))
       .catchError((error) => print("Failed to update mentee: $error"));
 }
+
+void updatementeeconnection(
+    String mentoruid, String menteeuid, String status) async {
+  FirebaseFirestore firestore = FirebaseFirestore.instance;
+
+  // Check if the document with menteeid exists in the collection
+  bool isDocumentExists = await checkDocumentExists(
+      'mentee/$menteeuid/connectionRequests', mentoruid);
+
+  if (!isDocumentExists) {
+    // Create a new document if it does not exist
+    Map<String, dynamic> newRequest = {
+      "mentorid": mentoruid,
+      "menteeid": menteeuid,
+      "status": status,
+    };
+
+    await firestore
+        .collection('mentee')
+        .doc(menteeuid)
+        .collection('connectionRequests')
+        .doc(mentoruid)
+        .set(newRequest);
+  } else {
+    print('Document with menteeid $mentoruid already exists');
+  }
+}
+
+Future<bool> checkDocumentExists(
+    String collectionPath, String documentId) async {
+  FirebaseFirestore firestore = FirebaseFirestore.instance;
+
+  // Get the document snapshot
+  DocumentSnapshot documentSnapshot =
+      await firestore.collection(collectionPath).doc(documentId).get();
+
+  // Check if the document exists
+  return documentSnapshot.exists;
+}

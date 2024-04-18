@@ -1,5 +1,6 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/widgets.dart';
 import 'package:successage/mentee/Mentee_Mentor_experience.dart';
 import 'package:successage/models/menteeDb.dart';
 import 'package:successage/models/mentordb.dart';
@@ -25,15 +26,16 @@ class _MentorProfileState extends State<MentorProfile> {
     return Scaffold(
       backgroundColor: Colors.white,
       appBar: AppBar(),
-      body: ListView(
-        children: [
-          Container(
-            child: Column(
-              children: [
-                SizedBox(
-                  height: 20,
-                ),
-                Container(
+      body: SingleChildScrollView(
+        child: Container(
+          child: Column(
+            children: [
+              SizedBox(
+                height: 20,
+              ),
+              SingleChildScrollView(
+                scrollDirection: Axis.horizontal,
+                child: Container(
                   margin: EdgeInsets.symmetric(vertical: 10, horizontal: 10),
                   padding: EdgeInsets.symmetric(vertical: 12, horizontal: 12),
                   decoration: BoxDecoration(
@@ -76,8 +78,7 @@ class _MentorProfileState extends State<MentorProfile> {
                         onPressed: () {
                           sendRequestToMentor(
                               widget.Mentor['uid'], widget.menteeid, "pending");
-                          updatementeeconnection(
-                              widget.Mentor['uid'], widget.menteeid, "pending");
+
                           setState(() {
                             connectionStatus = 'Pending';
                             buttonColor = Colors.orange;
@@ -102,90 +103,90 @@ class _MentorProfileState extends State<MentorProfile> {
                     ],
                   ),
                 ),
-                Row(
-                  mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+              ),
+              Row(
+                mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                children: [
+                  Container(
+                    height: 50,
+                    width: 50,
+                    decoration: const BoxDecoration(
+                        shape: BoxShape.circle,
+                        image: DecorationImage(
+                            fit: BoxFit.fitHeight,
+                            image: AssetImage("assets/linkedIn.png"))),
+                  ),
+                  Container(
+                    height: 50,
+                    width: 50,
+                    decoration: const BoxDecoration(
+                        shape: BoxShape.circle,
+                        image: DecorationImage(
+                            fit: BoxFit.fitHeight,
+                            image: AssetImage("assets/fb.png"))),
+                  ),
+                ],
+              ),
+              SizedBox(
+                height: 12,
+              ),
+              Padding(
+                padding: const EdgeInsets.all(13.0),
+                child: Column(
                   children: [
-                    Container(
-                      height: 50,
-                      width: 50,
-                      decoration: const BoxDecoration(
-                          shape: BoxShape.circle,
-                          image: DecorationImage(
-                              fit: BoxFit.fitHeight,
-                              image: AssetImage("assets/linkedIn.png"))),
-                    ),
-                    Container(
-                      height: 50,
-                      width: 50,
-                      decoration: const BoxDecoration(
-                          shape: BoxShape.circle,
-                          image: DecorationImage(
-                              fit: BoxFit.fitHeight,
-                              image: AssetImage("assets/fb.png"))),
-                    ),
-                  ],
-                ),
-                SizedBox(
-                  height: 12,
-                ),
-                Padding(
-                  padding: const EdgeInsets.all(13.0),
-                  child: Column(
-                    children: [
-                      DefaultTabController(
-                        length: 2,
-                        child: Column(
-                          children: [
-                            TabBar(
-                              tabs: [
-                                Tab(
-                                  child: Text(
-                                    "Experience 1",
-                                    style: Styles.headline2,
+                    DefaultTabController(
+                      length: 2,
+                      child: Column(
+                        children: [
+                          TabBar(
+                            tabs: [
+                              Tab(
+                                child: Text(
+                                  "Experience 1",
+                                  style: Styles.headline2,
+                                ),
+                              ),
+                              Tab(
+                                child: Text(
+                                  "Experience 2",
+                                  style: Styles.headline2,
+                                ),
+                              )
+                            ],
+                          ),
+                          SizedBox(
+                            height:
+                                700, // Adjust the height of TabBarView as needed
+                            child: TabBarView(
+                              children: [
+                                // Content for the first tab "Experience 1"
+                                const SingleChildScrollView(
+                                  child: Column(
+                                    children: [
+                                      MenteeMentorExperience(),
+                                      MenteeMentorExperience(),
+                                      MenteeMentorExperience(),
+                                      MenteeMentorExperience(),
+                                      MenteeMentorExperience(),
+                                      MenteeMentorExperience(),
+                                    ],
                                   ),
                                 ),
-                                Tab(
-                                  child: Text(
-                                    "Experience 2",
-                                    style: Styles.headline2,
-                                  ),
-                                )
+
+                                // Content for the second tab "Experience 2"
+                                Text("Reviews...")
                               ],
                             ),
-                            SizedBox(
-                              height:
-                                  700, // Adjust the height of TabBarView as needed
-                              child: TabBarView(
-                                children: [
-                                  // Content for the first tab "Experience 1"
-                                  const SingleChildScrollView(
-                                    child: Column(
-                                      children: [
-                                        MenteeMentorExperience(),
-                                        MenteeMentorExperience(),
-                                        MenteeMentorExperience(),
-                                        MenteeMentorExperience(),
-                                        MenteeMentorExperience(),
-                                        MenteeMentorExperience(),
-                                      ],
-                                    ),
-                                  ),
-
-                                  // Content for the second tab "Experience 2"
-                                  Text("Reviews...")
-                                ],
-                              ),
-                            ),
-                          ],
-                        ),
-                      )
-                    ],
-                  ),
-                )
-              ],
-            ),
-          )
-        ],
+                          ),
+                        ],
+                      ),
+                    )
+                  ],
+                ),
+              )
+            ],
+          ),
+        ),
       ),
     );
   }

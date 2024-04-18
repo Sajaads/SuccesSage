@@ -1,7 +1,20 @@
 import 'package:flutter/material.dart';
+import 'package:successage/mentor/mentor_home_screen.dart';
 
-class MentorRegistrationSuccess extends StatelessWidget {
-  const MentorRegistrationSuccess({Key? key});
+class MentorRegistrationSuccess extends StatefulWidget {
+  final String uid;
+  const MentorRegistrationSuccess({Key? key, required this.uid});
+
+  @override
+  State<MentorRegistrationSuccess> createState() =>
+      _MentorRegistrationSuccessState();
+}
+
+class _MentorRegistrationSuccessState extends State<MentorRegistrationSuccess> {
+  void initState() {
+    gotologin(context, widget.uid);
+    super.initState();
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -68,4 +81,10 @@ class MentorRegistrationSuccess extends StatelessWidget {
       ),
     );
   }
+}
+
+Future<void> gotologin(BuildContext context, uid) async {
+  await Future.delayed(Duration(seconds: 3));
+  Navigator.of(context).push(
+      MaterialPageRoute(builder: (fcd) => MentorHomeScreen(mentorid: uid)));
 }

@@ -44,6 +44,54 @@ class _RequestOfMenteeState extends State<RequestOfMentee> {
     return docRef;
   }
 
+  Future<void> _menteeconnectedmentors() async {
+    FirebaseFirestore firestore = FirebaseFirestore.instance;
+
+    // Define the document path
+    String mentorUid = widget.mentee['mentorid'];
+    String menteeUid = widget.mentee['menteeid'];
+    String status = 'connect';
+
+    // Check if the connection already exists
+    bool isConnectionExists = await checkDocumentExists(
+        'mentee/$menteeUid/connectedMentors', mentorUid);
+
+    if (!isConnectionExists) {
+      // Create a new connection request document
+      Map<String, dynamic> newRequest = {
+        "mentorid": mentorUid,
+        "menteeid": menteeUid,
+        "status": status,
+      };
+
+      await firestore
+          .collection('mentee')
+          .doc(menteeUid)
+          .collection('connectedMentors')
+          .doc(mentorUid)
+          .set(newRequest)
+          .then((_) {
+        print("Document updated successfully");
+      }).catchError((error) {
+        print("Error updating document: $error");
+      });
+    } else {
+      print('Connection already exists');
+    }
+  }
+
+  Future<bool> checkDocumentExists(
+      String collectionPath, String documentId) async {
+    FirebaseFirestore firestore = FirebaseFirestore.instance;
+
+    // Get the document snapshot
+    DocumentSnapshot documentSnapshot =
+        await firestore.collection(collectionPath).doc(documentId).get();
+
+    // Check if the document exists
+    return documentSnapshot.exists;
+  }
+
   @override
   Widget build(BuildContext context) {
     return FutureBuilder<DocumentSnapshot<Map<String, dynamic>>>(
@@ -96,6 +144,7 @@ class _RequestOfMenteeState extends State<RequestOfMentee> {
                     children: [
                       IconButton(
                         onPressed: () async {
+                          _menteeconnectedmentors();
                           DocumentReference<Map<String, dynamic>> docRef =
                               await _menteedataupdate();
                           docRef.update({

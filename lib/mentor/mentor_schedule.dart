@@ -1,9 +1,8 @@
 import 'package:flutter/material.dart';
-import 'package:intl/intl.dart'; // Import DateFormat from intl package
-import 'package:cloud_firestore/cloud_firestore.dart'; // Import Firestore
-import 'package:firebase_auth/firebase_auth.dart'; // Import FirebaseAuth
+import 'package:intl/intl.dart';
+import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 
-// Define a Firestore service
 class FirestoreService {
   final CollectionReference mentorsCollection =
       FirebaseFirestore.instance.collection('mentor');
@@ -20,10 +19,12 @@ class FirestoreService {
         Timestamp timestamp = data['time'] as Timestamp;
         DateTime dateTime = timestamp.toDate();
         return ScheduledSession(
-            id: doc.id,
-            title: data['title'],
-            date: dateTime,
-            time: TimeOfDay(hour: dateTime.hour, minute: dateTime.minute));
+          id: doc.id,
+          title: data['title'],
+          date: dateTime,
+          time: TimeOfDay(hour: dateTime.hour, minute: dateTime.minute),
+          fee: data['fee'], // Retrieve fee from Firestore
+        );
       }).toList();
 
       return sessions;
@@ -53,6 +54,7 @@ class FirestoreService {
         'title': session.title,
         'date': session.date,
         'time': timestamp,
+        'fee': session.fee, // Store fee in Firestore
       });
     } catch (e) {
       print('Error scheduling session: $e');
@@ -80,6 +82,7 @@ class FirestoreService {
         'title': session.title,
         'date': session.date,
         'time': timestamp,
+        'fee': session.fee, // Update fee in Firestore
       });
     } catch (e) {
       print('Error updating session: $e');
@@ -107,9 +110,11 @@ class MentorSchedule extends StatefulWidget {
 }
 
 class _MentorScheduleState extends State<MentorSchedule> {
-  final _titleController = TextEditingController(); // Controller for title
+  final _titleController = TextEditingController();
+  final _feeController = TextEditingController(); // Controller for fee
   List<ScheduledSession> scheduledSessions = [];
 
+  @override
   void initState() {
     super.initState();
     _loadScheduledSessions();
@@ -139,7 +144,9 @@ class _MentorScheduleState extends State<MentorSchedule> {
         initialTime: TimeOfDay.now(),
       );
       if (selectedTime != null) {
-        final enteredTitle = _titleController.text.trim(); // Get trimmed title
+        final enteredTitle = _titleController.text.trim();
+        final enteredFee = int.tryParse(_feeController.text.trim()) ??
+            0; // Parse fee as integer
 
         if (enteredTitle.isEmpty) {
           ScaffoldMessenger.of(context).showSnackBar(
@@ -147,22 +154,32 @@ class _MentorScheduleState extends State<MentorSchedule> {
               content: Text('Please enter a title for your session'),
             ),
           );
-          return; // Exit function if title is empty
+          return;
         }
 
-        final mentorId = FirebaseAuth
-            .instance.currentUser?.uid; // Get the UID of the current user
+        if (enteredFee < 0 || enteredFee > 1000) {
+          ScaffoldMessenger.of(context).showSnackBar(
+            const SnackBar(
+              content: Text('Fee must be between 0 and 1000'),
+            ),
+          );
+          return;
+        }
+
+        final mentorId = FirebaseAuth.instance.currentUser?.uid;
         if (mentorId != null) {
-          print(mentorId);
           final session = ScheduledSession(
-              id: '',
-              title: enteredTitle,
-              date: selectedDate,
-              time: selectedTime);
+            id: '',
+            title: enteredTitle,
+            date: selectedDate,
+            time: selectedTime,
+            fee: enteredFee,
+          );
           await FirestoreService().scheduleSession(mentorId, session);
           setState(() {
             scheduledSessions.add(session);
-            _titleController.clear(); // Clear title field after adding
+            _titleController.clear();
+            _feeController.clear(); // Clear fee field after adding
           });
         } else {
           print('Error: Current user is null');
@@ -180,6 +197,7 @@ class _MentorScheduleState extends State<MentorSchedule> {
   void _editSession(int index) async {
     final session = scheduledSessions[index];
     _titleController.text = session.title;
+    _feeController.text = session.fee.toString(); // Set fee controller text
 
     final newDate = await showDatePicker(
       context: context,
@@ -193,23 +211,48 @@ class _MentorScheduleState extends State<MentorSchedule> {
         initialTime: session.time,
       );
       if (newTime != null) {
-        final mentorId = FirebaseAuth
-            .instance.currentUser?.uid; // Get the UID of the current user
+        final enteredTitle = _titleController.text.trim();
+        final enteredFee = int.tryParse(_feeController.text.trim()) ??
+            0; // Parse fee as integer
+
+        if (enteredTitle.isEmpty) {
+          ScaffoldMessenger.of(context).showSnackBar(
+            const SnackBar(
+              content: Text('Please enter a title for your session'),
+            ),
+          );
+          return;
+        }
+
+        if (enteredFee < 0 || enteredFee > 1000) {
+          ScaffoldMessenger.of(context).showSnackBar(
+            const SnackBar(
+              content: Text('Fee must be between 0 and 1000'),
+            ),
+          );
+          return;
+        }
+
+        final mentorId = FirebaseAuth.instance.currentUser?.uid;
         if (mentorId != null) {
           await FirestoreService().updateSession(
-              mentorId,
-              session.id,
-              ScheduledSession(
-                id: session.id,
-                title: _titleController.text.trim(),
-                date: newDate,
-                time: newTime,
-              ));
+            mentorId,
+            session.id,
+            ScheduledSession(
+              id: session.id,
+              title: enteredTitle,
+              date: newDate,
+              time: newTime,
+              fee: enteredFee,
+            ),
+          );
           setState(() {
-            scheduledSessions[index].title = _titleController.text.trim();
+            scheduledSessions[index].title = enteredTitle;
             scheduledSessions[index].date = newDate;
             scheduledSessions[index].time = newTime;
-            _titleController.clear(); // Clear title field after editing
+            scheduledSessions[index].fee = enteredFee;
+            _titleController.clear();
+            _feeController.clear(); // Clear title and fee fields after editing
           });
         } else {
           print('Error: Current user is null');
@@ -226,13 +269,33 @@ class _MentorScheduleState extends State<MentorSchedule> {
 
   void _deleteSession(int index) async {
     final session = scheduledSessions[index];
-    final mentorId = FirebaseAuth
-        .instance.currentUser?.uid; // Get the UID of the current user
+    final mentorId = FirebaseAuth.instance.currentUser?.uid;
     if (mentorId != null) {
-      await FirestoreService().deleteSession(mentorId, session.id);
-      setState(() {
-        scheduledSessions.removeAt(index);
-      });
+      showDialog(
+        context: context,
+        builder: (BuildContext context) {
+          return AlertDialog(
+            title: Text('Delete Session'),
+            content: Text('Are you sure you want to delete this session?'),
+            actions: [
+              TextButton(
+                onPressed: () => Navigator.pop(context),
+                child: Text('Cancel'),
+              ),
+              TextButton(
+                onPressed: () {
+                  FirestoreService().deleteSession(mentorId, session.id);
+                  setState(() {
+                    scheduledSessions.removeAt(index);
+                  });
+                  Navigator.pop(context);
+                },
+                child: Text('Delete'),
+              ),
+            ],
+          );
+        },
+      );
     } else {
       print('Error: Current user is null');
     }
@@ -249,7 +312,6 @@ class _MentorScheduleState extends State<MentorSchedule> {
           SizedBox(
             height: 15,
           ),
-          // Title input field
           Padding(
             padding: const EdgeInsets.all(15.0),
             child: TextField(
@@ -262,18 +324,29 @@ class _MentorScheduleState extends State<MentorSchedule> {
               ),
             ),
           ),
+          Padding(
+            padding: const EdgeInsets.all(15.0),
+            child: TextField(
+              controller: _feeController,
+              keyboardType: TextInputType.number,
+              decoration: const InputDecoration(
+                filled: true,
+                fillColor: Colors.white,
+                labelText: 'Session Fee',
+                border: OutlineInputBorder(borderSide: BorderSide.none),
+              ),
+            ),
+          ),
           ElevatedButton(
             onPressed: _showScheduleSessionDialog,
             style: ElevatedButton.styleFrom(
-                backgroundColor: const Color.fromARGB(
-                    255, 2, 48, 71), // Stylish button color
-                padding: EdgeInsets.symmetric(
-                    horizontal: 40, vertical: 16), // Button padding
-                shape: RoundedRectangleBorder(
-                  borderRadius:
-                      BorderRadius.circular(30), // Rounded button corners
-                ),
-                elevation: 10),
+              backgroundColor: const Color.fromARGB(255, 2, 48, 71),
+              padding: EdgeInsets.symmetric(horizontal: 40, vertical: 16),
+              shape: RoundedRectangleBorder(
+                borderRadius: BorderRadius.circular(30),
+              ),
+              elevation: 10,
+            ),
             child: const Text(
               'Schedule Session',
               style: TextStyle(color: Colors.white),
@@ -304,6 +377,10 @@ class _MentorScheduleState extends State<MentorSchedule> {
                           'Time: ${session.time.format(context)}',
                           style: const TextStyle(fontSize: 12),
                         ),
+                        Text(
+                          'Fee: \$${session.fee}',
+                          style: const TextStyle(fontSize: 12),
+                        ),
                       ],
                     ),
                     trailing: Row(
@@ -331,14 +408,17 @@ class _MentorScheduleState extends State<MentorSchedule> {
 }
 
 class ScheduledSession {
-  String id; // Added ID field to identify each session
-  late String title;
+  String id;
+  String title;
   DateTime date;
   TimeOfDay time;
+  int fee;
 
-  ScheduledSession(
-      {required this.title,
-      required this.date,
-      required this.time,
-      required this.id});
+  ScheduledSession({
+    required this.title,
+    required this.date,
+    required this.time,
+    required this.id,
+    required this.fee,
+  });
 }

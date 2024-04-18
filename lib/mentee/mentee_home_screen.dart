@@ -1,5 +1,6 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
+import 'package:successage/mentee/mentee_connectedmentor.dart';
 import 'package:successage/mentee/mentee_higlighted_mentor.dart';
 import 'package:successage/screen/auth.dart';
 import 'package:successage/screen/screen_mentor_or_mentee.dart';
@@ -20,13 +21,16 @@ class HomeMentee extends StatefulWidget {
 class _HomeMenteeState extends State<HomeMentee> {
   late Future<Map<String, dynamic>> _userSnapshotFuture;
   late Future<List<Map<String, dynamic>>> _allMentorsFuture;
+  late Future<List<Map<String, dynamic>>> _connectedMentorsFuture;
   AuthService auth = AuthService();
 
   @override
   void initState() {
     super.initState();
+    _fetchConnectedMentorIds();
     _userSnapshotFuture = _fetchUserSnapshot();
     _allMentorsFuture = _fetchAllMentors();
+    _connectedMentorsFuture = _fetchconnectedmentors();
   }
 
   Future<Map<String, dynamic>> _fetchUserSnapshot() async {
@@ -44,28 +48,91 @@ class _HomeMenteeState extends State<HomeMentee> {
   }
 
   Future<List<Map<String, dynamic>>> _fetchAllMentors() async {
+    // Fetch the list of connected mentors for the current mentee
+    List<String> connectedMentorIds = await _fetchConnectedMentorIds();
+
     QuerySnapshot snapshot =
         await FirebaseFirestore.instance.collection('mentor').get();
 
-    List<Map<String, dynamic>> mentors = snapshot.docs.map((doc) {
-      return {
-        "uid": doc['uid'],
-        "fname": doc['fname'],
-        "lname": doc['lname'],
-        "ppic": doc['ppic'],
-        "designation": doc['designation'],
-        "bio": doc['bio']
-      };
-    }).toList();
+    List<Map<String, dynamic>> mentors;
+
+    if (connectedMentorIds.isNotEmpty) {
+      mentors = snapshot.docs
+          .where((doc) => !connectedMentorIds.contains(doc['uid']))
+          .map((doc) {
+        return {
+          "uid": doc['uid'],
+          "fname": doc['fname'],
+          "lname": doc['lname'],
+          "ppic": doc['ppic'],
+          "designation": doc['designation'],
+          "bio": doc['bio']
+        };
+      }).toList();
+    } else {
+      mentors = snapshot.docs.map((doc) {
+        return {
+          "uid": doc['uid'],
+          "fname": doc['fname'],
+          "lname": doc['lname'],
+          "ppic": doc['ppic'],
+          "designation": doc['designation'],
+          "bio": doc['bio']
+        };
+      }).toList();
+    }
 
     return mentors;
   }
 
   Future<List<Map<String, dynamic>>> _fetchMentorsinyourfield(
       String menteeInterest) async {
+    // Fetch the list of connected mentors for the current mentee
+    List<String> connectedMentorIds = await _fetchConnectedMentorIds();
+
     QuerySnapshot snapshot = await FirebaseFirestore.instance
         .collection('mentor')
         .where('interest', isEqualTo: menteeInterest)
+        .get();
+
+    List<Map<String, dynamic>> mentors;
+
+    if (connectedMentorIds.isNotEmpty) {
+      mentors = snapshot.docs
+          .where((doc) => !connectedMentorIds.contains(doc['uid']))
+          .map((doc) {
+        return {
+          "uid": doc['uid'],
+          "fname": doc['fname'],
+          "lname": doc['lname'],
+          "ppic": doc['ppic'],
+          "designation": doc['designation'],
+          "bio": doc['bio']
+        };
+      }).toList();
+    } else {
+      mentors = snapshot.docs.map((doc) {
+        return {
+          "uid": doc['uid'],
+          "fname": doc['fname'],
+          "lname": doc['lname'],
+          "ppic": doc['ppic'],
+          "designation": doc['designation'],
+          "bio": doc['bio']
+        };
+      }).toList();
+    }
+
+    return mentors;
+  }
+
+  Future<List<Map<String, dynamic>>> _fetchconnectedmentors() async {
+    // Fetch the list of connected mentors for the current mentee
+    List<String> connectedMentorIds = await _fetchConnectedMentorIds();
+
+    QuerySnapshot snapshot = await FirebaseFirestore.instance
+        .collection('mentor')
+        .where('uid', whereIn: connectedMentorIds)
         .get();
 
     List<Map<String, dynamic>> mentors = snapshot.docs.map((doc) {
@@ -82,12 +149,36 @@ class _HomeMenteeState extends State<HomeMentee> {
     return mentors;
   }
 
+  Future<List<String>> _fetchConnectedMentorIds() async {
+    QuerySnapshot snapshot = await FirebaseFirestore.instance
+        .collection('mentee')
+        .doc(widget.uid)
+        .collection('connectedMentors')
+        .where('status', isEqualTo: 'connect')
+        .get();
+
+    List<String> connectedMentorIds =
+        snapshot.docs.map((doc) => doc['mentorid'] as String).toList();
+
+    return connectedMentorIds;
+  }
+
   @override
   Widget build(BuildContext context) {
     return PopScope(
       canPop: false,
       child: SafeArea(
         child: Scaffold(
+          appBar: AppBar(
+            title: Center(
+              child: Image.asset(
+                'assets/Logo1.png',
+                scale: 6,
+              ),
+            ),
+            automaticallyImplyLeading: false,
+            centerTitle: true,
+          ),
           backgroundColor: Colors.white,
           body: SingleChildScrollView(
             child: Column(
@@ -200,8 +291,58 @@ class _HomeMenteeState extends State<HomeMentee> {
                     }
                   },
                 ),
+                Padding(
+                  padding: const EdgeInsets.symmetric(horizontal: 10),
+                  child: Text(
+                    "Connected Mentors",
+                    style: TextStyle(
+                      fontSize: 18,
+                    ),
+                  ),
+                ),
                 SizedBox(
                   height: 30,
+                ),
+                FutureBuilder<List<Map<String, dynamic>>>(
+                  future: _connectedMentorsFuture,
+                  builder: (context, snapshot) {
+                    if (snapshot.connectionState == ConnectionState.waiting) {
+                      return Center(
+                        child: CircularProgressIndicator(),
+                      );
+                    } else if (snapshot.hasError) {
+                      return Center(
+                        child: Text('Error: ${snapshot.error}'),
+                      );
+                    } else if (snapshot.data!.isEmpty) {
+                      return Center(
+                          child: Padding(
+                        padding: const EdgeInsets.all(8.0),
+                        child:
+                            Text('Currently, there are no connected mentors .'),
+                      ));
+                    } else {
+                      final mentors = snapshot.data!;
+                      return SingleChildScrollView(
+                        scrollDirection: Axis.vertical,
+                        padding: EdgeInsets.all(10),
+                        child: Column(
+                          children: mentors.map((mentor) {
+                            return Padding(
+                              padding: const EdgeInsets.all(8.0),
+                              child: Menteeconnectedmentors(
+                                Mentor: mentor,
+                                menteeid: widget.uid,
+                              ),
+                            );
+                          }).toList(),
+                        ),
+                      );
+                    }
+                  },
+                ),
+                SizedBox(
+                  height: 20,
                 ),
                 Padding(
                   padding: const EdgeInsets.symmetric(horizontal: 10),

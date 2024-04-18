@@ -1,5 +1,4 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
-import 'package:fluentui_icons/fluentui_icons.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:successage/mentor/Mentor_oldmentee.dart';
@@ -20,68 +19,55 @@ class MentorHomeScreen extends StatefulWidget {
 }
 
 class _MentorHomeScreenState extends State<MentorHomeScreen> {
-  late Future<Map<String, dynamic>> _mentorDataFuture;
-  late Future<List<Map<String, dynamic>>> _connectionRequestsFuture;
-  late Future<List<Map<String, dynamic>>> _connectedmentee;
+  late Stream<Map<String, dynamic>> _mentorDataStream;
+  late Stream<List<Map<String, dynamic>>> _connectionRequestsStream;
+  late Stream<List<Map<String, dynamic>>> _connectedMenteeStream;
   AuthService auth = AuthService();
 
   @override
   void initState() {
     super.initState();
-    _mentorDataFuture = _fetchmentordata();
-    _connectionRequestsFuture = _fetchConnectionRequests();
-    _connectedmentee = _fetchconnectedmentees();
+    _mentorDataStream = _fetchMentorDataStream();
+    _connectionRequestsStream = _fetchConnectionRequestsStream();
+    _connectedMenteeStream = _fetchConnectedMenteesStream();
   }
 
-  Future<void> refreshHomeScreen() async {
-    setState(() {
-      _mentorDataFuture = _fetchmentordata(); // Refetch mentor data
-      _connectionRequestsFuture = _fetchConnectionRequests();
-      _connectedmentee =
-          _fetchconnectedmentees(); // Refetch connection requests
+  Stream<Map<String, dynamic>> _fetchMentorDataStream() {
+    return FirebaseFirestore.instance
+        .collection('mentor')
+        .doc(widget.mentorid)
+        .snapshots()
+        .map((snapshot) {
+      if (snapshot.exists) {
+        return snapshot.data() as Map<String, dynamic>;
+      } else {
+        throw Exception('Document does not exist');
+      }
     });
   }
 
-  Future<Map<String, dynamic>> _fetchmentordata() async {
-    DocumentSnapshot snapshot = await FirebaseFirestore.instance
-        .collection('mentor')
-        .doc(widget.mentorid)
-        .get();
-    if (snapshot.exists) {
-      return snapshot.data() as Map<String, dynamic>;
-    } else {
-      throw Exception('Document does not exist');
-    }
-  }
-
-  Future<List<Map<String, dynamic>>> _fetchConnectionRequests() async {
-    QuerySnapshot querySnapshot = await FirebaseFirestore.instance
+  Stream<List<Map<String, dynamic>>> _fetchConnectionRequestsStream() {
+    return FirebaseFirestore.instance
         .collection('mentor')
         .doc(widget.mentorid)
         .collection('connectionRequests')
         .where('status', isEqualTo: 'pending')
-        .get();
-
-    List<Map<String, dynamic>> requests = querySnapshot.docs.map((doc) {
-      return doc.data() as Map<String, dynamic>;
-    }).toList();
-
-    return requests;
+        .snapshots()
+        .map((snapshot) => snapshot.docs
+            .map((doc) => doc.data() as Map<String, dynamic>)
+            .toList());
   }
 
-  Future<List<Map<String, dynamic>>> _fetchconnectedmentees() async {
-    QuerySnapshot querySnapshot = await FirebaseFirestore.instance
+  Stream<List<Map<String, dynamic>>> _fetchConnectedMenteesStream() {
+    return FirebaseFirestore.instance
         .collection('mentor')
         .doc(widget.mentorid)
         .collection('connectionRequests')
         .where('status', isEqualTo: 'connect')
-        .get();
-
-    List<Map<String, dynamic>> requests = querySnapshot.docs.map((doc) {
-      return doc.data() as Map<String, dynamic>;
-    }).toList();
-
-    return requests;
+        .snapshots()
+        .map((snapshot) => snapshot.docs
+            .map((doc) => doc.data() as Map<String, dynamic>)
+            .toList());
   }
 
   @override
@@ -90,13 +76,13 @@ class _MentorHomeScreenState extends State<MentorHomeScreen> {
       child: Scaffold(
         backgroundColor: Colors.white,
         body: SingleChildScrollView(
-          child: FutureBuilder<Map<String, dynamic>>(
-            future: _mentorDataFuture,
-            builder: (context, snapshot) {
-              if (snapshot.connectionState == ConnectionState.waiting) {
+          child: StreamBuilder<Map<String, dynamic>>(
+            stream: _mentorDataStream,
+            builder: (context, mentorSnapshot) {
+              if (!mentorSnapshot.hasData) {
                 return Center(child: CircularProgressIndicator());
-              } else if (snapshot.hasError) {
-                return Center(child: Text('Error: ${snapshot.error}'));
+              } else if (mentorSnapshot.hasError) {
+                return Center(child: Text('Error: ${mentorSnapshot.error}'));
               } else {
                 return Column(
                   children: [
@@ -111,8 +97,8 @@ class _MentorHomeScreenState extends State<MentorHomeScreen> {
                               Container(
                                 child: CircleAvatar(
                                   radius: 50,
-                                  backgroundImage:
-                                      NetworkImage(snapshot.data!['ppic']),
+                                  backgroundImage: NetworkImage(
+                                      mentorSnapshot.data!['ppic']),
                                 ),
                                 decoration: BoxDecoration(
                                   borderRadius: BorderRadius.circular(10),
@@ -122,7 +108,7 @@ class _MentorHomeScreenState extends State<MentorHomeScreen> {
                                 padding: const EdgeInsets.symmetric(
                                     horizontal: 15.0),
                                 child: Text(
-                                  "Welcome, ${snapshot.data!['fname']}",
+                                  "Welcome, ${mentorSnapshot.data!['fname']}",
                                   style: TextStyle(
                                       fontWeight: FontWeight.bold,
                                       fontSize: 25),
@@ -133,52 +119,46 @@ class _MentorHomeScreenState extends State<MentorHomeScreen> {
                           SizedBox(height: 12),
                           const SizedBox(height: 12),
                           ElevatedButton.icon(
-                              onPressed: () {
-                                Navigator.push(
-                                    context,
-                                    MaterialPageRoute(
-                                        builder: (context) =>
-                                            MentorSchedule()));
-                              },
-                              style: ElevatedButton.styleFrom(
-                                  backgroundColor: const Color.fromARGB(
-                                      255, 2, 48, 71), // Stylish button color
-                                  padding: EdgeInsets.symmetric(
-                                      horizontal: 60,
-                                      vertical: 16), // Button padding
-                                  shape: RoundedRectangleBorder(
-                                    borderRadius: BorderRadius.circular(
-                                        30), // Rounded button corners
-                                  ),
-                                  elevation: 10),
-                              icon: Icon(
-                                Icons.calendar_month,
-                                color: Colors.white,
+                            onPressed: () {
+                              Navigator.push(
+                                context,
+                                MaterialPageRoute(
+                                  builder: (context) => MentorSchedule(),
+                                ),
+                              );
+                            },
+                            style: ElevatedButton.styleFrom(
+                              backgroundColor:
+                                  const Color.fromARGB(255, 2, 48, 71),
+                              padding: EdgeInsets.symmetric(
+                                  horizontal: 60, vertical: 16),
+                              shape: RoundedRectangleBorder(
+                                borderRadius: BorderRadius.circular(30),
                               ),
-                              label: Text(
-                                'Schedule Appointment',
-                                style: TextStyle(color: Colors.white),
-                              )),
-                          SizedBox(
-                            height: 15,
+                              elevation: 10,
+                            ),
+                            icon: Icon(
+                              Icons.calendar_month,
+                              color: Colors.white,
+                            ),
+                            label: Text(
+                              'Schedule Appointment',
+                              style: TextStyle(color: Colors.white),
+                            ),
                           ),
-                          Text(
-                            "Appointments today",
-                            style: TextStyle(fontSize: 20),
-                          ),
+                          SizedBox(height: 15),
+                          Text("Appointments today",
+                              style: TextStyle(fontSize: 20)),
                           SizedBox(height: 12),
                           MenteeList(),
                           SizedBox(height: 15),
-                          Text(
-                            "Connection Requests",
-                            style: TextStyle(fontSize: 20),
-                          ),
+                          Text("Connection Requests",
+                              style: TextStyle(fontSize: 20)),
                           SizedBox(height: 10),
-                          FutureBuilder<List<Map<String, dynamic>>>(
-                            future: _connectionRequestsFuture,
+                          StreamBuilder<List<Map<String, dynamic>>>(
+                            stream: _connectionRequestsStream,
                             builder: (context, requestsSnapshot) {
-                              if (requestsSnapshot.connectionState ==
-                                  ConnectionState.waiting) {
+                              if (!requestsSnapshot.hasData) {
                                 return Center(
                                     child: CircularProgressIndicator());
                               } else if (requestsSnapshot.hasError) {
@@ -201,9 +181,8 @@ class _MentorHomeScreenState extends State<MentorHomeScreen> {
                                           padding:
                                               const EdgeInsets.only(right: 10),
                                           child: RequestOfMentee(
-                                            refreshHomescreen:
-                                                refreshHomeScreen,
                                             mentee: mentee,
+                                            refreshHomescreen: () {},
                                           ),
                                         );
                                       }).toList(),
@@ -216,29 +195,26 @@ class _MentorHomeScreenState extends State<MentorHomeScreen> {
                           SizedBox(height: 15),
                           Row(
                             children: [
-                              Text(
-                                "My Mentees",
-                                style: TextStyle(fontSize: 20),
-                              ),
+                              Text("My Mentees",
+                                  style: TextStyle(fontSize: 20)),
                             ],
                           ),
                           SizedBox(height: 10),
-                          FutureBuilder<List<Map<String, dynamic>>>(
-                            future: _connectedmentee,
-                            builder: (context, requestsSnapshot) {
-                              if (requestsSnapshot.connectionState ==
-                                  ConnectionState.waiting) {
+                          StreamBuilder<List<Map<String, dynamic>>>(
+                            stream: _connectedMenteeStream,
+                            builder: (context, menteesSnapshot) {
+                              if (!menteesSnapshot.hasData) {
                                 return Center(
                                     child: CircularProgressIndicator());
-                              } else if (requestsSnapshot.hasError) {
+                              } else if (menteesSnapshot.hasError) {
                                 return Center(
                                     child: Text(
-                                        'Error: ${requestsSnapshot.error}'));
-                              } else if (requestsSnapshot.data!.isEmpty) {
+                                        'Error: ${menteesSnapshot.error}'));
+                              } else if (menteesSnapshot.data!.isEmpty) {
                                 return Center(
                                     child: Text('No connected mentee'));
                               } else {
-                                final mentees = requestsSnapshot.data!;
+                                final mentees = menteesSnapshot.data!;
                                 return VsScrollbar(
                                   style: VsScrollbarStyle(thickness: 3),
                                   child: SingleChildScrollView(
@@ -262,7 +238,7 @@ class _MentorHomeScreenState extends State<MentorHomeScreen> {
                           ),
                         ],
                       ),
-                    )
+                    ),
                   ],
                 );
               }
@@ -290,7 +266,8 @@ class _MentorHomeScreenState extends State<MentorHomeScreen> {
                         auth.signOut();
                         Navigator.of(context).push(
                           MaterialPageRoute(
-                              builder: (context) => ScreenLogin()),
+                            builder: (context) => ScreenLogin(),
+                          ),
                         );
                       },
                     ),
@@ -301,7 +278,7 @@ class _MentorHomeScreenState extends State<MentorHomeScreen> {
           },
           tooltip: 'Sign Out',
           child: Icon(Icons.logout),
-          backgroundColor: Colors.red, // Optional: Set your desired color
+          backgroundColor: Colors.red,
         ),
       ),
     );

@@ -103,7 +103,7 @@ void updatementeeconnection(
     await firestore
         .collection('mentee')
         .doc(menteeuid)
-        .collection('connectionRequests')
+        .collection('connectedmentors')
         .doc(mentoruid)
         .set(newRequest);
   } else {

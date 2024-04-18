@@ -155,10 +155,10 @@ class _MentorSkillState extends State<MentorSkill> {
                                       bio: bio, interest: _selectedFirstOption);
                                   Navigator.of(context).push(MaterialPageRoute(
                                       builder: (context) =>
-                                          MentorRegistrationSuccess()));
-                                  // Ensure the user has selected an interest and provided a non-null and non-empty bio
+                                          MentorRegistrationSuccess(
+                                            uid: widget.uid,
+                                          )));
                                 } else {
-                                  // Display a message or perform some action to indicate that the user needs to provide required inputs
                                   ScaffoldMessenger.of(context)
                                       .showSnackBar(SnackBar(
                                     content: Text(

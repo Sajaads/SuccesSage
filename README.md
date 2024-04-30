@@ -1,6 +1,6 @@
-# successage
+# SuccesSage
 
-A new Flutter project.
+A career mentorship APP.
 
 ## Getting Started
 

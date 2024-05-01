@@ -6,16 +6,9 @@ import 'package:vs_scrollbar/vs_scrollbar.dart';
 
 class Menteeconnectedmentorprofile extends StatelessWidget {
   final Map<String, dynamic> Mentor;
-  const Menteeconnectedmentorprofile({Key? key, required this.Mentor});
-
-  Future<QuerySnapshot> _fetchmentorschedule() async {
-    QuerySnapshot snapshot = await FirebaseFirestore.instance
-        .collection('mentor')
-        .doc(Mentor['uid'])
-        .collection('scheduledSessions')
-        .get();
-    return snapshot;
-  }
+  final String menteeid;
+  const Menteeconnectedmentorprofile(
+      {Key? key, required this.Mentor, required this.menteeid});
 
   @override
   Widget build(BuildContext context) {
@@ -94,8 +87,13 @@ class Menteeconnectedmentorprofile extends StatelessWidget {
                 SizedBox(
                   height: 10,
                 ),
-                FutureBuilder(
-                  future: _fetchmentorschedule(),
+                StreamBuilder(
+                  stream: FirebaseFirestore.instance
+                      .collection('mentor')
+                      .doc(Mentor['uid'])
+                      .collection('scheduledSessions')
+                      .where('status', isEqualTo: 'available')
+                      .snapshots(),
                   builder: (context, snapshot) {
                     if (snapshot.connectionState == ConnectionState.waiting) {
                       return Center(
@@ -107,13 +105,10 @@ class Menteeconnectedmentorprofile extends StatelessWidget {
                       );
                     } else if (snapshot.data!.docs.isEmpty) {
                       return Center(
-                        child: Text(
-                          'There are no scheduled sessions available at the moment.',
-                          style: TextStyle(
-                              fontSize: 16, fontWeight: FontWeight.bold),
-                          textAlign: TextAlign.center,
-                        ),
-                      );
+                          child: Padding(
+                        padding: const EdgeInsets.all(8.0),
+                        child: Text('No available sessions at the moment'),
+                      ));
                     } else {
                       final mentors = snapshot.data!.docs;
                       return VsScrollbar(
@@ -125,7 +120,102 @@ class Menteeconnectedmentorprofile extends StatelessWidget {
                           children: mentors.map((mentor) {
                             return Card(
                               child: ListTile(
-                                onTap: () {},
+                                onTap: () {
+                                  showDialog(
+                                    context: context,
+                                    builder: (BuildContext context) {
+                                      return AlertDialog(
+                                        elevation: 4,
+                                        title: Text(
+                                          'Confirm Booking?',
+                                          style: TextStyle(
+                                              fontWeight: FontWeight.bold),
+                                        ),
+                                        content: Container(
+                                          child: Column(
+                                            mainAxisSize: MainAxisSize.min,
+                                            children: [
+                                              Padding(
+                                                padding:
+                                                    const EdgeInsets.all(8.0),
+                                                child: Text(
+                                                    'Title : ${mentor['title']}',
+                                                    textAlign: TextAlign.start),
+                                              ),
+                                              Padding(
+                                                padding:
+                                                    const EdgeInsets.all(8.0),
+                                                child: Text(
+                                                    'Date : ${DateFormat('dd-MM-yy').format((mentor['date'] as Timestamp).toDate())}',
+                                                    textAlign: TextAlign.start),
+                                              ),
+                                              Padding(
+                                                padding:
+                                                    const EdgeInsets.all(8.0),
+                                                child: Text(
+                                                    'Time : ${DateFormat('hh:mm a').format((mentor['time'] as Timestamp).toDate())}',
+                                                    textAlign: TextAlign.start),
+                                              ),
+                                            ],
+                                          ),
+                                        ),
+                                        actions: <Widget>[
+                                          TextButton(
+                                            child: Text('No'),
+                                            onPressed: () {
+                                              Navigator.of(context)
+                                                  .pop(); // Close the dialog
+                                            },
+                                          ),
+                                          TextButton(
+                                            child: Text('Yes'),
+                                            onPressed: () async {
+                                              await FirebaseFirestore.instance
+                                                  .collection('mentor')
+                                                  .doc(Mentor['uid'])
+                                                  .collection(
+                                                      'scheduledSessions')
+                                                  .doc(mentor.id)
+                                                  .update({
+                                                'status': 'booked',
+                                                'menteeid': menteeid
+                                              }).then((_) {
+                                                Navigator.of(context).pop();
+                                                ScaffoldMessenger.of(context)
+                                                    .showSnackBar(
+                                                  SnackBar(
+                                                    backgroundColor:
+                                                        Color.fromARGB(
+                                                            255, 25, 137, 25),
+                                                    content: Text(
+                                                      'Booking Successful',
+                                                      style: TextStyle(
+                                                          color: Colors.white),
+                                                    ),
+                                                    duration: Duration(
+                                                        seconds:
+                                                            3), // Duration to show the snackbar
+                                                  ),
+                                                );
+                                              }).catchError((error) {
+                                                ScaffoldMessenger.of(context)
+                                                    .showSnackBar(
+                                                  SnackBar(
+                                                    content: Text(
+                                                        'Error booking session: $error'),
+                                                    duration: Duration(
+                                                        seconds:
+                                                            2), // Duration to show the snackbar
+                                                  ),
+                                                );
+                                              });
+                                            },
+                                          ),
+                                        ],
+                                      );
+                                    },
+                                  );
+                                },
                                 title: Text(
                                   mentor['title'],
                                   style: TextStyle(fontWeight: FontWeight.bold),

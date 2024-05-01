@@ -1,7 +1,10 @@
+import 'dart:async';
+
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
+import 'package:successage/utils/app_layouts.dart';
 
 class FirestoreService {
   final CollectionReference mentorsCollection =
@@ -47,15 +50,19 @@ class FirestoreService {
 
       Timestamp timestamp = Timestamp.fromDate(combinedDateTime);
 
-      await mentorsCollection
+      DocumentReference docRef = await mentorsCollection
           .doc(mentorId)
           .collection('scheduledSessions')
           .add({
         'title': session.title,
         'date': session.date,
         'time': timestamp,
-        'fee': session.fee, // Store fee in Firestore
+        'fee': session.fee,
+        'status': 'available',
       });
+
+      // Update the SID field with the document ID
+      await docRef.update({'sid': docRef.id});
     } catch (e) {
       print('Error scheduling session: $e');
     }
@@ -113,11 +120,50 @@ class _MentorScheduleState extends State<MentorSchedule> {
   final _titleController = TextEditingController();
   final _feeController = TextEditingController(); // Controller for fee
   List<ScheduledSession> scheduledSessions = [];
+  late Timer _timer;
 
   @override
   void initState() {
     super.initState();
+    _startTimer();
     _loadScheduledSessions();
+    _checkAndDeleteExpiredSessions();
+  }
+
+  @override
+  void dispose() {
+    super.dispose();
+    _timer.cancel();
+  }
+
+  void _startTimer() {
+    const Duration checkInterval = Duration(hours: 1);
+    _timer = Timer.periodic(checkInterval, (timer) {
+      _checkAndDeleteExpiredSessions();
+    });
+  }
+
+  _checkAndDeleteExpiredSessions() async {
+    try {
+      final mentorId = FirebaseAuth.instance.currentUser?.uid;
+      if (mentorId != null) {
+        final sessions =
+            await FirestoreService().getScheduledSessions(mentorId);
+
+        final DateTime now = DateTime.now();
+        final List<ScheduledSession> expiredSessions =
+            sessions.where((session) => session.date.isBefore(now)).toList();
+
+        for (final session in expiredSessions) {
+          await FirestoreService().deleteSession(mentorId, session.id);
+          setState(() {
+            scheduledSessions.removeWhere((s) => s.id == session.id);
+          });
+        }
+      }
+    } catch (e) {
+      print('Error checking and deleting expired sessions: $e');
+    }
   }
 
   _loadScheduledSessions() async {
@@ -304,9 +350,7 @@ class _MentorScheduleState extends State<MentorSchedule> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(
-        title: const Text('Schedule Your Sessions'),
-      ),
+      appBar: CustomAppBar(title: 'Schedule Your Sessions'),
       body: Column(
         children: [
           SizedBox(

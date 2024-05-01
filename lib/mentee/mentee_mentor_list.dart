@@ -17,6 +17,7 @@ class _MentorListState extends State<MentorList> {
   @override
   Widget build(BuildContext context) {
     return Card(
+      color: Color.fromARGB(255, 87, 79, 62),
       elevation: 2,
       child: ListTile(
         onTap: () {
@@ -32,9 +33,7 @@ class _MentorListState extends State<MentorList> {
         title: Text(
           '${widget.Mentor['fname']} ${widget.Mentor['lname']}',
           style: TextStyle(
-            fontSize: 18,
-            fontWeight: FontWeight.bold,
-          ),
+              fontSize: 18, fontWeight: FontWeight.bold, color: Colors.white),
         ),
         subtitle: Text(
           '${widget.Mentor['designation']}',

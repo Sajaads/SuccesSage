@@ -6,6 +6,7 @@ import 'package:successage/screen/auth.dart';
 import 'package:successage/screen/screen_mentor_or_mentee.dart';
 import 'package:successage/utils/app_info_list.dart';
 import 'package:successage/mentee/mentee_mentor_list.dart';
+import 'package:successage/utils/app_layouts.dart';
 import 'package:vs_scrollbar/vs_scrollbar.dart';
 
 class HomeMentee extends StatefulWidget {
@@ -169,16 +170,7 @@ class _HomeMenteeState extends State<HomeMentee> {
       canPop: false,
       child: SafeArea(
         child: Scaffold(
-          appBar: AppBar(
-            title: Center(
-              child: Image.asset(
-                'assets/Logo1.png',
-                scale: 6,
-              ),
-            ),
-            automaticallyImplyLeading: false,
-            centerTitle: true,
-          ),
+          appBar: CustomAppBar(title: 'SuccesSage'),
           backgroundColor: Colors.white,
           body: SingleChildScrollView(
             child: Column(
@@ -214,8 +206,10 @@ class _HomeMenteeState extends State<HomeMentee> {
                                 Text(
                                   "Welcome, ${userSnapshot['name']}",
                                   style: TextStyle(
-                                      fontWeight: FontWeight.w500,
-                                      fontSize: 20),
+                                    fontWeight: FontWeight.bold,
+                                    fontSize: 22,
+                                    color: const Color.fromARGB(255, 2, 48, 71),
+                                  ),
                                 ),
                               ],
                             ),
@@ -223,7 +217,9 @@ class _HomeMenteeState extends State<HomeMentee> {
                             Text(
                               "Mentors in your field",
                               style: TextStyle(
-                                fontSize: 18,
+                                fontWeight: FontWeight.bold,
+                                fontSize: 20,
+                                color: const Color.fromARGB(255, 2, 48, 71),
                               ),
                             ),
                           ],
@@ -296,12 +292,11 @@ class _HomeMenteeState extends State<HomeMentee> {
                   child: Text(
                     "Connected Mentors",
                     style: TextStyle(
-                      fontSize: 18,
+                      fontWeight: FontWeight.bold,
+                      fontSize: 20,
+                      color: const Color.fromARGB(255, 2, 48, 71),
                     ),
                   ),
-                ),
-                SizedBox(
-                  height: 30,
                 ),
                 FutureBuilder<List<Map<String, dynamic>>>(
                   future: _connectedMentorsFuture,
@@ -349,7 +344,9 @@ class _HomeMenteeState extends State<HomeMentee> {
                   child: Text(
                     "All Mentors",
                     style: TextStyle(
-                      fontSize: 18,
+                      fontWeight: FontWeight.bold,
+                      fontSize: 20,
+                      color: const Color.fromARGB(255, 2, 48, 71),
                     ),
                   ),
                 ),
@@ -371,11 +368,11 @@ class _HomeMenteeState extends State<HomeMentee> {
                       final mentors = snapshot.data!;
                       return SingleChildScrollView(
                         scrollDirection: Axis.vertical,
-                        padding: EdgeInsets.all(10),
+                        padding: EdgeInsets.all(8),
                         child: Column(
                           children: mentors.map((mentor) {
                             return Padding(
-                              padding: const EdgeInsets.all(8.0),
+                              padding: const EdgeInsets.all(6.0),
                               child: MentorList(
                                 Mentor: mentor,
                                 menteeid: widget.uid,
@@ -409,10 +406,11 @@ class _HomeMenteeState extends State<HomeMentee> {
                         child: Text('Yes'),
                         onPressed: () {
                           auth.signOut();
-                          Navigator.of(context).push(
-                            MaterialPageRoute(
-                                builder: (context) => ScreenLogin()),
-                          );
+                          Navigator.pushAndRemoveUntil(
+                              context,
+                              MaterialPageRoute(
+                                  builder: (context) => ScreenLogin()),
+                              (route) => false);
                         },
                       ),
                     ],

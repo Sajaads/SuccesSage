@@ -15,8 +15,10 @@ class Menteeconnectedmentors extends StatelessWidget {
       child: ListTile(
         onTap: () {
           Navigator.of(context).push(MaterialPageRoute(
-              builder: (context) =>
-                  Menteeconnectedmentorprofile(Mentor: Mentor)));
+              builder: (context) => Menteeconnectedmentorprofile(
+                    Mentor: Mentor,
+                    menteeid: menteeid,
+                  )));
         },
         contentPadding: EdgeInsets.symmetric(vertical: 8, horizontal: 18),
         leading: CircleAvatar(

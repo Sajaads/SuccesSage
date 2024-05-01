@@ -6,6 +6,7 @@ import 'package:successage/mentor/mentee_list.dart';
 import 'package:successage/mentor/mentor_schedule.dart';
 import 'package:successage/mentor/request_of_mentee.dart';
 import 'package:successage/screen/screen_mentor_or_mentee.dart';
+import 'package:successage/utils/app_layouts.dart';
 import 'package:vs_scrollbar/vs_scrollbar.dart';
 import 'package:successage/screen/auth.dart';
 
@@ -74,6 +75,7 @@ class _MentorHomeScreenState extends State<MentorHomeScreen> {
   Widget build(BuildContext context) {
     return SafeArea(
       child: Scaffold(
+        appBar: CustomAppBar(title: 'SuccesSage'),
         backgroundColor: Colors.white,
         body: SingleChildScrollView(
           child: StreamBuilder<Map<String, dynamic>>(
@@ -147,13 +149,70 @@ class _MentorHomeScreenState extends State<MentorHomeScreen> {
                             ),
                           ),
                           SizedBox(height: 15),
-                          Text("Appointments today",
-                              style: TextStyle(fontSize: 20)),
+                          Text(
+                            "Appointments",
+                            style: TextStyle(
+                              fontWeight: FontWeight.bold,
+                              fontSize: 20,
+                              color: const Color.fromARGB(255, 2, 48, 71),
+                            ),
+                          ),
                           SizedBox(height: 12),
-                          MenteeList(),
+                          StreamBuilder(
+                              stream: FirebaseFirestore.instance
+                                  .collection('mentor')
+                                  .doc(widget.mentorid)
+                                  .collection('scheduledSessions')
+                                  .where('status', isEqualTo: 'booked')
+                                  .snapshots(),
+                              builder: (context, snapshot) {
+                                if (snapshot.connectionState ==
+                                    ConnectionState.waiting) {
+                                  return Center(
+                                    child: CircularProgressIndicator(),
+                                  );
+                                } else if (snapshot.hasError) {
+                                  return Center(
+                                    child: Text('Error: ${snapshot.error}'),
+                                  );
+                                } else if (snapshot.data!.docs.isEmpty) {
+                                  return Center(
+                                      child: Padding(
+                                    padding: const EdgeInsets.all(8.0),
+                                    child: Text('No Upcoming appointments'),
+                                  ));
+                                } else {
+                                  final menteelist = snapshot.data!.docs;
+                                  return VsScrollbar(
+                                    style: VsScrollbarStyle(thickness: 3),
+                                    child: SingleChildScrollView(
+                                      scrollDirection: Axis.horizontal,
+                                      padding: EdgeInsets.all(10),
+                                      child: Row(
+                                        children: menteelist.map((mentee) {
+                                          final menteedata = mentee.data()
+                                              as Map<String, dynamic>;
+                                          return Padding(
+                                              padding: const EdgeInsets.only(
+                                                  right: 10),
+                                              child: MenteeList(
+                                                schedulelist: menteedata,
+                                              ));
+                                        }).toList(),
+                                      ),
+                                    ),
+                                  );
+                                }
+                              }),
                           SizedBox(height: 15),
-                          Text("Connection Requests",
-                              style: TextStyle(fontSize: 20)),
+                          Text(
+                            "Connection Requests",
+                            style: TextStyle(
+                              fontWeight: FontWeight.bold,
+                              fontSize: 20,
+                              color: const Color.fromARGB(255, 2, 48, 71),
+                            ),
+                          ),
                           SizedBox(height: 10),
                           StreamBuilder<List<Map<String, dynamic>>>(
                             stream: _connectionRequestsStream,
@@ -195,8 +254,14 @@ class _MentorHomeScreenState extends State<MentorHomeScreen> {
                           SizedBox(height: 15),
                           Row(
                             children: [
-                              Text("My Mentees",
-                                  style: TextStyle(fontSize: 20)),
+                              Text(
+                                "My Mentees",
+                                style: TextStyle(
+                                  fontWeight: FontWeight.bold,
+                                  fontSize: 20,
+                                  color: const Color.fromARGB(255, 2, 48, 71),
+                                ),
+                              ),
                             ],
                           ),
                           SizedBox(height: 10),
@@ -264,11 +329,11 @@ class _MentorHomeScreenState extends State<MentorHomeScreen> {
                       child: Text('Yes'),
                       onPressed: () {
                         auth.signOut();
-                        Navigator.of(context).push(
-                          MaterialPageRoute(
-                            builder: (context) => ScreenLogin(),
-                          ),
-                        );
+                        Navigator.of(context).pushAndRemoveUntil(
+                            MaterialPageRoute(
+                              builder: (context) => ScreenLogin(),
+                            ),
+                            (route) => false);
                       },
                     ),
                   ],

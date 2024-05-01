@@ -26,7 +26,7 @@ class HighlightedMentee extends StatelessWidget {
                   offset: Offset(0, 3),
                 ),
               ],
-              color: Color.fromARGB(149, 153, 202, 223),
+              color: Color.fromARGB(255, 153, 202, 223),
               borderRadius: BorderRadius.circular(12),
             ),
             child: Column(
@@ -34,7 +34,8 @@ class HighlightedMentee extends StatelessWidget {
                 Row(
                   children: [
                     Padding(
-                      padding: const EdgeInsets.all(20.0),
+                      padding:
+                          const EdgeInsets.only(left: 25, top: 20, right: 20),
                       child: CircleAvatar(
                         radius: 40,
                         backgroundImage: NetworkImage(Mentor['ppic']),
@@ -43,15 +44,20 @@ class HighlightedMentee extends StatelessWidget {
                     SizedBox(
                       width: 15,
                     ),
-                    Column(
-                      children: [
-                        Text(
-                          '${Mentor['fname']} ${Mentor['lname']}',
-                          style: TextStyle(
-                              fontSize: 20, fontWeight: FontWeight.bold),
-                        ),
-                        Text('${Mentor['designation']}')
-                      ],
+                    Padding(
+                      padding: const EdgeInsets.only(top: 20),
+                      child: Column(
+                        children: [
+                          Text(
+                            '${Mentor['fname']} ${Mentor['lname']}',
+                            style: TextStyle(
+                                fontSize: 20, fontWeight: FontWeight.bold),
+                          ),
+                          Text('${Mentor['designation']}'),
+                          SizedBox(height: 10),
+                          Text('${Mentor['bio']}')
+                        ],
+                      ),
                     ),
                   ],
                 ),
@@ -76,7 +82,7 @@ class HighlightedMentee extends StatelessWidget {
                           backgroundColor: const Color.fromARGB(
                               255, 2, 48, 71), // Stylish button color
                           padding: EdgeInsets.symmetric(
-                              horizontal: 30, vertical: 10), // Button padding
+                              horizontal: 80, vertical: 10), // Button padding
                           shape: RoundedRectangleBorder(
                             borderRadius: BorderRadius.circular(
                                 30), // Rounded button corners
@@ -86,27 +92,6 @@ class HighlightedMentee extends StatelessWidget {
                         child: Text(
                           'View Profile',
                           style: TextStyle(color: Colors.white),
-                        ),
-                      ),
-                    ),
-                    Padding(
-                      padding: const EdgeInsets.all(8.0),
-                      child: ElevatedButton(
-                        onPressed: () {},
-                        style: ElevatedButton.styleFrom(
-                          backgroundColor: const Color.fromARGB(
-                              255, 223, 245, 255), // Stylish button color
-                          padding: EdgeInsets.symmetric(
-                              horizontal: 30, vertical: 10), // Button padding
-                          shape: RoundedRectangleBorder(
-                            borderRadius: BorderRadius.circular(
-                                30), // Rounded button corners
-                          ),
-                          elevation: 10,
-                        ),
-                        child: Text(
-                          'Book Session',
-                          style: TextStyle(color: Colors.black),
                         ),
                       ),
                     ),

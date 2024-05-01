@@ -24,3 +24,28 @@ class Styles {
   static TextStyle textline1 =
       TextStyle(fontSize: 23, color: Colors.white, fontWeight: FontWeight.w600);
 }
+
+class CustomAppBar extends StatelessWidget implements PreferredSizeWidget {
+  final String title;
+
+  CustomAppBar({required this.title});
+
+  @override
+  Size get preferredSize => Size.fromHeight(kToolbarHeight);
+
+  @override
+  Widget build(BuildContext context) {
+    return AppBar(
+      centerTitle: true,
+      title: Text(
+        title,
+        style: TextStyle(
+          color: Colors.white,
+          fontWeight: FontWeight.bold,
+        ),
+      ),
+      backgroundColor: const Color.fromARGB(255, 2, 48, 71),
+      automaticallyImplyLeading: false,
+    );
+  }
+}

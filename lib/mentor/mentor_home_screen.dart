@@ -7,6 +7,7 @@ import 'package:successage/mentor/mentor_schedule.dart';
 import 'package:successage/mentor/request_of_mentee.dart';
 import 'package:successage/screen/screen_mentor_or_mentee.dart';
 import 'package:successage/utils/app_layouts.dart';
+import 'package:successage/utils/drawer.dart';
 import 'package:vs_scrollbar/vs_scrollbar.dart';
 import 'package:successage/screen/auth.dart';
 
@@ -76,7 +77,8 @@ class _MentorHomeScreenState extends State<MentorHomeScreen> {
     return SafeArea(
       child: Scaffold(
         appBar: CustomAppBar(title: 'SuccesSage'),
-        backgroundColor: Colors.white,
+        drawer: MyDrawer(),
+        backgroundColor: Theme.of(context).colorScheme.background,
         body: SingleChildScrollView(
           child: StreamBuilder<Map<String, dynamic>>(
             stream: _mentorDataStream,
@@ -179,7 +181,14 @@ class _MentorHomeScreenState extends State<MentorHomeScreen> {
                                   return Center(
                                       child: Padding(
                                     padding: const EdgeInsets.all(8.0),
-                                    child: Text('No Upcoming appointments'),
+                                    child: Text(
+                                      'No Upcoming appointments',
+                                      style: TextStyle(
+                                        color: Theme.of(context)
+                                            .colorScheme
+                                            .primary,
+                                      ),
+                                    ),
                                   ));
                                 } else {
                                   final menteelist = snapshot.data!.docs;
@@ -226,7 +235,12 @@ class _MentorHomeScreenState extends State<MentorHomeScreen> {
                                         'Error: ${requestsSnapshot.error}'));
                               } else if (requestsSnapshot.data!.isEmpty) {
                                 return Center(
-                                    child: Text('No pending request'));
+                                    child: Text('No pending request',
+                                      style: TextStyle(
+                                        color: Theme.of(context)
+                                            .colorScheme
+                                            .primary,
+                                      ),));
                               } else {
                                 final mentees = requestsSnapshot.data!;
                                 return VsScrollbar(
@@ -277,7 +291,12 @@ class _MentorHomeScreenState extends State<MentorHomeScreen> {
                                         'Error: ${menteesSnapshot.error}'));
                               } else if (menteesSnapshot.data!.isEmpty) {
                                 return Center(
-                                    child: Text('No connected mentee'));
+                                    child: Text('No connected mentee',
+                                        style: TextStyle(
+                                        color: Theme.of(context)
+                                        .colorScheme
+                                        .primary,
+                                ),));
                               } else {
                                 final mentees = menteesSnapshot.data!;
                                 return VsScrollbar(
@@ -309,41 +328,6 @@ class _MentorHomeScreenState extends State<MentorHomeScreen> {
               }
             },
           ),
-        ),
-        floatingActionButton: FloatingActionButton(
-          onPressed: () {
-            showDialog(
-              context: context,
-              builder: (BuildContext context) {
-                return AlertDialog(
-                  title: Text('Confirm Sign Out'),
-                  content: Text('Are you sure you want to sign out?'),
-                  actions: <Widget>[
-                    TextButton(
-                      child: Text('No'),
-                      onPressed: () {
-                        Navigator.of(context).pop(); // Close the dialog
-                      },
-                    ),
-                    TextButton(
-                      child: Text('Yes'),
-                      onPressed: () {
-                        auth.signOut();
-                        Navigator.of(context).pushAndRemoveUntil(
-                            MaterialPageRoute(
-                              builder: (context) => ScreenLogin(),
-                            ),
-                            (route) => false);
-                      },
-                    ),
-                  ],
-                );
-              },
-            );
-          },
-          tooltip: 'Sign Out',
-          child: Icon(Icons.logout),
-          backgroundColor: Colors.red,
         ),
       ),
     );

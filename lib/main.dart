@@ -1,7 +1,10 @@
+
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
+import 'package:provider/provider.dart';
 import 'package:successage/screen/screen_splash.dart';
 import 'package:firebase_core/firebase_core.dart';
+import 'package:successage/theme/theme_provider.dart';
 import 'firebase_options.dart';
 import 'package:flutter/services.dart';
 
@@ -14,7 +17,11 @@ Future<void> main() async {
   SystemChrome.setPreferredOrientations([
     DeviceOrientation.portraitUp,
   ]);
-  runApp(const MyApp());
+  runApp(ChangeNotifierProvider(
+    create: (context) => ThemeProvider(),
+    child: const MyApp(),
+  )
+  );
 }
 
 class MyApp extends StatelessWidget {
@@ -24,10 +31,7 @@ class MyApp extends StatelessWidget {
   Widget build(BuildContext context) {
     return MaterialApp(
       debugShowCheckedModeBanner: false,
-      theme: ThemeData(
-          textTheme: GoogleFonts.firaSansTextTheme(),
-          splashColor: Colors.amber,
-          scaffoldBackgroundColor: const Color(0xFF8ECAE6)),
+      theme: Provider.of<ThemeProvider>(context).themeData,
       home: const ScreenSplash(),
     );
   }

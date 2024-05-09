@@ -18,6 +18,7 @@ class _MentorSkillState extends State<MentorSkill> {
   List<String> _secondOptions = [];
   List<String> itembox = [];
   String? bio;
+  FirebaseFirestore _fire = FirebaseFirestore.instance;
 
   void itemselection(String option) {
     setState(() {
@@ -153,11 +154,16 @@ class _MentorSkillState extends State<MentorSkill> {
                                     bio!.isNotEmpty) {
                                   addMentorSkill(widget.uid,
                                       bio: bio, interest: _selectedFirstOption);
-                                  Navigator.of(context).push(MaterialPageRoute(
-                                      builder: (context) =>
-                                          MentorRegistrationSuccess(
-                                            uid: widget.uid,
-                                          )));
+                                  _fire
+                                      .collection('mentor')
+                                      .doc(widget.uid)
+                                      .update({"verified": 'no'}).then(
+                                          (value) => Navigator.of(context).push(
+                                              MaterialPageRoute(
+                                                  builder: (context) =>
+                                                      MentorRegistrationSuccess(
+                                                        uid: widget.uid,
+                                                      ))));
                                 } else {
                                   ScaffoldMessenger.of(context)
                                       .showSnackBar(SnackBar(

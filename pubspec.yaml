@@ -50,6 +50,11 @@ dependencies:
   google_fonts: ^6.2.1
   firebase_app_check: ^0.2.2+1
   intl: ^0.19.0
+  file_picker: ^8.0.3
+  flutter_chat_types: ^3.6.2
+  flutter_chat_ui: ^1.6.12
+  open_filex: ^4.4.0
+  uuid: ^4.4.0
  
 
 dev_dependencies:

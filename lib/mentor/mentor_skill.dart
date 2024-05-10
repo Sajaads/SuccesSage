@@ -55,7 +55,7 @@ class _MentorSkillState extends State<MentorSkill> {
                     return CircularProgressIndicator();
                   }
                   final interests =
-                      snapshot.data!.docs.map((doc) => doc.id).toList();
+                  snapshot.data!.docs.map((doc) => doc.id).toList();
                   return Padding(
                     padding: const EdgeInsets.all(8.0),
                     child: Wrap(
@@ -87,7 +87,13 @@ class _MentorSkillState extends State<MentorSkill> {
               ),
               _selectedFirstOption != null
                   ? Padding(
+                padding: const EdgeInsets.all(8.0),
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.center,
+                  children: [
+                    Padding(
                       padding: const EdgeInsets.all(8.0),
+
                       child: Column(
                         crossAxisAlignment: CrossAxisAlignment.center,
                         children: [
@@ -174,8 +180,58 @@ class _MentorSkillState extends State<MentorSkill> {
                               },
                               child: Text('Submit'))
                         ],
+
                       ),
-                    )
+                    ),
+                    SizedBox(
+                      height: 10,
+                    ),
+                    TextField(
+                      decoration: InputDecoration(
+                        border: OutlineInputBorder(
+                          borderSide: BorderSide.none,
+                          borderRadius: BorderRadius.circular(20.0),
+                        ),
+                        filled: true,
+                        fillColor: Colors.white,
+                        hintText: 'Type here...',
+                      ),
+                      onChanged: (value) {
+                        bio = value;
+                      },
+                    ),
+                    SizedBox(
+                      height: 20,
+                    ),
+                    ElevatedButton(
+                        onPressed: () {
+                          if (_selectedFirstOption != null &&
+                              bio != null &&
+                              bio!.isNotEmpty) {
+                            addMentorSkill(widget.uid,
+                                bio: bio, interest: _selectedFirstOption);
+                            _fire
+                                .collection('mentor')
+                                .doc(widget.uid)
+                                .update({"verified": 'no'}).then(
+                                    (value) => Navigator.of(context).push(
+                                    MaterialPageRoute(
+                                        builder: (context) =>
+                                            MentorRegistrationSuccess(
+                                              uid: widget.uid,
+                                            ))));
+                          } else {
+                            ScaffoldMessenger.of(context)
+                                .showSnackBar(SnackBar(
+                              content: Text(
+                                  'Please select an interest and provide a bio.'),
+                            ));
+                          }
+                        },
+                        child: Text('Submit'))
+                  ],
+                ),
+              )
                   : SizedBox(), // Placeholder if no option selected from first section
             ],
           ),

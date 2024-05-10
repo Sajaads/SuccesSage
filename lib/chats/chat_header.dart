@@ -1,18 +1,18 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:successage/chats/chat_pages.dart';
+import 'package:successage/utils/app_layouts.dart';
 
-class MentorOldMentee extends StatefulWidget {
+class ChatHeader extends StatefulWidget {
   final Map<String, dynamic> mentee;
 
-  const MentorOldMentee({Key? key, required this.mentee}) : super(key: key);
+  const ChatHeader({Key? key, required this.mentee}) : super(key: key);
 
   @override
-  State<MentorOldMentee> createState() => _MentorOldMenteeState();
+  State<ChatHeader> createState() => _ChatHeaderState();
 }
 
-class _MentorOldMenteeState extends State<MentorOldMentee> {
+class _ChatHeaderState extends State<ChatHeader> {
   late Future<DocumentSnapshot<Map<String, dynamic>>> _menteeDataFuture;
 
   @override
@@ -44,29 +44,24 @@ class _MentorOldMenteeState extends State<MentorOldMentee> {
 
           return Padding(
             padding: const EdgeInsets.symmetric(vertical: 10.0),
-            child: Card(
-              color: Color.fromARGB(255, 174, 234, 238),
-              elevation: 2,
-              shape: RoundedRectangleBorder(
-                  borderRadius: BorderRadius.circular(15)),
-              child: ListTile(
-                contentPadding:
-                    EdgeInsets.symmetric(horizontal: 16.0, vertical: 8.0),
-                leading: CircleAvatar(
-                  radius: 30,
-                  backgroundImage: NetworkImage(menteeData['ppic']),
-                ),
-                title: Text(menteeData['fname']),
-                trailing: IconButton(
-                  onPressed: () {
-
-                    Navigator.of(context).push(MaterialPageRoute(
-                        builder: (_) => ChatPage(
-                              mentee: menteeData,
-                            )));
-
-                  },
-                  icon: Icon(Icons.message),
+            child: GestureDetector(
+              onTap: () {
+                Navigator.push(context, MaterialPageRoute(
+                    builder: (context) => ChatPage(mentee: menteeData)));
+              },
+              child: Card(
+                color: Color.fromARGB(255, 174, 234, 238),
+                elevation: 2,
+                shape: RoundedRectangleBorder(
+                    borderRadius: BorderRadius.circular(15)),
+                child: ListTile(
+                  contentPadding:
+                  EdgeInsets.symmetric(horizontal: 16.0, vertical: 8.0),
+                  leading: CircleAvatar(
+                    radius: 30,
+                    backgroundImage: NetworkImage(menteeData['ppic']),
+                  ),
+                  title: Center(child: Text(menteeData['fname'],style: Styles.headline2.copyWith(color: Colors.black,fontSize: 20),)),
                 ),
               ),
             ),

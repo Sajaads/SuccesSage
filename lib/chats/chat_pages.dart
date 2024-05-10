@@ -1,3 +1,4 @@
+
 import 'dart:async';
 
 import 'package:cloud_firestore/cloud_firestore.dart';
@@ -7,6 +8,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart' show rootBundle;
 import 'package:flutter_chat_types/flutter_chat_types.dart'
     as types; // Import User from flutter_chat_types
+
 import 'package:flutter_chat_ui/flutter_chat_ui.dart';
 import 'package:http/http.dart' as http;
 import 'package:image_picker/image_picker.dart';
@@ -14,6 +16,7 @@ import 'package:intl/date_symbol_data_local.dart';
 import 'package:mime/mime.dart';
 import 'package:open_filex/open_filex.dart';
 import 'package:path_provider/path_provider.dart';
+
 
 import 'package:uuid/uuid.dart';
 
@@ -25,11 +28,13 @@ class ChatPage extends StatefulWidget {
 
   const ChatPage({Key? key, required this.mentee}) : super(key: key);
 
+
   @override
   State<ChatPage> createState() => _ChatPageState();
 }
 
 class _ChatPageState extends State<ChatPage> {
+
   final FirebaseFirestore firestore = FirebaseFirestore.instance;
   late String id;
   final ChatService _chatService = ChatService();
@@ -37,9 +42,11 @@ class _ChatPageState extends State<ChatPage> {
   late FirebaseAuth.User _user;
   StreamSubscription<QuerySnapshot>? _messagesSubscription;
 
+
   @override
   void initState() {
     super.initState();
+
     id = widget.mentee?['uid'] ?? '';
     _user = FirebaseAuth.FirebaseAuth.instance.currentUser!;
     _loadMessages();
@@ -78,11 +85,13 @@ class _ChatPageState extends State<ChatPage> {
     throw Exception('Invalid message type');
   }
 
+
   void _addMessage(types.Message message) {
     setState(() {
       _messages.insert(0, message);
     });
   }
+
 
   // void _handleAttachmentPressed() {
   //   showModalBottomSheet<void>(
@@ -127,6 +136,7 @@ class _ChatPageState extends State<ChatPage> {
   //   );
   // }
 
+
   void _handleFileSelection() async {
     final result = await FilePicker.platform.pickFiles(
       type: FileType.any,
@@ -134,7 +144,9 @@ class _ChatPageState extends State<ChatPage> {
 
     if (result != null && result.files.single.path != null) {
       final message = types.FileMessage(
+
         author: types.User(id: _user.uid),
+
         createdAt: DateTime.now().millisecondsSinceEpoch,
         id: const Uuid().v4(),
         mimeType: lookupMimeType(result.files.single.path!),
@@ -159,7 +171,9 @@ class _ChatPageState extends State<ChatPage> {
       final image = await decodeImageFromList(bytes);
 
       final message = types.ImageMessage(
+
         author: types.User(id: _user.uid),
+
         createdAt: DateTime.now().millisecondsSinceEpoch,
         height: image.height.toDouble(),
         id: const Uuid().v4(),
@@ -180,9 +194,11 @@ class _ChatPageState extends State<ChatPage> {
       if (message.uri.startsWith('http')) {
         try {
           final index =
+
               _messages.indexWhere((element) => element.id == message.id);
           final updatedMessage =
               (_messages[index] as types.FileMessage).copyWith(
+
             isLoading: true,
           );
 
@@ -195,11 +211,13 @@ class _ChatPageState extends State<ChatPage> {
           final bytes = request.bodyBytes;
           final documentsDir = (await getApplicationDocumentsDirectory()).path;
           localPath = '$documentsDir/${message.name}';
+
         } finally {
           final index =
               _messages.indexWhere((element) => element.id == message.id);
           final updatedMessage =
               (_messages[index] as types.FileMessage).copyWith(
+
             isLoading: null,
           );
 
@@ -214,9 +232,11 @@ class _ChatPageState extends State<ChatPage> {
   }
 
   void _handlePreviewDataFetched(
+
     types.TextMessage message,
     types.PreviewData previewData,
   ) {
+
     final index = _messages.indexWhere((element) => element.id == message.id);
     final updatedMessage = (_messages[index] as types.TextMessage).copyWith(
       previewData: previewData,
@@ -229,13 +249,16 @@ class _ChatPageState extends State<ChatPage> {
 
   void _handleSendPressed(types.PartialText message) {
     final textMessage = types.TextMessage(
+
       author: types.User(id: _user.uid),
+
       createdAt: DateTime.now().millisecondsSinceEpoch,
       id: const Uuid().v4(),
       text: message.text,
     );
 
     _addMessage(textMessage); // Add message to local storage
+
     _chatService.sendMessage(
         convertToMessageModel(textMessage)); // Store message in Firestore
   }
@@ -354,3 +377,4 @@ class _ChatPageState extends State<ChatPage> {
     }
   }
 }
+

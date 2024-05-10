@@ -3,6 +3,7 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 class Messages {
   final String id;
   final String text;
+
   final String from;
   final String to;
   final DateTime createdAt;
@@ -16,10 +17,12 @@ class Messages {
       required this.createdAt,
       required this.type});
 
+
   Map<String, dynamic> toMap() {
     return {
       'id': id,
       'text': text,
+
       'from': from,
       'to': to,
       'createdAt': createdAt,
@@ -44,3 +47,4 @@ class Messages {
     }
   }
 }
+

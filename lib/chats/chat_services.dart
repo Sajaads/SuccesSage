@@ -1,9 +1,11 @@
+
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 
 import 'messages.dart';
 
 class ChatService {
+
   //get instance of firestore & auth
   final FirebaseFirestore _firestore = FirebaseFirestore.instance;
   final FirebaseAuth _auth = FirebaseAuth.instance;
@@ -22,6 +24,7 @@ class ChatService {
   }
 
   //send message
+
   Future<void> sendMessage(Messages message) async {
     try {
       // Get a reference to the Firestore collection
@@ -60,3 +63,4 @@ class ChatService {
         .snapshots();
   }
 }
+

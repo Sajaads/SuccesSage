@@ -1,6 +1,8 @@
-import 'package:successage/chats/messages.dart';
+
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
+
+import 'messages.dart';
 
 class ChatService {
 
@@ -22,27 +24,43 @@ class ChatService {
   }
 
   //send message
-  void sendMessage(Messages message) async {
+
+  Future<void> sendMessage(Messages message) async {
     try {
-      await FirebaseFirestore.instance.collection('message').add(message.toMap());
-      print('Message stored successfully');
+      // Get a reference to the Firestore collection
+      CollectionReference messagesCollection =
+          FirebaseFirestore.instance.collection('messages');
+
+      // Create a document name combining mentor and mentee UIDs
+      String combinedId = '${message.from}_${message.to}';
+
+      // Add the message to the subcollection under the combined mentor and mentee UID
+      await messagesCollection
+          .doc(combinedId)
+          .collection('chats')
+          .add(message.toMap());
     } catch (e) {
-      print('Error storing message: $e');
+      // Handle errors here
+      print('Error sending message: $e');
     }
   }
 
-
   //get message
-  Stream<QuerySnapshot> getMessages(String userID,otherUserID){
-    //construct a chatroom ID for the two users
-    List<String> ids = [userID,otherUserID];
-    ids.sort();
+  Stream<QuerySnapshot> getMessages(String userID, otherUserID) {
+    // Construct a chatroom ID for the two users
+    List<String> ids = [userID, otherUserID];
     String chatRoomID = ids.join('_');
-    return _firestore
-        .collection("chat_rooms")
-        .doc(chatRoomID)
+
+    // Get a reference to the subcollection containing messages
+    CollectionReference messagesCollection = FirebaseFirestore.instance
         .collection("messages")
-        .orderBy("timestamp",descending: false)
+        .doc(chatRoomID)
+        .collection('messages');
+
+    // Query the messages in descending order of creation time
+    return messagesCollection
+        .orderBy("createdAt", descending: true)
         .snapshots();
   }
 }
+

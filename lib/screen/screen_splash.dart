@@ -18,6 +18,7 @@ class _ScreenSplashState extends State<ScreenSplash> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+        backgroundColor: Colors.white,
         body: Center(child: Image.asset('assets/Logo_SucesSage.png')));
   }
 }

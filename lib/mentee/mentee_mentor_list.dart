@@ -1,10 +1,13 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:successage/mentee/mentee_profile.dart';
+import 'package:successage/models/mentordb.dart';
 import 'package:successage/utils/app_layouts.dart';
 
 class MentorList extends StatefulWidget {
-  final Map<String,dynamic> Mentor;
-  const MentorList({Key? key,required this.Mentor}) : super(key: key);
+  final Map<String, dynamic> Mentor;
+  final String menteeid;
+  const MentorList({Key? key, required this.Mentor, required this.menteeid});
 
   @override
   State<MentorList> createState() => _MentorListState();
@@ -13,47 +16,31 @@ class MentorList extends StatefulWidget {
 class _MentorListState extends State<MentorList> {
   @override
   Widget build(BuildContext context) {
-    return Container(
-      child: Row(
-        mainAxisAlignment: MainAxisAlignment.spaceBetween,
-        children: [
-          Container(
-            height: 50,
-            width: 50,
-            decoration: BoxDecoration(
-                borderRadius: BorderRadius.circular(10),
-                image: const DecorationImage(
-                    fit: BoxFit.fitHeight,
-                    image: AssetImage(
-                        "assets/virat.jpg"
-
-                    )
-                )
-            ),
-          ),
-          Column(
-            children: [
-              Text(widget.Mentor['name'],style: Styles.headline2,),
-              SizedBox(height: 3,),
-              Text(widget.Mentor['title'],style: Styles.headline3,),
-            ],
-          ),
-          Container(
-            decoration: BoxDecoration(
-              borderRadius: BorderRadius.circular(10),
-              border: Border.all(
-                color: Colors.blue, // Border color
-                width: 2, // Border width
-              ),
-            ),
-            child: Row(
-              children: [
-                Icon(Icons.star,color: Colors.orange,),
-                Text(widget.Mentor['rating'].toString())
-              ],
-            ),
-          )
-        ],
+    return Card(
+      color: Color.fromARGB(255, 87, 79, 62),
+      elevation: 2,
+      child: ListTile(
+        onTap: () {
+          Navigator.of(context).push(MaterialPageRoute(
+              builder: (context) => MentorProfile(
+                  Mentor: widget.Mentor, menteeid: widget.menteeid)));
+        },
+        contentPadding: EdgeInsets.symmetric(vertical: 8, horizontal: 18),
+        leading: CircleAvatar(
+          radius: 30,
+          backgroundImage: NetworkImage(widget.Mentor['ppic']),
+        ),
+        title: Text(
+          '${widget.Mentor['fname']} ${widget.Mentor['lname']}',
+          style: TextStyle(
+              fontSize: 18, fontWeight: FontWeight.bold, color: Colors.white),
+        ),
+        subtitle: Text(
+          '${widget.Mentor['designation']}',
+          style: TextStyle(color: Colors.grey),
+        ),
+        // You can add trailing widgets if needed
+        // trailing: Icon(Icons.arrow_forward),
       ),
     );
   }

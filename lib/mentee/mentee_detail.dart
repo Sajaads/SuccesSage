@@ -1,223 +1,198 @@
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
+import 'package:successage/mentee/mentee_reg_success.dart';
+import 'package:successage/mentor/mentor_reg_success.dart';
+import 'package:successage/models/menteeDb.dart';
 
 class MenteeDataCollection extends StatefulWidget {
-  const MenteeDataCollection({super.key});
+  final String uid;
+  String collection;
+  MenteeDataCollection({Key? key, required this.uid, required this.collection});
 
   @override
   State<MenteeDataCollection> createState() => _MenteeDataCollectionState();
 }
 
 class _MenteeDataCollectionState extends State<MenteeDataCollection> {
-  String? _selectedArea;
-  final List<String> _selectedChips = [];
+  String? _selectedFirstOption;
+  List<String> _secondOptions = [];
+  List<String> itembox = [];
+  String? bio;
 
-  void _onChipSelected(String chipName) {
+  void itemselection(String option) {
     setState(() {
-      if (_selectedChips.contains(chipName)) {
-        _selectedChips.remove(chipName);
+      if (itembox.contains(option)) {
+        itembox.remove(option);
       } else {
-        _selectedChips.add(chipName);
+        itembox.add(option);
       }
     });
   }
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      backgroundColor: const Color(0xFF8ECAE6),
-      body: SingleChildScrollView(
-        child: Container(
-          padding: const EdgeInsets.all(16.0),
-          color: const Color(0xFF8ECAE6), // Background color
-          width: double.infinity, // Extend to full width
+    return SafeArea(
+      child: Scaffold(
+        body: SingleChildScrollView(
           child: Column(
-            mainAxisAlignment: MainAxisAlignment.spaceEvenly,
             crossAxisAlignment: CrossAxisAlignment.center,
             children: [
               Image.asset('assets/Logo1.png'),
-              const SizedBox(
-                height: 20,
-              ),
-              const Text(
-                'Choose the area of Interest',
-                style: TextStyle(
-                  fontSize: 18,
-                  color: Colors.black,
+              Padding(
+                padding: const EdgeInsets.all(8.0),
+                child: Text(
+                  'Area of interest:',
+                  style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
                 ),
               ),
-              Wrap(
-                spacing: 8.0,
-                children: [
-                  ChoiceChip(
-                    label: const Text('Optionsbfhsaj'),
-                    selected: _selectedArea == 'Optionsbfhsaj',
-                    onSelected: (selected) {
-                      setState(() {
-                        _selectedArea = selected ? 'Optionsbfhsaj' : null;
-                      });
-                    },
-                  ),
-                  ChoiceChip(
-                    label: const Text('Option'),
-                    selected: _selectedArea == 'Option',
-                    onSelected: (selected) {
-                      setState(() {
-                        _selectedArea = selected ? 'Option' : null;
-                      });
-                    },
-                  ),
-                  ChoiceChip(
-                    label: const Text('Optionsbfhsajmk'),
-                    selected: _selectedArea == 'Optionsbfhsajmk',
-                    onSelected: (selected) {
-                      setState(() {
-                        _selectedArea = selected ? 'Optionsbfhsajmk' : null;
-                      });
-                    },
-                  ),
-                ],
-              ),
-              const SizedBox(
-                height: 20,
-              ),
-              const Text(
-                'Choose the area of Interest',
-                style: TextStyle(
-                  fontSize: 18,
-                  color: Colors.black,
-                ),
-              ),
-              Wrap(
-                spacing: 8.0,
-                children: [
-                  FilterChip(
-                    label: const Text('Optiongvbhnjn'),
-                    selected: _selectedChips.contains('Optiongvbhnjn'),
-                    onSelected: (_) => _onChipSelected('Optiongvbhnjn'),
-                  ),
-                  FilterChip(
-                    label: const Text('Optionkooko2'),
-                    selected: _selectedChips.contains('Optionkooko2'),
-                    onSelected: (_) => _onChipSelected('Optionkooko2'),
-                  ),
-                  FilterChip(
-                    label: const Text('Option 3'),
-                    selected: _selectedChips.contains('Option 3'),
-                    onSelected: (_) => _onChipSelected('Option 3'),
-                  ),
-                  FilterChip(
-                    label: const Text('Option 4'),
-                    selected: _selectedChips.contains('Option 4'),
-                    onSelected: (_) => _onChipSelected('Option 4'),
-                  ),
-                  FilterChip(
-                    label: const Text('Option 5'),
-                    selected: _selectedChips.contains('Option 5'),
-                    onSelected: (_) => _onChipSelected('Option 5'),
-                  ),
-                  FilterChip(
-                    label: const Text('Option 6'),
-                    selected: _selectedChips.contains('Option 6'),
-                    onSelected: (_) => _onChipSelected('Option 6'),
-                  ),
-                  FilterChip(
-                    label: const Text('Option 7'),
-                    selected: _selectedChips.contains('Option 7'),
-                    onSelected: (_) => _onChipSelected('Option 7'),
-                  ),
-                  // Add more FilterChip widgets here
-                ],
-              ),
-              const SizedBox(
-                height: 20,
-              ),
-              const Text(
-                'Choose your dream companies',
-                style: TextStyle(
-                  fontSize: 18,
-                  color: Colors.black,
-                ),
-              ),
-              Wrap(
-                spacing: 8.0,
-                children: [
-                  FilterChip(
-                    label: const Text('Optiongvbhnj'),
-                    selected: _selectedChips.contains('Optiongvbhnj'),
-                    onSelected: (_) => _onChipSelected('Optiongvbhnj'),
-                  ),
-                  FilterChip(
-                    label: const Text('Optiongvbhnjk'),
-                    selected: _selectedChips.contains('Optiongvbhnjk'),
-                    onSelected: (_) => _onChipSelected('Optiongvbhnjk'),
-                  ),
-                  FilterChip(
-                    label: const Text('Option'),
-                    selected: _selectedChips.contains('Option'),
-                    onSelected: (_) => _onChipSelected('Option'),
-                  ),
-                  FilterChip(
-                    label: const Text('OOptionqwerty'),
-                    selected: _selectedChips.contains('OOptionqwerty'),
-                    onSelected: (_) => _onChipSelected('OOptionqwerty'),
-                  ),
-                  FilterChip(
-                    label: const Text('Optionqwer'),
-                    selected: _selectedChips.contains('Optionqwer'),
-                    onSelected: (_) => _onChipSelected('Optionqwer'),
-                  ),
-                  FilterChip(
-                    label: const Text('Optionqwerb'),
-                    selected: _selectedChips.contains('Optionqwerb'),
-                    onSelected: (_) => _onChipSelected('Optionqwerb'),
-                  ),
-                  FilterChip(
-                    label: const Text('Optionqweasdf'),
-                    selected: _selectedChips.contains('Optionqweasdf'),
-                    onSelected: (_) => _onChipSelected('Optionqweasdf'),
-                  ),
-                  // Add more FilterChip widgets here
-                ],
-              ),
-              const SizedBox(
-                height: 20,
-              ),
-              const Text(
-                textAlign: TextAlign.center,
-                'Give a bio so that mentors can understand you well.',
-                style: TextStyle(
-                  fontSize: 18,
-                  color: Colors.black,
-                ),
-              ),
-              TextField(
-                decoration: InputDecoration(
-                  border: OutlineInputBorder(
-                    borderRadius: BorderRadius.circular(20.0),
-                  ),
-                  filled: true,
-                  fillColor: Colors.white,
-                  hintText: 'Type here...',
-                ),
-              ),
-              const SizedBox(
-                height: 20,
-              ),
-              ElevatedButton(
-                onPressed: () {
-                  // Add your button onPressed logic here
+              StreamBuilder<QuerySnapshot>(
+                stream: FirebaseFirestore.instance
+                    .collection('interest')
+                    .snapshots(),
+                builder: (context, snapshot) {
+                  if (!snapshot.hasData) {
+                    return CircularProgressIndicator();
+                  }
+                  final interests =
+                      snapshot.data!.docs.map((doc) => doc.id).toList();
+                  return Padding(
+                    padding: const EdgeInsets.all(8.0),
+                    child: Wrap(
+                      crossAxisAlignment: WrapCrossAlignment.center,
+                      spacing: 10,
+                      children: interests.map((interest) {
+                        return ChoiceChip(
+                          side: BorderSide.none,
+                          elevation: 5,
+                          shadowColor: Colors.black,
+                          label: Text(interest),
+                          selected: _selectedFirstOption == interest,
+                          onSelected: (selected) {
+                            setState(() {
+                              _selectedFirstOption = selected ? interest : null;
+                              if (selected) {
+                                _loadSecondOptions(interest);
+                              } else {
+                                _secondOptions.clear();
+                              }
+                            });
+                          },
+                        );
+                      }).toList(),
+                    ),
+                  );
                 },
-                style: ElevatedButton.styleFrom(
-                  foregroundColor: Colors.white,
-                  backgroundColor:
-                      const Color.fromARGB(255, 2, 48, 71), // Text color
-                ),
-                child: const Text('Submit'),
-              )
+              ),
+              _selectedFirstOption != null
+                  ? Padding(
+                      padding: const EdgeInsets.all(8.0),
+                      child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.center,
+                        children: [
+                          Padding(
+                            padding: const EdgeInsets.all(8.0),
+                            child: Text(
+                              'Topic of interest',
+                              style: TextStyle(
+                                  fontSize: 18, fontWeight: FontWeight.bold),
+                            ),
+                          ),
+                          Wrap(
+                            spacing: 10,
+                            children: _secondOptions.map((option) {
+                              return FilterChip(
+                                side: BorderSide.none,
+                                elevation: 5,
+                                shadowColor: Colors.black,
+                                label: Text(option),
+                                selected: itembox.contains(option),
+                                // Handle selection of second options
+                                onSelected: (selected) {
+                                  // Handle chip selection
+                                  itemselection(option);
+                                },
+                              );
+                            }).toList(),
+                          ),
+                          const SizedBox(
+                            height: 20,
+                          ),
+                          const Text(
+                            textAlign: TextAlign.center,
+                            'Give a bio so that mentors can understand you well.',
+                            style: TextStyle(
+                              fontSize: 18,
+                              color: Colors.black,
+                            ),
+                          ),
+                          SizedBox(
+                            height: 10,
+                          ),
+                          TextField(
+                            decoration: InputDecoration(
+                              border: OutlineInputBorder(
+                                borderRadius: BorderRadius.circular(20.0),
+                              ),
+                              filled: true,
+                              fillColor: Colors.white,
+                              hintText: 'Type here...',
+                            ),
+                            onChanged: (value) {
+                              bio = value;
+                            },
+                          ),
+                          SizedBox(
+                            height: 20,
+                          ),
+                          ElevatedButton(
+                              onPressed: () {
+                                if (_selectedFirstOption != null &&
+                                    bio != null &&
+                                    bio!.isNotEmpty) {
+                                  // Ensure the user has selected an interest and provided a non-null and non-empty bio
+                                  addMenteeinterest(widget.uid,
+                                      bio: bio, interest: _selectedFirstOption);
+                                  Navigator.of(context).push(MaterialPageRoute(
+                                      builder: ((context) => MenteeRegSuccess(
+                                            uid: widget.uid,
+                                            collection: widget.collection,
+                                          ))));
+                                } else {
+                                  // Display a message or perform some action to indicate that the user needs to provide required inputs
+                                  ScaffoldMessenger.of(context)
+                                      .showSnackBar(SnackBar(
+                                    content: Text(
+                                        'Please select an interest and provide a bio.'),
+                                  ));
+                                }
+                              },
+                              child: Text('Submit'))
+                        ],
+                      ),
+                    )
+                  : SizedBox(), // Placeholder if no option selected from first section
             ],
           ),
         ),
       ),
     );
+  }
+
+  void _loadSecondOptions(String interest) {
+    // Fetch data for second section of options based on the selected interest
+    FirebaseFirestore.instance
+        .collection('interest')
+        .doc(interest)
+        .get()
+        .then((doc) {
+      if (doc.exists) {
+        setState(() {
+          _secondOptions = (doc.data() as Map<String, dynamic>)
+              .values
+              .cast<String>()
+              .toList();
+        });
+      }
+    });
   }
 }

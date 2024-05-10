@@ -93,38 +93,94 @@ class _MentorSkillState extends State<MentorSkill> {
                   children: [
                     Padding(
                       padding: const EdgeInsets.all(8.0),
-                      child: Text(
-                        'Specialized In ',
-                        style: TextStyle(
-                            fontSize: 18, fontWeight: FontWeight.bold),
-                      ),
-                    ),
-                    Wrap(
-                      spacing: 10,
-                      children: _secondOptions.map((option) {
-                        return FilterChip(
-                          side: BorderSide.none,
-                          elevation: 5,
-                          shadowColor: Colors.black,
-                          label: Text(option),
-                          selected: itembox.contains(option),
-                          // Handle selection of second options
-                          onSelected: (selected) {
-                            // Handle chip selection
-                            itemselection(option);
-                          },
-                        );
-                      }).toList(),
-                    ),
-                    const SizedBox(
-                      height: 20,
-                    ),
-                    const Text(
-                      textAlign: TextAlign.center,
-                      'Give a bio so that mentees can understand you well.',
-                      style: TextStyle(
-                        fontSize: 18,
-                        color: Colors.black,
+
+                      child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.center,
+                        children: [
+                          Padding(
+                            padding: const EdgeInsets.all(8.0),
+                            child: Text(
+                              'Specialized In ',
+                              style: TextStyle(
+                                  fontSize: 18, fontWeight: FontWeight.bold),
+                            ),
+                          ),
+                          Wrap(
+                            spacing: 10,
+                            children: _secondOptions.map((option) {
+                              return FilterChip(
+                                side: BorderSide.none,
+                                elevation: 5,
+                                shadowColor: Colors.black,
+                                label: Text(option),
+                                selected: itembox.contains(option),
+                                // Handle selection of second options
+                                onSelected: (selected) {
+                                  // Handle chip selection
+                                  itemselection(option);
+                                },
+                              );
+                            }).toList(),
+                          ),
+                          const SizedBox(
+                            height: 20,
+                          ),
+                          const Text(
+                            textAlign: TextAlign.center,
+                            'Give a bio so that mentees can understand you well.',
+                            style: TextStyle(
+                              fontSize: 18,
+                              color: Colors.black,
+                            ),
+                          ),
+                          SizedBox(
+                            height: 10,
+                          ),
+                          TextField(
+                            decoration: InputDecoration(
+                              border: OutlineInputBorder(
+                                borderSide: BorderSide.none,
+                                borderRadius: BorderRadius.circular(20.0),
+                              ),
+                              filled: true,
+                              fillColor: Colors.white,
+                              hintText: 'Type here...',
+                            ),
+                            onChanged: (value) {
+                              bio = value;
+                            },
+                          ),
+                          SizedBox(
+                            height: 20,
+                          ),
+                          ElevatedButton(
+                              onPressed: () {
+                                if (_selectedFirstOption != null &&
+                                    bio != null &&
+                                    bio!.isNotEmpty) {
+                                  addMentorSkill(widget.uid,
+                                      bio: bio, interest: _selectedFirstOption);
+                                  _fire
+                                      .collection('mentor')
+                                      .doc(widget.uid)
+                                      .update({"verified": 'no'}).then(
+                                          (value) => Navigator.of(context).push(
+                                              MaterialPageRoute(
+                                                  builder: (context) =>
+                                                      MentorRegistrationSuccess(
+                                                        uid: widget.uid,
+                                                      ))));
+                                } else {
+                                  ScaffoldMessenger.of(context)
+                                      .showSnackBar(SnackBar(
+                                    content: Text(
+                                        'Please select an interest and provide a bio.'),
+                                  ));
+                                }
+                              },
+                              child: Text('Submit'))
+                        ],
+
                       ),
                     ),
                     SizedBox(

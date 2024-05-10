@@ -1,6 +1,7 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
+import 'package:successage/chats/chat_pages.dart';
 
 class MenteeList extends StatefulWidget {
   final Map<String, dynamic> schedulelist;
@@ -84,8 +85,14 @@ class _MenteeListState extends State<MenteeList> {
                 ),
                 Padding(
                   padding: const EdgeInsets.only(left: 20),
-                  child:
-                      IconButton(onPressed: () {}, icon: Icon(Icons.message)),
+                  child: IconButton(
+                      onPressed: () {
+                        Navigator.of(context).push(MaterialPageRoute(
+                            builder: (_) => ChatPage(
+                                  mentee: menteeData,
+                                )));
+                      },
+                      icon: Icon(Icons.message)),
                 )
               ],
             ),

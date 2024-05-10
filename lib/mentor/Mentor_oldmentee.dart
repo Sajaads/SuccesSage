@@ -59,12 +59,12 @@ class _MentorOldMenteeState extends State<MentorOldMentee> {
                 title: Text(menteeData['fname']),
                 trailing: IconButton(
                   onPressed: () {
-                    Navigator.push(
-                      context,
-                      MaterialPageRoute(
-                        builder: (context) => ChatPage(mentee: menteeData),
-                      ),
-                    );
+
+                    Navigator.of(context).push(MaterialPageRoute(
+                        builder: (_) => ChatPage(
+                              mentee: menteeData,
+                            )));
+
                   },
                   icon: Icon(Icons.message),
                 ),

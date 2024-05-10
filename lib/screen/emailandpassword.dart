@@ -1,12 +1,10 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
-import 'package:successage/mentee/mentee_detail.dart';
 import 'package:successage/mentee/mentee_home_screen.dart';
 import 'package:successage/mentor/mentor_home_screen.dart';
 import 'package:successage/mentor/mentor_personal_data.dart';
 import 'package:successage/screen/auth.dart';
-import 'package:successage/screen/navbar.dart';
 import 'package:successage/screen/screen_mentee_info.dart';
 
 class EmailAndPassword extends StatefulWidget {
@@ -147,6 +145,13 @@ class _EmailAndPasswordState extends State<EmailAndPassword> {
       }
     } catch (e) {
       // Handle any errors here
+      if (e is FirebaseAuthException && e.code == 'email-already-in-use') {
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(
+              content: Text(
+                  'This email is already in use. Please use a different email or sign in.')),
+        );
+      }
       print('Error during signup: $e');
       ScaffoldMessenger.of(context).showSnackBar(
         SnackBar(content: Text('Error signing up. Please try again.')),

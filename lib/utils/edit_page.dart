@@ -10,6 +10,7 @@ import 'package:flutter/widgets.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:successage/utils/textfield.dart';
 
+import '../models/menteeDb.dart';
 import 'app_layouts.dart';
 
 class EditPage extends StatefulWidget {
@@ -20,9 +21,12 @@ class EditPage extends StatefulWidget {
 }
 
 class _EditPageState extends State<EditPage> {
-
-  TextEditingController textController1 = TextEditingController();
-  TextEditingController textController2 = TextEditingController();
+  TextEditingController _fname = TextEditingController();
+  TextEditingController _lname = TextEditingController();
+  TextEditingController _bio = TextEditingController();
+  TextEditingController _email = TextEditingController();
+  TextEditingController _designation = TextEditingController();
+  TextEditingController _phone_no = TextEditingController();
 
   String? fname;
   String? lname;
@@ -38,36 +42,38 @@ class _EditPageState extends State<EditPage> {
   Future getImageFromSource(ImageSource source) async {
     final pickedFile = await picker.pickImage(source: source);
     setState(() {
-      if(pickedFile!=null){
-        _image= File(pickedFile.path);
-      }else{
+      if (pickedFile != null) {
+        _image = File(pickedFile.path);
+      } else {
         print("No Image Selected");
       }
     });
   }
-  Future<void> uploadImageToFirebaseStorage() async{
-    try{
-      if(_image!=null){
+
+  Future<void> uploadImageToFirebaseStorage() async {
+    try {
+      if (_image != null) {
         firebase_storage.Reference ref = firebase_storage
-        .FirebaseStorage.instance
-        .ref()
-        .child('images')
-        .child(
-          'mentor_profile_${DateTime.now().millisecondsSinceEpoch}.jpg');
+            .FirebaseStorage.instance
+            .ref()
+            .child('images')
+            .child(
+                'mentor_profile_${DateTime.now().millisecondsSinceEpoch}.jpg');
         await ref.putFile(_image!);
 
         String downloadURL = await ref.getDownloadURL();
 
         setState(() {
-          _imageUrl=downloadURL;
+          _imageUrl = downloadURL;
         });
-      }else{
+      } else {
         print("No image selected .");
       }
-    }catch(e){
-        print("Error uploading image : $e");
+    } catch (e) {
+      print("Error uploading image : $e");
     }
   }
+
   late FirebaseAuth.User _user;
 
   @override
@@ -144,22 +150,95 @@ class _EditPageState extends State<EditPage> {
                               ),
                             ))
                       ]),
-                      SizedBox(height: 14,),
+                      SizedBox(
+                        height: 14,
+                      ),
                       Row(
                         children: [
                           Expanded(
                             child: Padding(
-                              padding: const EdgeInsets.symmetric(horizontal: 8.0),
-                              child: MyTextField(textController: textController1,),
+                              padding:
+                                  const EdgeInsets.symmetric(horizontal: 8.0),
+                              child: MyTextField(
+                                textController: _fname,
+                                hintText: snapshot.data!['fname'],
+                              ),
                             ),
                           ),
                           Expanded(
                             child: Padding(
-                              padding: const EdgeInsets.symmetric(horizontal: 8.0),
-                              child: MyTextField(textController: textController2,),
+                              padding:
+                                  const EdgeInsets.symmetric(horizontal: 8.0),
+                              child: MyTextField(
+                                textController: _lname,
+                                hintText: snapshot.data!['lname'],
+                              ),
                             ),
                           ),
                         ],
+                      ),
+                      SizedBox(
+                        height: 10,
+                      ),
+                      MyTextField(
+                          textController: _phone_no,
+                          hintText: snapshot.data!['phone no'].toString()),
+                      SizedBox(
+                        height: 10,
+                      ),
+                      MyTextField(
+                          textController: _email,
+                          hintText: snapshot.data!['email']),
+                      SizedBox(
+                        height: 10,
+                      ),
+                      MyTextField(
+                          textController: _bio,
+                          hintText: snapshot.data!['bio']),
+                      SizedBox(
+                        height: 10,
+                      ),
+                      MyTextField(
+                          textController: _designation,
+                          hintText: snapshot.data!['designation']),
+                      SizedBox(
+                        height: 10,
+                      ),
+                      ElevatedButton(
+                        onPressed: () async{
+                            checkbutton();
+                            setState(() {
+                              _loading=true;
+                            });
+                            await uploadImageToFirebaseStorage();
+                            if(button &&_imageUrl != null){
+                              addMenteeToFirestore(
+                                _user.uid,
+                                fname: fname,
+                                lname: lname,
+                                phnno: phnno,
+                                email: mail,
+                                edq: edq,
+                                ppic: _imageUrl!,
+                              );
+                            }
+                        },
+                        style: ElevatedButton.styleFrom(
+                            backgroundColor: Colors.green,
+                            elevation: 4,
+                            shape: RoundedRectangleBorder(
+                                borderRadius: BorderRadius.circular(10))),
+                        child: Padding(
+                          padding: const EdgeInsets.symmetric(
+                              vertical: 12, horizontal: 24),
+                          child: Text(
+                            'Save',
+                            style: TextStyle(
+                                color: Colors.white,
+                                fontWeight: FontWeight.bold,
+                                fontSize: 16),
+                          ),
+                        ),
                       )
                     ],
                   ),
@@ -170,5 +249,18 @@ class _EditPageState extends State<EditPage> {
         ),
       ),
     ));
+  }
+  void checkbutton() {
+    setState(() {
+      button = fname != null &&
+          fname!.isNotEmpty &&
+          lname != null &&
+          lname!.isNotEmpty &&
+          mail != null &&
+          mail!.isNotEmpty &&
+          phnno != null &&
+          edq != null &&
+          edq!.isNotEmpty;
+    });
   }
 }

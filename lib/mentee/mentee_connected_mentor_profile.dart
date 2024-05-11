@@ -1,6 +1,7 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
+import 'package:successage/chats/chat_pages.dart';
 import 'package:successage/utils/app_layouts.dart';
 import 'package:vs_scrollbar/vs_scrollbar.dart';
 
@@ -53,7 +54,11 @@ class Menteeconnectedmentorprofile extends StatelessWidget {
                               height: 20,
                             ),
                             ElevatedButton(
-                              onPressed: () {},
+                              onPressed: () {
+                                Navigator.of(context).push(MaterialPageRoute(
+                                    builder: (_) =>
+                                        ChatPage(otheruser: Mentor)));
+                              },
                               style: ElevatedButton.styleFrom(
                                 backgroundColor:
                                     const Color.fromARGB(255, 2, 48, 71),

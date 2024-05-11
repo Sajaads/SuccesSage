@@ -29,75 +29,80 @@ class HighlightedMentee extends StatelessWidget {
               color: Color.fromARGB(255, 153, 202, 223),
               borderRadius: BorderRadius.circular(12),
             ),
-            child: Column(
-              children: <Widget>[
-                Row(
-                  children: [
-                    Padding(
-                      padding:
-                          const EdgeInsets.only(left: 25, top: 20, right: 20),
-                      child: CircleAvatar(
-                        radius: 40,
-                        backgroundImage: NetworkImage(Mentor['ppic']),
-                      ),
-                    ),
-                    SizedBox(
-                      width: 15,
-                    ),
-                    Padding(
-                      padding: const EdgeInsets.only(top: 20),
-                      child: Column(
-                        children: [
-                          Text(
-                            '${Mentor['fname']} ${Mentor['lname']}',
-                            style: TextStyle(
-                                fontSize: 20, fontWeight: FontWeight.bold),
-                          ),
-                          Text('${Mentor['designation']}'),
-                          SizedBox(height: 10),
-                          Text('${Mentor['bio']}')
-                        ],
-                      ),
-                    ),
-                  ],
-                ),
-                SizedBox(height: 10),
-                Row(
-                  mainAxisAlignment:
-                      MainAxisAlignment.spaceEvenly, // Adjust alignment here
-                  children: [
-                    Padding(
-                      padding: const EdgeInsets.all(8.0),
-                      child: ElevatedButton(
-                        onPressed: () {
-                          Navigator.of(context)
-                              .push(MaterialPageRoute(builder: ((context) {
-                            return MentorProfile(
-                              Mentor: Mentor,
-                              menteeid: menteeid,
-                            );
-                          })));
-                        },
-                        style: ElevatedButton.styleFrom(
-                          backgroundColor: const Color.fromARGB(
-                              255, 2, 48, 71), // Stylish button color
-                          padding: EdgeInsets.symmetric(
-                              horizontal: 80, vertical: 10), // Button padding
-                          shape: RoundedRectangleBorder(
-                            borderRadius: BorderRadius.circular(
-                                30), // Rounded button corners
-                          ),
-                          elevation: 10,
-                        ),
-                        child: Text(
-                          'View Profile',
-                          style: TextStyle(color: Colors.white),
+            child: SingleChildScrollView(
+              // Wrap with SingleChildScrollView
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: <Widget>[
+                  Row(
+                    children: [
+                      Padding(
+                        padding:
+                            const EdgeInsets.only(left: 25, top: 20, right: 20),
+                        child: CircleAvatar(
+                          radius: 40,
+                          backgroundImage: NetworkImage(Mentor['ppic']),
                         ),
                       ),
-                    ),
-                  ],
-                ),
-              ],
+                      SizedBox(
+                        width: 15,
+                      ),
+                      Expanded(
+                        child: Padding(
+                          padding: const EdgeInsets.only(top: 20),
+                          child: Column(
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            children: [
+                              Text(
+                                '${Mentor['fname']} ${Mentor['lname']}',
+                                style: TextStyle(
+                                    fontSize: 20, fontWeight: FontWeight.bold),
+                              ),
+                              Text('${Mentor['designation']}'),
+                              SizedBox(height: 10),
+                              Text('${Mentor['bio']}')
+                            ],
+                          ),
+                        ),
+                      ),
+                    ],
+                  ),
+                  SizedBox(height: 10),
+                  Row(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: [
+                      Padding(
+                        padding: const EdgeInsets.all(8.0),
+                        child: ElevatedButton(
+                          onPressed: () {
+                            Navigator.of(context)
+                                .push(MaterialPageRoute(builder: ((context) {
+                              return MentorProfile(
+                                Mentor: Mentor,
+                                menteeid: menteeid,
+                              );
+                            })));
+                          },
+                          style: ElevatedButton.styleFrom(
+                            backgroundColor:
+                                const Color.fromARGB(255, 2, 48, 71),
+                            padding: EdgeInsets.symmetric(
+                                horizontal: 80, vertical: 10),
+                            shape: RoundedRectangleBorder(
+                              borderRadius: BorderRadius.circular(30),
+                            ),
+                            elevation: 10,
+                          ),
+                          child: Text(
+                            'View Profile',
+                            style: TextStyle(color: Colors.white),
+                          ),
+                        ),
+                      ),
+                    ],
+                  ),
+                ],
+              ),
             ),
           ),
         ),

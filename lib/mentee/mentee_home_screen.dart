@@ -158,10 +158,13 @@ class _HomeMenteeState extends State<HomeMentee> {
         .where('status', isEqualTo: 'connect')
         .get();
 
-    List<String> connectedMentorIds =
-        snapshot.docs.map((doc) => doc['mentorid'] as String).toList();
-
-    return connectedMentorIds;
+    if (snapshot.docs.isNotEmpty) {
+      List<String> connectedMentorIds =
+          snapshot.docs.map((doc) => doc['mentorid'] as String).toList();
+      return connectedMentorIds;
+    } else {
+      return []; // Return an empty list if no connected mentors found
+    }
   }
 
   @override
@@ -307,7 +310,11 @@ class _HomeMenteeState extends State<HomeMentee> {
                       );
                     } else if (snapshot.hasError) {
                       return Center(
-                        child: Text('Error: ${snapshot.error}'),
+                        child: Padding(
+                          padding: const EdgeInsets.all(8.0),
+                          child: Text(
+                              'Currently, there are no connected mentors .'),
+                        ),
                       );
                     } else if (snapshot.data!.isEmpty) {
                       return Center(

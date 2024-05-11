@@ -46,8 +46,10 @@ class _ChatHeaderState extends State<ChatHeader> {
             padding: const EdgeInsets.symmetric(vertical: 10.0),
             child: GestureDetector(
               onTap: () {
-                Navigator.push(context, MaterialPageRoute(
-                    builder: (context) => ChatPage(mentee: menteeData)));
+                Navigator.push(
+                    context,
+                    MaterialPageRoute(
+                        builder: (context) => ChatPage(otheruser: menteeData)));
               },
               child: Card(
                 color: Color.fromARGB(255, 174, 234, 238),
@@ -56,12 +58,17 @@ class _ChatHeaderState extends State<ChatHeader> {
                     borderRadius: BorderRadius.circular(15)),
                 child: ListTile(
                   contentPadding:
-                  EdgeInsets.symmetric(horizontal: 16.0, vertical: 8.0),
+                      EdgeInsets.symmetric(horizontal: 16.0, vertical: 8.0),
                   leading: CircleAvatar(
                     radius: 30,
                     backgroundImage: NetworkImage(menteeData['ppic']),
                   ),
-                  title: Center(child: Text(menteeData['fname'],style: Styles.headline2.copyWith(color: Colors.black,fontSize: 20),)),
+                  title: Center(
+                      child: Text(
+                    menteeData['fname'],
+                    style: Styles.headline2
+                        .copyWith(color: Colors.black, fontSize: 20),
+                  )),
                 ),
               ),
             ),

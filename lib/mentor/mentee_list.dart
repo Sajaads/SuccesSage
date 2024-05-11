@@ -89,7 +89,7 @@ class _MenteeListState extends State<MenteeList> {
                       onPressed: () {
                         Navigator.of(context).push(MaterialPageRoute(
                             builder: (_) => ChatPage(
-                                  mentee: menteeData,
+                                  otheruser: menteeData,
                                 )));
                       },
                       icon: Icon(Icons.message)),

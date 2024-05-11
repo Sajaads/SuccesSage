@@ -21,6 +21,7 @@ class _EmailAndPasswordState extends State<EmailAndPassword> {
   final TextEditingController _emailController = TextEditingController();
   final TextEditingController _passwordController = TextEditingController();
   bool _isPasswordVisible = false;
+  bool _isLoading = false;
 
   AuthService auth = AuthService();
 
@@ -74,13 +75,21 @@ class _EmailAndPasswordState extends State<EmailAndPassword> {
                   ),
                   SizedBox(height: 20),
                   ElevatedButton(
-                    onPressed: () async {
-                      if (widget.loginorsignup == 'signup') {
-                        _signUp();
-                      } else {
-                        _signIn();
-                      }
-                    },
+                    onPressed: _isLoading
+                        ? null
+                        : () async {
+                            setState(() {
+                              _isLoading = true;
+                            });
+                            if (widget.loginorsignup == 'signup') {
+                              await _signUp();
+                            } else {
+                              await _signIn();
+                            }
+                            setState(() {
+                              _isLoading = false;
+                            });
+                          },
                     style: ElevatedButton.styleFrom(
                         backgroundColor: const Color.fromARGB(
                             255, 2, 48, 71), // Stylish button color
@@ -91,10 +100,14 @@ class _EmailAndPasswordState extends State<EmailAndPassword> {
                               30), // Rounded button corners
                         ),
                         elevation: 10),
-                    child: Text(
-                      widget.loginorsignup == 'signup' ? 'Signup' : 'Login',
-                      style: TextStyle(color: Colors.white),
-                    ),
+                    child: _isLoading
+                        ? CircularProgressIndicator() // Show circular progress indicator if loading
+                        : Text(
+                            widget.loginorsignup == 'signup'
+                                ? 'Signup'
+                                : 'Login',
+                            style: TextStyle(color: Colors.white),
+                          ),
                   ),
                 ],
               ),

@@ -4,8 +4,9 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
 import 'package:successage/chats/chat_list.dart';
+import 'package:successage/mentor/reviews.dart';
 import 'package:successage/screen/auth.dart';
-import 'package:successage/utils/profile_page.dart';
+import 'package:successage/mentor/profile_page.dart';
 import 'package:successage/utils/setting_page.dart';
 
 import '../screen/screen_mentor_or_mentee.dart';
@@ -116,7 +117,7 @@ class _MyDrawerState extends State<MyDrawer> {
                       ),
                     ),
                     Padding(
-                      padding: const EdgeInsets.only(left: 25, bottom: 25),
+                      padding: const EdgeInsets.only(left: 25,),
                       child: ListTile(
                         title: const Text("C H A T S"),
                         leading: const Icon(Icons.chat),
@@ -127,7 +128,20 @@ class _MyDrawerState extends State<MyDrawer> {
                           ));
                         },
                       ),
-                    )
+                    ),
+                    Padding(
+                      padding: const EdgeInsets.only(left: 25, bottom: 25),
+                      child: ListTile(
+                        title: const Text("R E V I E W S"),
+                        leading: const Icon(Icons.rate_review),
+                        onTap: () {
+                          Navigator.pop(context);
+                          Navigator.push(context, MaterialPageRoute(
+                            builder: (context) => const Reviews(),
+                          ));
+                        },
+                      ),
+                    ),
                   ],
                 ),
                 Padding(

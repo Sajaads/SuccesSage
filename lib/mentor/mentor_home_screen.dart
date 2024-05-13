@@ -7,9 +7,13 @@ import 'package:successage/mentor/mentor_schedule.dart';
 import 'package:successage/mentor/request_of_mentee.dart';
 import 'package:successage/screen/screen_mentor_or_mentee.dart';
 import 'package:successage/utils/app_layouts.dart';
-import 'package:successage/utils/drawer.dart';
+import 'package:successage/mentor/drawer.dart';
+import 'package:successage/mentor/drawer.dart';
 import 'package:vs_scrollbar/vs_scrollbar.dart';
 import 'package:successage/screen/auth.dart';
+
+import 'drawer.dart';
+
 
 class MentorHomeScreen extends StatefulWidget {
   final String mentorid;
@@ -24,6 +28,7 @@ class _MentorHomeScreenState extends State<MentorHomeScreen> {
   late Stream<Map<String, dynamic>> _mentorDataStream;
   late Stream<List<Map<String, dynamic>>> _connectionRequestsStream;
   late Stream<List<Map<String, dynamic>>> _connectedMenteeStream;
+  final GlobalKey<ScaffoldState> _scaffoldKey = GlobalKey<ScaffoldState>();
   AuthService auth = AuthService();
 
   @override
@@ -76,7 +81,8 @@ class _MentorHomeScreenState extends State<MentorHomeScreen> {
   Widget build(BuildContext context) {
     return SafeArea(
       child: Scaffold(
-        appBar: CustomAppBar(title: 'SuccesSage'),
+        key: _scaffoldKey,
+        appBar: CustomAppBar(title: 'SuccesSage',onDrawerIconTap: (){_scaffoldKey.currentState?.openDrawer();}),
         drawer: MyDrawer(),
         backgroundColor: Theme.of(context).colorScheme.background,
         body: SingleChildScrollView(

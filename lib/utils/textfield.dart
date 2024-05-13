@@ -12,23 +12,24 @@ class MyTextField extends StatefulWidget {
 }
 
 class _MyTextFieldState extends State<MyTextField> {
-  bool isEditing = false;
 
   @override
   Widget build(BuildContext context) {
-    return TextField(
-      controller: widget.textController,
-      readOnly: !isEditing,
-      decoration: InputDecoration(
+    return Container(
+      padding: EdgeInsets.symmetric(horizontal: 16, vertical: 8),
+      margin: EdgeInsets.symmetric(vertical: 4),
+      decoration: BoxDecoration(
+        color: Colors.grey[200], // Background color
+        borderRadius: BorderRadius.circular(10), // Rounded corners
+      ),
+      child: TextField(
+        controller: widget.textController,
+        readOnly: false,
+        decoration: InputDecoration(
           hintText: widget.hintText,
-          suffixIcon: IconButton(onPressed: () {setState(() {
-            isEditing=!isEditing;
-          }
-          );},
-              icon: Icon(Icons.edit)),
-        fillColor: Colors.white,
-        filled: true
-
+          border: InputBorder.none, // Remove border
+          contentPadding: EdgeInsets.zero, // Remove default padding
+        ),
       ),
     );
   }

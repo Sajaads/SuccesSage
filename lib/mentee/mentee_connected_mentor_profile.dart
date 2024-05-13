@@ -4,6 +4,8 @@ import 'package:intl/intl.dart';
 import 'package:successage/utils/app_layouts.dart';
 import 'package:vs_scrollbar/vs_scrollbar.dart';
 
+import 'mentee_commentDialog.dart';
+
 class Menteeconnectedmentorprofile extends StatelessWidget {
   final Map<String, dynamic> Mentor;
   final String menteeid;
@@ -70,7 +72,16 @@ class Menteeconnectedmentorprofile extends StatelessWidget {
                                 'Message',
                                 style: TextStyle(color: Colors.white),
                               ),
-                            )
+                            ),
+                            ElevatedButton(onPressed: (){
+                              showDialog(
+                                context: context,
+                                builder: (BuildContext context) {
+                                  return CommentDialog(mentorid:Mentor['uid'],menteeid:menteeid,);
+                                },
+                              );
+
+                            }, child: Text("Add Reviews")),
                           ],
                         ),
                       ),

@@ -1,6 +1,5 @@
 import 'dart:async';
 import 'dart:io';
-import 'dart:math';
 
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart' as FirebaseAuth;
@@ -8,10 +7,11 @@ import 'package:firebase_storage/firebase_storage.dart' as firebase_storage;
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
 import 'package:image_picker/image_picker.dart';
+import 'package:successage/mentor/profile_page.dart';
 import 'package:successage/utils/textfield.dart';
 
 import '../models/menteeDb.dart';
-import 'app_layouts.dart';
+import '../utils/app_layouts.dart';
 
 class EditPage extends StatefulWidget {
   const EditPage({Key? key}) : super(key: key);
@@ -21,6 +21,8 @@ class EditPage extends StatefulWidget {
 }
 
 class _EditPageState extends State<EditPage> {
+  bool isEditing = false;
+
   TextEditingController _fname = TextEditingController();
   TextEditingController _lname = TextEditingController();
   TextEditingController _bio = TextEditingController();
@@ -128,15 +130,47 @@ class _EditPageState extends State<EditPage> {
                           ),
                           child: CircleAvatar(
                             radius: 50,
-                            backgroundImage:
-                                NetworkImage(snapshot.data!['ppic']),
+                            backgroundImage: _image != null
+                                ? FileImage(_image!) as ImageProvider
+                                : NetworkImage(snapshot.data!['ppic']),
                           ),
                         ),
                         Positioned(
                             right: 0,
                             bottom: 0,
                             child: GestureDetector(
-                              onTap: () {},
+                              onTap: () {
+                                showModalBottomSheet(
+                                  context: context,
+                                  builder: (BuildContext context) {
+                                    return SafeArea(
+                                      child: Column(
+                                        mainAxisSize: MainAxisSize.min,
+                                        children: <Widget>[
+                                          ListTile(
+                                            leading: Icon(Icons.photo_library),
+                                            title: Text('Choose from Gallery'),
+                                            onTap: () {
+                                              getImageFromSource(
+                                                  ImageSource.gallery);
+                                              Navigator.pop(context);
+                                            },
+                                          ),
+                                          ListTile(
+                                            leading: Icon(Icons.camera_alt),
+                                            title: Text('Take a Photo'),
+                                            onTap: () {
+                                              getImageFromSource(
+                                                  ImageSource.camera);
+                                              Navigator.pop(context);
+                                            },
+                                          ),
+                                        ],
+                                      ),
+                                    );
+                                  },
+                                );
+                              },
                               child: Container(
                                 padding: EdgeInsets.all(8),
                                 decoration: BoxDecoration(
@@ -161,7 +195,7 @@ class _EditPageState extends State<EditPage> {
                                   const EdgeInsets.symmetric(horizontal: 8.0),
                               child: MyTextField(
                                 textController: _fname,
-                                hintText: snapshot.data!['fname'],
+                                hintText: _fname.text.isEmpty ? snapshot.data!['fname'] : '',
                               ),
                             ),
                           ),
@@ -171,7 +205,7 @@ class _EditPageState extends State<EditPage> {
                                   const EdgeInsets.symmetric(horizontal: 8.0),
                               child: MyTextField(
                                 textController: _lname,
-                                hintText: snapshot.data!['lname'],
+                                hintText: _lname.text.isEmpty ? snapshot.data!['lname'] : '',
                               ),
                             ),
                           ),
@@ -180,48 +214,87 @@ class _EditPageState extends State<EditPage> {
                       SizedBox(
                         height: 10,
                       ),
-                      MyTextField(
-                          textController: _phone_no,
-                          hintText: snapshot.data!['phone no'].toString()),
+                      TextField(
+                        controller: _phone_no,
+                        decoration: InputDecoration(
+                          hintText: _phone_no.text.isEmpty
+                              ? snapshot.data!['phone no'].toString()
+                              : null,
+                          filled: true,
+                          fillColor: Colors.white,
+                          border: OutlineInputBorder(
+                            borderRadius: BorderRadius.circular(10.0),
+                          ),
+                          enabledBorder: OutlineInputBorder(
+                            borderSide:
+                                BorderSide(color: Colors.blue, width: 2.0),
+                            borderRadius: BorderRadius.circular(10.0),
+                          ),
+                          focusedBorder: OutlineInputBorder(
+                            borderSide:
+                                BorderSide(color: Colors.blue, width: 2.0),
+                            borderRadius: BorderRadius.circular(10.0),
+                          ),
+                        ),
+                      ),
                       SizedBox(
                         height: 10,
                       ),
                       MyTextField(
                           textController: _email,
-                          hintText: snapshot.data!['email']),
+                          hintText: _email.text.isEmpty ?snapshot.data!['email'].toString() : ''),
                       SizedBox(
                         height: 10,
                       ),
                       MyTextField(
-                          textController: _bio,
-                          hintText: snapshot.data!['bio']),
+                        textController: _bio,
+                        hintText: _bio.text.isEmpty ? snapshot.data!['bio'] : null,
+                      ),
+
                       SizedBox(
                         height: 10,
                       ),
                       MyTextField(
                           textController: _designation,
-                          hintText: snapshot.data!['designation']),
+                          hintText: _designation.text.isEmpty ? snapshot.data!['designation'] : null),
                       SizedBox(
                         height: 10,
                       ),
                       ElevatedButton(
-                        onPressed: () async{
-                            checkbutton();
+                        onPressed: () async {
+                          checkbutton();
+                          setState(() {
+                            _loading = true;
+                          });
+                          await uploadImageToFirebaseStorage();
+                          if (button && _imageUrl != null) {
+                            addMenteeToFirestore(
+                              _user.uid,
+                              fname: _fname.text,
+                              lname: _lname.text,
+                              phnno: phnno,
+                              email: mail,
+                              edq: edq,
+                              ppic: _imageUrl!,
+                            );
+
+                            Navigator.of(context)
+                                .push(MaterialPageRoute(builder: (context) {
+                              return ProfilePage();
+                            }));
                             setState(() {
-                              _loading=true;
+                              _loading = false;
                             });
-                            await uploadImageToFirebaseStorage();
-                            if(button &&_imageUrl != null){
-                              addMenteeToFirestore(
-                                _user.uid,
-                                fname: fname,
-                                lname: lname,
-                                phnno: phnno,
-                                email: mail,
-                                edq: edq,
-                                ppic: _imageUrl!,
-                              );
-                            }
+                          } else {
+                            setState(() {
+                              _loading = false;
+                            });
+                            ScaffoldMessenger.of(context).showSnackBar(SnackBar(
+                              content: Text(
+                                  'Please enter all the fields and upload images'),
+                              duration: Duration(seconds: 2),
+                            ));
+                          }
                         },
                         style: ElevatedButton.styleFrom(
                             backgroundColor: Colors.green,
@@ -250,6 +323,7 @@ class _EditPageState extends State<EditPage> {
       ),
     ));
   }
+
   void checkbutton() {
     setState(() {
       button = fname != null &&

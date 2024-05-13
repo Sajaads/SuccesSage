@@ -5,6 +5,7 @@ import 'package:intl/intl.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:successage/utils/app_layouts.dart';
+import 'package:successage/mentor/drawer.dart';
 
 class FirestoreService {
   final CollectionReference mentorsCollection =
@@ -350,7 +351,8 @@ class _MentorScheduleState extends State<MentorSchedule> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: CustomAppBar(title: 'Schedule Your Sessions'),
+      appBar: CustomAppBar(title: 'Schedule Your Sessions',onDrawerIconTap: (){Scaffold.of(context).openDrawer();},),
+      drawer: MyDrawer(),
       body: Column(
         children: [
           SizedBox(

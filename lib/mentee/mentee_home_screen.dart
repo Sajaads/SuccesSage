@@ -1,12 +1,14 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:successage/mentee/mentee_connectedmentor.dart';
+import 'package:successage/mentee/mentee_drawer.dart';
 import 'package:successage/mentee/mentee_higlighted_mentor.dart';
 import 'package:successage/screen/auth.dart';
 import 'package:successage/screen/screen_mentor_or_mentee.dart';
 import 'package:successage/utils/app_info_list.dart';
 import 'package:successage/mentee/mentee_mentor_list.dart';
 import 'package:successage/utils/app_layouts.dart';
+import 'package:successage/mentor/drawer.dart';
 import 'package:vs_scrollbar/vs_scrollbar.dart';
 
 class HomeMentee extends StatefulWidget {
@@ -24,6 +26,7 @@ class _HomeMenteeState extends State<HomeMentee> {
   late Future<List<Map<String, dynamic>>> _allMentorsFuture;
   late Future<List<Map<String, dynamic>>> _connectedMentorsFuture;
   AuthService auth = AuthService();
+  final GlobalKey<ScaffoldState> _scaffoldKey = GlobalKey<ScaffoldState>();
 
   @override
   void initState() {
@@ -170,7 +173,9 @@ class _HomeMenteeState extends State<HomeMentee> {
       canPop: false,
       child: SafeArea(
         child: Scaffold(
-          appBar: CustomAppBar(title: 'SuccesSage'),
+          key: _scaffoldKey,
+          appBar: CustomAppBar(title: 'SuccesSage',onDrawerIconTap: (){_scaffoldKey.currentState?.openDrawer();}),
+          drawer: MenteeDrawer(),
           backgroundColor: Colors.white,
           body: SingleChildScrollView(
             child: Column(
@@ -386,41 +391,6 @@ class _HomeMenteeState extends State<HomeMentee> {
                 ),
               ],
             ),
-          ),
-          floatingActionButton: FloatingActionButton(
-            onPressed: () {
-              showDialog(
-                context: context,
-                builder: (BuildContext context) {
-                  return AlertDialog(
-                    title: Text('Confirm Sign Out'),
-                    content: Text('Are you sure you want to sign out?'),
-                    actions: <Widget>[
-                      TextButton(
-                        child: Text('No'),
-                        onPressed: () {
-                          Navigator.of(context).pop(); // Close the dialog
-                        },
-                      ),
-                      TextButton(
-                        child: Text('Yes'),
-                        onPressed: () {
-                          auth.signOut();
-                          Navigator.pushAndRemoveUntil(
-                              context,
-                              MaterialPageRoute(
-                                  builder: (context) => ScreenLogin()),
-                              (route) => false);
-                        },
-                      ),
-                    ],
-                  );
-                },
-              );
-            },
-            tooltip: 'Sign Out',
-            child: Icon(Icons.logout),
-            backgroundColor: Colors.red, // Optional: Set your desired color
           ),
         ),
       ),

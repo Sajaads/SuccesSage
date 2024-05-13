@@ -27,8 +27,9 @@ class Styles {
 
 class CustomAppBar extends StatelessWidget implements PreferredSizeWidget {
   final String title;
+  final VoidCallback onDrawerIconTap;
 
-  CustomAppBar({required this.title});
+  CustomAppBar({required this.title,required this.onDrawerIconTap});
 
   @override
   Size get preferredSize => Size.fromHeight(kToolbarHeight);
@@ -43,6 +44,10 @@ class CustomAppBar extends StatelessWidget implements PreferredSizeWidget {
           color: Colors.white,
           fontWeight: FontWeight.bold,
         ),
+      ),
+      leading: IconButton(
+        icon: Icon(Icons.menu),
+        onPressed: onDrawerIconTap,
       ),
       backgroundColor: const Color.fromARGB(255, 2, 48, 71),
       automaticallyImplyLeading: false,

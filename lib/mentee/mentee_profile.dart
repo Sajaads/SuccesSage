@@ -2,6 +2,8 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
 import 'package:successage/mentee/Mentee_Mentor_experience.dart';
+import 'package:successage/mentee/mentee_commentDialog.dart';
+import 'package:successage/mentee/mentee_mentor_reviews.dart';
 import 'package:successage/models/menteeDb.dart';
 import 'package:successage/models/mentordb.dart';
 import 'package:successage/utils//suggestion_button.dart';
@@ -148,7 +150,7 @@ class _MentorProfileState extends State<MentorProfile> {
                               ),
                               Tab(
                                 child: Text(
-                                  "Experience 2",
+                                  "Reviews",
                                   style: Styles.headline2,
                                 ),
                               )
@@ -174,10 +176,11 @@ class _MentorProfileState extends State<MentorProfile> {
                                 ),
 
                                 // Content for the second tab "Experience 2"
-                                Text("Reviews...")
+                                MenteeMentorReviews(mentorid:widget.Mentor['uid']),
                               ],
                             ),
                           ),
+
                         ],
                       ),
                     )

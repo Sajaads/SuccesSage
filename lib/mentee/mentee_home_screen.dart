@@ -177,7 +177,11 @@ class _HomeMenteeState extends State<HomeMentee> {
       child: SafeArea(
         child: Scaffold(
           key: _scaffoldKey,
-          appBar: CustomAppBar(title: 'SuccesSage',onDrawerIconTap: (){_scaffoldKey.currentState?.openDrawer();}),
+          appBar: CustomAppBar(
+              title: 'SuccesSage',
+              onDrawerIconTap: () {
+                _scaffoldKey.currentState?.openDrawer();
+              }),
           drawer: MenteeDrawer(),
           backgroundColor: Colors.white,
           body: SingleChildScrollView(
@@ -215,7 +219,7 @@ class _HomeMenteeState extends State<HomeMentee> {
                                   "Welcome, ${userSnapshot['name']}",
                                   style: TextStyle(
                                     fontWeight: FontWeight.bold,
-                                    fontSize: 22,
+                                    fontSize: 26,
                                     color: const Color.fromARGB(255, 2, 48, 71),
                                   ),
                                 ),

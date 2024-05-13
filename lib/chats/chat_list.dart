@@ -4,7 +4,6 @@ import 'package:flutter/material.dart';
 import 'package:successage/chats/chat_header.dart';
 import 'package:vs_scrollbar/vs_scrollbar.dart';
 
-
 class ChatList extends StatefulWidget {
   const ChatList({Key? key}) : super(key: key);
 
@@ -19,8 +18,10 @@ class _ChatListState extends State<ChatList> {
   @override
   void initState() {
     super.initState();
-    _user = FirebaseAuth.FirebaseAuth.instance.currentUser!; // Initialize _user in initState
-    _connectedMenteeStream = _fetchConnectedMenteesStream(); // Fetch connected mentees stream
+    _user = FirebaseAuth
+        .FirebaseAuth.instance.currentUser!; // Initialize _user in initState
+    _connectedMenteeStream =
+        _fetchConnectedMenteesStream(); // Fetch connected mentees stream
   }
 
   Stream<List<Map<String, dynamic>>> _fetchConnectedMenteesStream() {
@@ -31,30 +32,26 @@ class _ChatListState extends State<ChatList> {
         .where('status', isEqualTo: 'connect')
         .snapshots()
         .map((snapshot) => snapshot.docs
-        .map((doc) => doc.data() as Map<String, dynamic>)
-        .toList());
+            .map((doc) => doc.data() as Map<String, dynamic>)
+            .toList());
   }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text('CHAT ROOM')
+        title: Text('Messages'),
+        centerTitle: true,
       ),
-      body:
-      StreamBuilder<List<Map<String, dynamic>>>(
+      body: StreamBuilder<List<Map<String, dynamic>>>(
         stream: _connectedMenteeStream,
         builder: (context, menteesSnapshot) {
           if (!menteesSnapshot.hasData) {
-            return Center(
-                child: CircularProgressIndicator());
+            return Center(child: CircularProgressIndicator());
           } else if (menteesSnapshot.hasError) {
-            return Center(
-                child: Text(
-                    'Error: ${menteesSnapshot.error}'));
+            return Center(child: Text('Error: ${menteesSnapshot.error}'));
           } else if (menteesSnapshot.data!.isEmpty) {
-            return Center(
-                child: Text('No connected mentee'));
+            return Center(child: Text('No connected mentee'));
           } else {
             final mentees = menteesSnapshot.data!;
             return VsScrollbar(
@@ -65,8 +62,7 @@ class _ChatListState extends State<ChatList> {
                 child: Column(
                   children: mentees.map((mentee) {
                     return Padding(
-                      padding:
-                      const EdgeInsets.only(right: 10),
+                      padding: const EdgeInsets.only(right: 10),
                       child: ChatHeader(
                         mentee: mentee,
                       ),

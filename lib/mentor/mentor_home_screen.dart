@@ -82,7 +82,17 @@ class _MentorHomeScreenState extends State<MentorHomeScreen> {
       canPop: false,
       child: SafeArea(
         child: Scaffold(
-          appBar: CustomAppBar(title: 'SuccesSage'),
+          appBar: AppBar(
+            centerTitle: true,
+            title: Text(
+              'SuccesSage',
+              style: TextStyle(
+                color: Colors.white,
+                fontWeight: FontWeight.bold,
+              ),
+            ),
+            backgroundColor: const Color.fromARGB(255, 2, 48, 71),
+          ),
           drawer: MyDrawer(),
           backgroundColor: Theme.of(context).colorScheme.background,
           body: SingleChildScrollView(

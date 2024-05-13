@@ -4,14 +4,16 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 class CommentDialog extends StatefulWidget {
   final String mentorid;
   final String menteeid;
-  CommentDialog({Key? key, required this.mentorid, required this.menteeid,});
+
+  CommentDialog({Key? key, required this.mentorid, required this.menteeid});
+
   @override
   _CommentDialogState createState() => _CommentDialogState();
 }
 
 class _CommentDialogState extends State<CommentDialog> {
   late Stream<Map<String, dynamic>> _user;
-  late Map<String,dynamic> _userData;
+  late Map<String, dynamic> _userData;
 
   Stream<Map<String, dynamic>> _fetchMenteeDataStream() {
     return FirebaseFirestore.instance
@@ -26,18 +28,19 @@ class _CommentDialogState extends State<CommentDialog> {
       }
     });
   }
+
   @override
   void initState() {
-    // TODO: implement initState
     super.initState();
     _user = _fetchMenteeDataStream();
-    _user.listen((userdata){
-      setState(() {
-        _userData=userdata;
-      });
+    _user.listen((userdata) {
+      if (mounted) {
+        setState(() {
+          _userData = userdata;
+        });
+      }
     });
   }
-
 
   TextEditingController _commentController = TextEditingController();
   double _rating = 0.0;
@@ -62,9 +65,11 @@ class _CommentDialogState extends State<CommentDialog> {
             max: 5,
             divisions: 5,
             onChanged: (value) {
-              setState(() {
-                _rating = value;
-              });
+              if (mounted) {
+                setState(() {
+                  _rating = value;
+                });
+              }
             },
           ),
         ],
@@ -93,9 +98,13 @@ class _CommentDialogState extends State<CommentDialog> {
     double rating = _rating;
 
     // Add the comment and rating to Firestore
-    await FirebaseFirestore.instance.collection('mentor').doc(widget.mentorid).collection('comments').add({
-      'menteeid' : widget.menteeid,
-      'name' : _userData['fname'],
+    await FirebaseFirestore.instance
+        .collection('mentor')
+        .doc(widget.mentorid)
+        .collection('comments')
+        .add({
+      'menteeid': widget.menteeid,
+      'name': _userData['fname'],
       'comment': comment,
       'rating': rating,
       'timestamp': Timestamp.now(),
@@ -103,8 +112,10 @@ class _CommentDialogState extends State<CommentDialog> {
 
     // Clear the text field and reset the rating
     _commentController.clear();
-    setState(() {
-      _rating = 0.0;
-    });
+    if (mounted) {
+      setState(() {
+        _rating = 0.0;
+      });
+    }
   }
 }

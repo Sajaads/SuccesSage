@@ -4,16 +4,16 @@ import 'package:flutter/material.dart';
 import 'package:successage/chats/chat_pages.dart';
 import 'package:successage/utils/app_layouts.dart';
 
-class ChatHeader extends StatefulWidget {
-  final Map<String, dynamic> mentee;
+class ChatHeaderMentee extends StatefulWidget {
+  final Map<String, dynamic> mentor;
 
-  const ChatHeader({Key? key, required this.mentee}) : super(key: key);
+  const ChatHeaderMentee({Key? key, required this.mentor}) : super(key: key);
 
   @override
-  State<ChatHeader> createState() => _ChatHeaderState();
+  State<ChatHeaderMentee> createState() => _ChatHeaderMenteeState();
 }
 
-class _ChatHeaderState extends State<ChatHeader> {
+class _ChatHeaderMenteeState extends State<ChatHeaderMentee> {
   late Future<DocumentSnapshot<Map<String, dynamic>>> _menteeDataFuture;
   late Future<QuerySnapshot<Map<String, dynamic>>> _lastMessageFuture;
   late String _currentUserId;
@@ -36,30 +36,15 @@ class _ChatHeaderState extends State<ChatHeader> {
   Future<DocumentSnapshot<Map<String, dynamic>>> _menteedatafetch() async {
     DocumentSnapshot<Map<String, dynamic>> snapshot = await FirebaseFirestore
         .instance
-        .collection('mentee')
-        .doc(widget.mentee['menteeid'])
+        .collection('mentor')
+        .doc(widget.mentor['mentorid'])
         .get();
     return snapshot;
   }
 
-  String _formatTimestamp(Timestamp timestamp) {
-    DateTime dateTime = timestamp.toDate();
-    String formattedTime =
-        '${_addZeroPrefix(dateTime.hour)}:${_addZeroPrefix(dateTime.minute)} ${_getPeriod(dateTime)}';
-    return formattedTime;
-  }
-
-  String _addZeroPrefix(int number) {
-    return number.toString().padLeft(2, '0');
-  }
-
-  String _getPeriod(DateTime dateTime) {
-    return dateTime.hour < 12 ? 'AM' : 'PM';
-  }
-
   Future<QuerySnapshot<Map<String, dynamic>>> _fetchLastMessage() async {
     // Determine the mentor and mentee IDs
-    String mentorId = widget.mentee['menteeid'];
+    String mentorId = widget.mentor['mentorid'];
     String menteeId = _currentUserId;
 
     // Create a combined ID for the chat room, ensuring consistent ordering
@@ -77,7 +62,21 @@ class _ChatHeaderState extends State<ChatHeader> {
         .get();
   }
 
-  @override
+  String _formatTimestamp(Timestamp timestamp) {
+    DateTime dateTime = timestamp.toDate();
+    String formattedTime =
+        '${_addZeroPrefix(dateTime.hour)}:${_addZeroPrefix(dateTime.minute)} ${_getPeriod(dateTime)}';
+    return formattedTime;
+  }
+
+  String _addZeroPrefix(int number) {
+    return number.toString().padLeft(2, '0');
+  }
+
+  String _getPeriod(DateTime dateTime) {
+    return dateTime.hour < 12 ? 'AM' : 'PM';
+  }
+
   @override
   Widget build(BuildContext context) {
     return FutureBuilder<DocumentSnapshot<Map<String, dynamic>>>(
@@ -106,6 +105,7 @@ class _ChatHeaderState extends State<ChatHeader> {
                     messageSnapshot.data!.docs.first['createdAt'];
                 lastMessageTime = _formatTimestamp(timestamp);
               }
+
               return GestureDetector(
                 onTap: () {
                   Navigator.push(

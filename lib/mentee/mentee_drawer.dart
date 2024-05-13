@@ -1,5 +1,5 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
-import 'package:firebase_auth/firebase_auth.dart'as FirebaseAuth;
+import 'package:firebase_auth/firebase_auth.dart' as FirebaseAuth;
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
@@ -41,13 +41,15 @@ class _MenteeDrawerState extends State<MenteeDrawer> {
       }
     });
   }
+
   @override
   AuthService auth = AuthService();
 
   Widget build(BuildContext context) {
     return StreamBuilder<Map<String, dynamic>>(
       stream: _fetchMentorDataStream(),
-      builder: (BuildContext context, AsyncSnapshot<Map<String, dynamic>> snapshot) {
+      builder:
+          (BuildContext context, AsyncSnapshot<Map<String, dynamic>> snapshot) {
         if (snapshot.connectionState == ConnectionState.waiting) {
           return CircularProgressIndicator();
         } else if (snapshot.hasError) {
@@ -64,10 +66,11 @@ class _MenteeDrawerState extends State<MenteeDrawer> {
                   children: [
                     // Your drawer content
                     GestureDetector(
-                      onTap: (){
+                      onTap: () {
                         Navigator.push(
                           context,
-                          MaterialPageRoute(builder: (context)=>const MenteeProfilePage()),
+                          MaterialPageRoute(
+                              builder: (context) => const MenteeProfilePage()),
                         );
                       },
                       child: DrawerHeader(
@@ -85,7 +88,9 @@ class _MenteeDrawerState extends State<MenteeDrawer> {
                                   ),
                                 ),
                               ),
-                              SizedBox(height: 5,),
+                              SizedBox(
+                                height: 5,
+                              ),
                               Text("${snapshot.data!['fname']}"),
                             ],
                           ),
@@ -109,38 +114,30 @@ class _MenteeDrawerState extends State<MenteeDrawer> {
                       child: ListTile(
                         title: const Text('S E T T I N G S'),
                         leading: const Icon(Icons.settings),
-                        onTap: (){
+                        onTap: () {
                           Navigator.pop(context);
                           Navigator.push(
                             context,
-                            MaterialPageRoute(builder: (context)=>const SettingsPage()),
+                            MaterialPageRoute(
+                                builder: (context) => const SettingsPage()),
                           );
                         },
                       ),
                     ),
                     Padding(
-                      padding: const EdgeInsets.only(left: 25,),
+                      padding: const EdgeInsets.only(
+                        left: 25,
+                      ),
                       child: ListTile(
                         title: const Text("C H A T S"),
                         leading: const Icon(Icons.chat),
                         onTap: () {
                           Navigator.pop(context);
-                          Navigator.push(context, MaterialPageRoute(
-                            builder: (context) => const MenteeChatList(),
-                          ));
-                        },
-                      ),
-                    ),
-                    Padding(
-                      padding: const EdgeInsets.only(left: 25, bottom: 25),
-                      child: ListTile(
-                        title: const Text("R E V I E W S"),
-                        leading: const Icon(Icons.rate_review),
-                        onTap: () {
-                          Navigator.pop(context);
-                          Navigator.push(context, MaterialPageRoute(
-                            builder: (context) => const Reviews(),
-                          ));
+                          Navigator.push(
+                              context,
+                              MaterialPageRoute(
+                                builder: (context) => const MenteeChatList(),
+                              ));
                         },
                       ),
                     ),
@@ -156,15 +153,14 @@ class _MenteeDrawerState extends State<MenteeDrawer> {
                           context: context,
                           builder: (BuildContext context) {
                             return AlertDialog(
-                              title: Text('Connfirm Sign Out'),
+                              title: Text('Confirm Sign Out'),
                               content: Text('Confirm Sign Out'),
                               actions: <Widget>[
                                 TextButton(
                                     onPressed: () {
                                       Navigator.of(context).pop();
                                     },
-                                    child: Text('No')
-                                ),
+                                    child: Text('No')),
                                 TextButton(
                                   child: Text('Yes'),
                                   onPressed: () {
@@ -173,14 +169,12 @@ class _MenteeDrawerState extends State<MenteeDrawer> {
                                         MaterialPageRoute(
                                           builder: (context) => ScreenLogin(),
                                         ),
-                                            (route) => false
-                                    );
+                                        (route) => false);
                                   },
                                 ),
                               ],
                             );
-                          }
-                      );
+                          });
                     },
                   ),
                 ),
@@ -191,5 +185,4 @@ class _MenteeDrawerState extends State<MenteeDrawer> {
       },
     );
   }
-
 }

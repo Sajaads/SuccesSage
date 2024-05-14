@@ -3,6 +3,7 @@ import 'dart:math';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart'as FirebaseAuth;
 import 'package:flutter/material.dart';
+import 'package:successage/mentee/mentee_edit_page.dart';
 
 import '../utils/app_layouts.dart';
 import '../mentor/edit_page.dart';
@@ -66,10 +67,9 @@ class _MenteeProfilePageState extends State<MenteeProfilePage> {
                               gradient: const LinearGradient(
                                 colors: [
                                   Color(0xFF00B2E7),
-                                  Color(0xFFE064F7),
-                                  Color(0xFFFF8D6C)
+                                  Color(0xFFa3e4f7),
                                 ],
-                                transform: GradientRotation(pi/4),
+                                transform: GradientRotation(pi/12),
                               ),
                               borderRadius: BorderRadius.circular(25),
                               boxShadow: [
@@ -108,7 +108,7 @@ class _MenteeProfilePageState extends State<MenteeProfilePage> {
                                 padding:  EdgeInsets.symmetric(horizontal: MediaQuery.of(context).size.width*0.25),
                                 child: ElevatedButton(
                                     onPressed: () {
-                                      Navigator.push(context, MaterialPageRoute(builder: (context)=> EditPage()));
+                                      Navigator.push(context, MaterialPageRoute(builder: (context)=> MenteeEditPage()));
                                     },
                                     child: Row(
                                       mainAxisAlignment: MainAxisAlignment.center,
@@ -124,7 +124,7 @@ class _MenteeProfilePageState extends State<MenteeProfilePage> {
                         SizedBox(height: 15,),
                         Row(
                           children: [
-                            Text("Mentee"),
+
 
                           ],
                         )

@@ -13,6 +13,7 @@ class mentor {
   String? interest;
   String? menteeid;
   String? status;
+  String? proof;
   mentor(
       {required this.uid,
       this.email,
@@ -24,7 +25,8 @@ class mentor {
       this.designation,
       this.interest,
       this.menteeid,
-      this.status});
+      this.status,
+      this.proof});
   Map<String, dynamic> toMap() {
     return {
       'uid': uid,
@@ -35,7 +37,8 @@ class mentor {
       'phone no': phnno,
       'ppic': ppic,
       'designation': designation,
-      'interest': interest
+      'interest': interest,
+      'proof': proof
       // Add more properties as needed
     };
   }
@@ -48,7 +51,8 @@ void addMentorToFirestore(String uid,
     String? bio,
     num? phnno,
     String? ppic,
-    String? designation}) {
+    String? designation,
+    String? proof}) {
   // Initialize Firestore
   FirebaseFirestore firestore = FirebaseFirestore.instance;
 
@@ -60,7 +64,8 @@ void addMentorToFirestore(String uid,
       bio: bio,
       phnno: phnno,
       ppic: ppic,
-      designation: designation);
+      designation: designation,
+      proof: proof);
 
   firestore
       .collection('mentor') // Replace 'mentees' with your collection name

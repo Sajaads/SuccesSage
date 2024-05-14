@@ -131,10 +131,11 @@ class _MenteeDataCollectionState extends State<MenteeDataCollection> {
                           TextField(
                             decoration: InputDecoration(
                               border: OutlineInputBorder(
+                                borderSide: BorderSide.none,
                                 borderRadius: BorderRadius.circular(20.0),
                               ),
                               filled: true,
-                              fillColor: Colors.white,
+                              fillColor: Color.fromARGB(104, 166, 162, 162),
                               hintText: 'Type here...',
                             ),
                             onChanged: (value) {
@@ -145,6 +146,11 @@ class _MenteeDataCollectionState extends State<MenteeDataCollection> {
                             height: 20,
                           ),
                           ElevatedButton(
+                              style: ElevatedButton.styleFrom(
+                                foregroundColor: Colors.white,
+                                backgroundColor: const Color.fromARGB(
+                                    255, 2, 48, 71), // Text color
+                              ),
                               onPressed: () {
                                 if (_selectedFirstOption != null &&
                                     bio != null &&

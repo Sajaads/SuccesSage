@@ -123,7 +123,9 @@ class _MyDrawerState extends State<MyDrawer> {
                       ),
                     ),
                     Padding(
-                      padding: const EdgeInsets.only(left: 25,),
+                      padding: const EdgeInsets.only(
+                        left: 25,
+                      ),
                       child: ListTile(
                         title: const Text("CHATS"),
                         leading: const Icon(Icons.chat),
@@ -144,9 +146,11 @@ class _MyDrawerState extends State<MyDrawer> {
                         leading: const Icon(Icons.rate_review),
                         onTap: () {
                           Navigator.pop(context);
-                          Navigator.push(context, MaterialPageRoute(
-                            builder: (context) => const Reviews(),
-                          ));
+                          Navigator.push(
+                              context,
+                              MaterialPageRoute(
+                                builder: (context) => const Reviews(),
+                              ));
                         },
                       ),
                     ),
@@ -162,16 +166,21 @@ class _MyDrawerState extends State<MyDrawer> {
                           context: context,
                           builder: (BuildContext context) {
                             return AlertDialog(
-                              title: Text('Connfirm Sign Out'),
-                              content: Text('Confirm Sign Out'),
+                              title: Text(' Confirm logout'),
+                              content: Text('Are you sure you want to logout'),
                               actions: <Widget>[
                                 TextButton(
                                     onPressed: () {
                                       Navigator.of(context).pop();
                                     },
-                                    child: Text('No')),
+                                    child: Text(
+                                      'No',
+                                      style: TextStyle(color: Colors.white),
+                                    )),
                                 TextButton(
-                                  child: Text('Yes'),
+                                  child: Text('Yes',
+                                      style: TextStyle(
+                                          color: Colors.red, fontSize: 18)),
                                   onPressed: () {
                                     auth.signOut();
                                     Navigator.of(context).pushAndRemoveUntil(

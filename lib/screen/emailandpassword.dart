@@ -4,6 +4,7 @@ import 'package:flutter/material.dart';
 import 'package:successage/mentee/mentee_home_screen.dart';
 import 'package:successage/mentor/mentor_home_screen.dart';
 import 'package:successage/mentor/mentor_personal_data.dart';
+import 'package:successage/mentor/mentor_reg_success.dart';
 import 'package:successage/screen/auth.dart';
 import 'package:successage/screen/screen_mentee_info.dart';
 
@@ -44,6 +45,7 @@ class _EmailAndPasswordState extends State<EmailAndPassword> {
                   TextField(
                     controller: _emailController,
                     decoration: InputDecoration(
+                      fillColor: Colors.white,
                       labelText: 'Email',
                       border: OutlineInputBorder(borderSide: BorderSide.none),
                       filled: true,
@@ -55,6 +57,7 @@ class _EmailAndPasswordState extends State<EmailAndPassword> {
                     controller: _passwordController,
                     obscureText: !_isPasswordVisible,
                     decoration: InputDecoration(
+                      fillColor: Colors.white,
                       labelText: 'Password',
                       border: OutlineInputBorder(borderSide: BorderSide.none),
                       filled: true,
@@ -205,13 +208,19 @@ class _EmailAndPasswordState extends State<EmailAndPassword> {
               .doc(user.uid)
               .get();
           if (snapshot.exists) {
-            Navigator.of(context).pushReplacement(
-              MaterialPageRoute(
-                builder: (context) => MentorHomeScreen(
-                  mentorid: user.uid,
+            DocumentSnapshot verified = snapshot;
+            if (verified['verified'] == 'yes') {
+              Navigator.of(context).pushReplacement(
+                MaterialPageRoute(
+                  builder: (context) => MentorHomeScreen(
+                    mentorid: user.uid,
+                  ),
                 ),
-              ),
-            );
+              );
+            } else {
+              Navigator.of(context).pushReplacement(MaterialPageRoute(
+                  builder: (_) => MentorRegistrationSuccess(uid: user.uid)));
+            }
           } else {
             ScaffoldMessenger.of(context).showSnackBar(
               SnackBar(content: Text('User does not exist')),

@@ -48,7 +48,11 @@ class _ReviewsState extends State<Reviews> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text("Reviews.."),
+        title: Text(
+          "REVIEWS",
+          style: TextStyle(fontWeight: FontWeight.bold),
+        ),
+        centerTitle: true,
       ),
       body: Container(
         padding: EdgeInsets.symmetric(vertical: 9, horizontal: 10),
@@ -76,7 +80,7 @@ class _ReviewsState extends State<Reviews> {
                         return CircularProgressIndicator();
                       } else if (snapshot.hasError) {
                         return Text("Error fetching mentee data");
-                      } else if (!snapshot.hasData) {
+                      } else if (!snapshot.hasData || snapshot.data!.isEmpty) {
                         return Text("Mentee data not found");
                       } else {
                         final menteeData = snapshot.data!;
@@ -114,7 +118,11 @@ class _ReviewsState extends State<Reviews> {
                                       ),
                                     ],
                                   ),
-                                  Text(commentData['comment']),
+                                  Text(
+                                    commentData['comment'],
+                                    style:
+                                        TextStyle(fontWeight: FontWeight.bold),
+                                  ),
                                   Column(
                                     crossAxisAlignment: CrossAxisAlignment.end,
                                     children: [

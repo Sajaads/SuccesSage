@@ -105,7 +105,7 @@ class _RequestOfMenteeState extends State<RequestOfMentee> {
           Map<String, dynamic> menteeData = snapshot.data!.data()!;
 
           return Card(
-            color: Color.fromARGB(255, 208, 213, 215),
+            color: Color.fromARGB(255, 255, 255, 255),
             elevation: 2,
             shape: RoundedRectangleBorder(
               borderRadius: BorderRadius.circular(10),

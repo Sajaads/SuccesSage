@@ -64,7 +64,7 @@ class _MentorSkillState extends State<MentorSkill> {
                       children: interests.map((interest) {
                         return ChoiceChip(
                           side: BorderSide.none,
-                          backgroundColor: Color.fromARGB(255, 51, 113, 131),
+                          backgroundColor: Color.fromARGB(81, 51, 112, 131),
                           elevation: 5,
                           shadowColor: const Color.fromARGB(255, 0, 0, 0),
                           label: Text(interest),
@@ -154,6 +154,11 @@ class _MentorSkillState extends State<MentorSkill> {
                                   height: 20,
                                 ),
                                 ElevatedButton(
+                                    style: ElevatedButton.styleFrom(
+                                      foregroundColor: Colors.white,
+                                      backgroundColor: const Color.fromARGB(
+                                          255, 2, 48, 71), // Text color
+                                    ),
                                     onPressed: () {
                                       if (_selectedFirstOption != null &&
                                           bio != null &&

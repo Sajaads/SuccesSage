@@ -224,7 +224,7 @@ class _ScreenSignupInfoState extends State<ScreenSignupInfo> {
                             phnno = null;
                             ScaffoldMessenger.of(context).showSnackBar(SnackBar(
                               content: Text("Enter a valid number"),
-                              duration: Duration(seconds: 1),
+                              duration: Duration(milliseconds: 500),
                             ));
                           }
                           checkbutton();

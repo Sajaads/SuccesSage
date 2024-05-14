@@ -45,8 +45,8 @@ class _MentorOldMenteeState extends State<MentorOldMentee> {
           return Padding(
             padding: const EdgeInsets.symmetric(vertical: 6.0),
             child: Card(
-              color: Color.fromARGB(255, 201, 206, 207),
-              elevation: 4,
+              color: Color.fromARGB(255, 223, 226, 227),
+              elevation: 7,
               shape: RoundedRectangleBorder(
                   borderRadius: BorderRadius.circular(15)),
               child: ListTile(
@@ -63,13 +63,13 @@ class _MentorOldMenteeState extends State<MentorOldMentee> {
                       height: 5,
                     ),
                     Text(
-                      'Bio: ${menteeData['bio']}',
+                      'About: ${menteeData['bio']}',
                       style: TextStyle(fontStyle: FontStyle.italic),
                     ),
                     SizedBox(
                       height: 5,
                     ),
-                    Text('Education : ${menteeData['education']}')
+                    Text('Qualification : ${menteeData['education']}')
                   ],
                 ),
                 trailing: IconButton(

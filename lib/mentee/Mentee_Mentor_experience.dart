@@ -3,14 +3,14 @@ import 'package:flutter/material.dart';
 
 class MenteeMentorExperience extends StatefulWidget {
   final String mentorid;
-  const MenteeMentorExperience({Key? key,required this.mentorid}) : super(key: key);
+  const MenteeMentorExperience({Key? key, required this.mentorid})
+      : super(key: key);
 
   @override
   State<MenteeMentorExperience> createState() => _MenteeMentorExperienceState();
 }
 
 class _MenteeMentorExperienceState extends State<MenteeMentorExperience> {
-
   Stream<List<Map<String, dynamic>>> _fetchCommentStream() {
     if (widget.mentorid.isNotEmpty) {
       return FirebaseFirestore.instance
@@ -30,7 +30,7 @@ class _MenteeMentorExperienceState extends State<MenteeMentorExperience> {
   @override
   Widget build(BuildContext context) {
     return Container(
-      padding: EdgeInsets.symmetric(vertical: 9,horizontal: 10),
+      padding: EdgeInsets.symmetric(vertical: 9, horizontal: 10),
       child: StreamBuilder<List<Map<String, dynamic>>>(
         stream: _fetchCommentStream(),
         builder: (BuildContext context,
@@ -38,9 +38,11 @@ class _MenteeMentorExperienceState extends State<MenteeMentorExperience> {
           if (snapshot.connectionState == ConnectionState.waiting) {
             return CircularProgressIndicator();
           } else if (snapshot.hasError) {
-            return Center(child: Text("No Experience available"));
-          } else if (!snapshot.hasData) {
-            return Center(child: Text("No experience available"));
+            return Center(
+                child: Text("Mentor has not provided any experience yet"));
+          } else if (!snapshot.hasData || snapshot.data!.isEmpty) {
+            return Center(
+                child: Text("Mentor has not provided any experience yet"));
           } else {
             return ListView.builder(
               itemCount: snapshot.data!.length,
@@ -49,8 +51,12 @@ class _MenteeMentorExperienceState extends State<MenteeMentorExperience> {
 
                 // Safely access the fields using the null-aware operator
                 final title = experienceData['experience'] ?? 'No Title';
-                final from = experienceData['from'] != null ? experienceData['from']! : 'No From Date';
-                final to = experienceData['to'] != null ? experienceData['to']! : 'No To Date';
+                final from = experienceData['from'] != null
+                    ? experienceData['from']!
+                    : 'No From Date';
+                final to = experienceData['to'] != null
+                    ? experienceData['to']!
+                    : 'No To Date';
 
                 return Padding(
                   padding: const EdgeInsets.only(bottom: 16.0),
@@ -70,7 +76,8 @@ class _MenteeMentorExperienceState extends State<MenteeMentorExperience> {
                                 title,
                                 style: TextStyle(
                                     fontSize: 18,
-                                    color: Theme.of(context).colorScheme.outline,
+                                    color:
+                                        Theme.of(context).colorScheme.outline,
                                     fontWeight: FontWeight.w400),
                               ),
                             ],
@@ -82,13 +89,18 @@ class _MenteeMentorExperienceState extends State<MenteeMentorExperience> {
                                 from,
                                 style: TextStyle(
                                     fontSize: 14,
-                                    color: Theme.of(context).colorScheme.onBackground,
+                                    color: Theme.of(context)
+                                        .colorScheme
+                                        .onBackground,
                                     fontWeight: FontWeight.w400),
                               ),
-                              Text(to,
+                              Text(
+                                to,
                                 style: TextStyle(
                                     fontSize: 14,
-                                    color: Theme.of(context).colorScheme.onBackground,
+                                    color: Theme.of(context)
+                                        .colorScheme
+                                        .onBackground,
                                     fontWeight: FontWeight.w400),
                               ),
                             ],
@@ -100,7 +112,6 @@ class _MenteeMentorExperienceState extends State<MenteeMentorExperience> {
                 );
               },
             );
-
           }
         },
       ),

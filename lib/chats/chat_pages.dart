@@ -15,6 +15,7 @@ import 'package:intl/date_symbol_data_local.dart';
 import 'package:mime/mime.dart';
 import 'package:open_filex/open_filex.dart';
 import 'package:path_provider/path_provider.dart';
+import 'package:url_launcher/url_launcher.dart';
 
 import 'package:uuid/uuid.dart';
 
@@ -176,6 +177,28 @@ class _ChatPageState extends State<ChatPage> {
   }
 
   void _handleMessageTap(BuildContext _, types.Message message) async {
+// Inside your function where you handle tapping on a message
+    if (message is types.TextMessage) {
+      final text = message.text;
+
+      // Check if the text contains a URL
+      final urlRegExp = RegExp(
+        r'(?:(?:https?|ftp):\/\/)?[\w/\-?=%.]+\.[\w/\-?=%.]+',
+        caseSensitive: false,
+      );
+      final matches = urlRegExp.allMatches(text);
+      if (matches.isNotEmpty) {
+        final url = text.substring(matches.first.start, matches.first.end);
+
+        // Launch the URL
+        try {
+          await launch(url);
+        } catch (e) {
+          print('Could not launch $url: $e');
+        }
+      }
+    }
+
     if (message is types.FileMessage) {
       var localPath = message.uri;
 

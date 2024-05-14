@@ -347,6 +347,32 @@ class _ScreenSignupInfoState extends State<ScreenSignupInfo> {
                     },
                     child: Text('Upload Image'),
                   ),
+                  SizedBox(
+                    height: 15,
+                  ),
+                  if (_image != null)
+                    Container(
+                      width: 200,
+                      height: 200,
+                      decoration: BoxDecoration(
+                        borderRadius: BorderRadius.circular(10.0),
+                        boxShadow: [
+                          BoxShadow(
+                            color: Colors.black.withOpacity(0.2),
+                            spreadRadius: 2,
+                            blurRadius: 5,
+                            offset: Offset(0, 3),
+                          ),
+                        ],
+                        image: DecorationImage(
+                          image: FileImage(_image!),
+                          fit: BoxFit.cover,
+                        ),
+                      ),
+                    ),
+                  SizedBox(
+                    height: 15,
+                  ),
                   ElevatedButton(
                     style: ElevatedButton.styleFrom(
                       foregroundColor: Colors.white,

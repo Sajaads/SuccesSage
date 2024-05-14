@@ -4,6 +4,8 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart' as FirebaseAuth;
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:successage/mentor/mentor_experience.dart';
+import 'package:successage/mentor/mentor_experience_list.dart';
 import 'package:successage/utils/app_layouts.dart';
 import 'package:successage/mentor/edit_page.dart';
 import 'package:successage/utils/textfield.dart';
@@ -70,10 +72,9 @@ class _ProfilePageState extends State<ProfilePage> {
                           gradient: const LinearGradient(
                             colors: [
                               Color(0xFF00B2E7),
-                              Color(0xFFE064F7),
-                              Color(0xFFFF8D6C)
+                              Color(0xFFa3e4f7),
                             ],
-                            transform: GradientRotation(pi/4),
+                            transform: GradientRotation(pi/12),
                           ),
                           borderRadius: BorderRadius.circular(25),
                           boxShadow: [
@@ -92,7 +93,7 @@ class _ProfilePageState extends State<ProfilePage> {
                             ),
                             child: CircleAvatar(
                               radius: 50,
-                              backgroundImage: NetworkImage(snapshot.data!['ppic']),
+                              backgroundImage: NetworkImage(snapshot.data!['ppic'] ?? ''),
                             ),
                           ),
                           Row(
@@ -126,83 +127,23 @@ class _ProfilePageState extends State<ProfilePage> {
                       ),
                     ),
                     SizedBox(height: 15,),
-                    Container(
-                      padding: EdgeInsets.symmetric(horizontal: 8,vertical: 8),
-                      margin: EdgeInsets.symmetric(horizontal: 4,vertical: 8),
-                      decoration: BoxDecoration(
-                          borderRadius: BorderRadius.circular(25),
-                          boxShadow: [
-                            BoxShadow(
-                                blurRadius: 2,
-                                color: Colors.grey.shade400,
-                                offset: Offset(5, 5)
-                            )
-                          ]
-                      ),
-                      child: Column(
-                        children: [
-                          // Display text fields using ListView.builder
-                          ListView.builder(
-                            shrinkWrap: true,
-                            itemCount: _controllers.length,
-                            itemBuilder: (context, index) {
-                              return Padding(
-                                padding: const EdgeInsets.all(8.0),
-                                child: Row(
-                                  children: [
-                                    Expanded(
-                                      child: MyTextField(
-                                        textController: _controllers[index],
-                                        hintText: "experience ${index + 1}",
-                                      ),
-                                    ),
-                                    Container(
-                                      width: 36,
-                                      height: 36,
-                                      decoration: BoxDecoration(
-                                        shape: BoxShape.circle,
-                                        color: Colors.red,
-                                      ),
-                                      child: IconButton(
-                                        icon: Icon(Icons.cancel, color: Colors.white),
-                                        onPressed: () {
-                                          setState(() {
-                                            _controllers.removeAt(index);
-                                          });
-                                        },
-                                      ),
-                                    ),
-                                  ],
-                                ),
+                    MentorExperienceList(),
+                    SizedBox(height: 15,),
+                    Column(
+                      children: [
+                        ElevatedButton(onPressed: (){
+                          showDialog(
+                            context: context,
+                            builder: (BuildContext context) {
+                              return AlertDialog(
+                                title: Text("Add Experience"),
+                                content: AddExperienceDialogContent(),
                               );
                             },
-                          ),
-                          SizedBox(height: 10), // Add some space between the text fields and the date picker
-                          // Add the date picker
-                          ElevatedButton(
-                            onPressed: () {
-                              // Show the date picker dialog
-                              showDatePicker(
-                                context: context,
-                                initialDate: DateTime.now(),
-                                firstDate: DateTime(2000),
-                                lastDate: DateTime.now(),
-                              );
-                            },
-                            child: Text('Select Experience Duration'),
-                          ),
-                          SizedBox(height: 10), // Add some space between the date picker and the add button
-                          IconButton(
-                            icon: Icon(Icons.add),
-                            onPressed: () {
-                              setState(() {
-                                _controllers.add(TextEditingController()); // Add new text field controller
-                              });
-                            },
-                          ),
-                        ],
-                      ),
-
+                          );
+                        }, child: Text('Add Experience')),
+                        SizedBox(height: 10),
+                      ],
                     ),
                   ],
                 ),

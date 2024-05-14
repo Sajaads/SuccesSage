@@ -1,9 +1,6 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart'as FirebaseAuth;
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-
-import '../utils/data.dart';
 
 class Reviews extends StatefulWidget {
   const Reviews({Key? key}) : super(key: key);
@@ -34,19 +31,6 @@ class _ReviewsState extends State<Reviews> {
     });
   }
 
-  Stream<Map<String, dynamic>> _fetchMenteeDataStream() {
-    return FirebaseFirestore.instance
-        .collection('mentor')
-        .doc(_user.uid)
-        .snapshots()
-        .map((snapshot) {
-      if (snapshot.exists) {
-        return snapshot.data() as Map<String, dynamic>;
-      } else {
-        throw Exception('Document does not exist');
-      }
-    });
-  }
 
 
   @override

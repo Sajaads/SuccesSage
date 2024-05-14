@@ -11,7 +11,6 @@ class MenteeMentorReviews extends StatefulWidget {
 }
 
 class _MenteeMentorReviewsState extends State<MenteeMentorReviews> {
-  late FirebaseAuth.User _user;
   late double rate=0.0;
   int n=1;
 
@@ -35,8 +34,6 @@ class _MenteeMentorReviewsState extends State<MenteeMentorReviews> {
 
   @override
   Widget build(BuildContext context) {
-    print(widget.mentorid);
-    print("object");
     return Container(
       padding: EdgeInsets.symmetric(vertical: 9,horizontal: 10),
       child: StreamBuilder<List<Map<String, dynamic>>>(
@@ -56,10 +53,6 @@ class _MenteeMentorReviewsState extends State<MenteeMentorReviews> {
                 final commentData = snapshot.data![index];
                 print(commentData['comment']);
                 print(commentData['rating']);
-                if (commentData['rating'] is num) {
-                  rate += commentData['rating'] as double;
-                }
-                print(rate);
 
                 return Padding(
                   padding: const EdgeInsets.only(bottom: 16.0),

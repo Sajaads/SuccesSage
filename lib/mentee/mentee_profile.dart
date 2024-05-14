@@ -144,7 +144,7 @@ class _MentorProfileState extends State<MentorProfile> {
                             tabs: [
                               Tab(
                                 child: Text(
-                                  "Experience 1",
+                                  "Experience ",
                                   style: Styles.headline2,
                                 ),
                               ),
@@ -162,18 +162,7 @@ class _MentorProfileState extends State<MentorProfile> {
                             child: TabBarView(
                               children: [
                                 // Content for the first tab "Experience 1"
-                                const SingleChildScrollView(
-                                  child: Column(
-                                    children: [
-                                      MenteeMentorExperience(),
-                                      MenteeMentorExperience(),
-                                      MenteeMentorExperience(),
-                                      MenteeMentorExperience(),
-                                      MenteeMentorExperience(),
-                                      MenteeMentorExperience(),
-                                    ],
-                                  ),
-                                ),
+                                MenteeMentorExperience(mentorid:widget.Mentor['uid']),
 
                                 // Content for the second tab "Experience 2"
                                 MenteeMentorReviews(mentorid:widget.Mentor['uid']),

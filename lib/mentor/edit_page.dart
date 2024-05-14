@@ -22,17 +22,17 @@ class EditPage extends StatefulWidget {
 
 class _EditPageState extends State<EditPage> {
   bool isEditing = false;
-
-  TextEditingController _fname = TextEditingController();
-  TextEditingController _lname = TextEditingController();
-  TextEditingController _bio = TextEditingController();
-  TextEditingController _email = TextEditingController();
-  TextEditingController _designation = TextEditingController();
-  TextEditingController _phone_no = TextEditingController();
+  late TextEditingController _fname = TextEditingController();
+  late TextEditingController _lname = TextEditingController();
+  late TextEditingController _bio = TextEditingController();
+  late TextEditingController _email = TextEditingController();
+  late TextEditingController _designation = TextEditingController();
+  late TextEditingController _phone_no = TextEditingController();
 
   String? fname;
   String? lname;
   String? mail;
+  String? bio;
   String? edq;
   num? phnno;
   bool button = false;
@@ -82,6 +82,13 @@ class _EditPageState extends State<EditPage> {
   void initState() {
     super.initState();
     _user = FirebaseAuth.FirebaseAuth.instance.currentUser!;
+    TextEditingController _fname = TextEditingController(text: fname);
+    TextEditingController _lname = TextEditingController(text: lname);
+    TextEditingController _bio = TextEditingController(text: bio);
+    TextEditingController _email = TextEditingController(text: mail);
+    TextEditingController _designation = TextEditingController(text: edq);
+    TextEditingController _phone_no = TextEditingController(text: phnno.toString());
+        TextEditingController(text: phnno.toString());
   }
 
   Stream<Map<String, dynamic>> _fetchMentorDataStream() {
@@ -101,41 +108,47 @@ class _EditPageState extends State<EditPage> {
   @override
   Widget build(BuildContext context) {
     return SafeArea(
-        child: Scaffold(
-      appBar: AppBar(
-        title: Center(child: const Text("Edit Profile ")),
-      ),
-      body: SingleChildScrollView(
-        child: StreamBuilder<Map<String, dynamic>>(
-          stream: _fetchMentorDataStream(),
-          builder: (BuildContext context,
-              AsyncSnapshot<Map<String, dynamic>> snapshot) {
-            if (snapshot.connectionState == ConnectionState.waiting) {
-              return CircularProgressIndicator();
-            } else if (snapshot.hasError) {
-              return Text('Error: ${snapshot.error}');
-            } else if (!snapshot.hasData) {
-              return Center(child: Text("No data available"));
-            } else {
-              return Center(
-                child: Container(
-                  padding: EdgeInsets.symmetric(horizontal: 8, vertical: 8),
-                  margin: EdgeInsets.symmetric(horizontal: 4, vertical: 8),
-                  child: Column(
-                    children: [
-                      Stack(children: [
-                        Container(
-                          decoration: BoxDecoration(
-                            borderRadius: BorderRadius.circular(10),
+      child: Scaffold(
+        appBar: AppBar(
+          title: Center(child: const Text("Edit Profile ")),
+        ),
+        body: SingleChildScrollView(
+          child: StreamBuilder<Map<String, dynamic>>(
+            stream: _fetchMentorDataStream(),
+            builder: (BuildContext context,
+                AsyncSnapshot<Map<String, dynamic>> snapshot) {
+              if (snapshot.connectionState == ConnectionState.waiting) {
+                return CircularProgressIndicator();
+              } else if (snapshot.hasError) {
+                return Text('Error: ${snapshot.error}');
+              } else if (!snapshot.hasData) {
+                return Center(child: Text("No data available"));
+              } else {
+                fname = snapshot.data!['fname'];
+                lname = snapshot.data!['lname'];
+                mail = snapshot.data!['email'];
+                bio = snapshot.data!['bio'];
+                edq = snapshot.data!['designation'];
+                phnno = snapshot.data!['phone no'];
+                return Center(
+                  child: Container(
+                    padding: EdgeInsets.symmetric(horizontal: 8, vertical: 8),
+                    margin: EdgeInsets.symmetric(horizontal: 4, vertical: 8),
+                    child: Column(
+                      children: [
+                        Stack(children: [
+                          Container(
+                            decoration: BoxDecoration(
+                              borderRadius: BorderRadius.circular(10),
+                            ),
+                            child: CircleAvatar(
+                              radius: 50,
+                              backgroundImage: _image != null
+                                  ? FileImage(_image!) as ImageProvider
+                                  : NetworkImage(snapshot.data!['ppic']),
+                            ),
                           ),
-                          child: CircleAvatar(
-                            radius: 50,
-                            backgroundImage: _image != null
-                                ? FileImage(_image!) as ImageProvider
-                                : NetworkImage(snapshot.data!['ppic']),
-                          ),
-                        ),
-                        Positioned(
+                          Positioned(
                             right: 0,
                             bottom: 0,
                             child: GestureDetector(
@@ -182,159 +195,176 @@ class _EditPageState extends State<EditPage> {
                                   color: Colors.white,
                                 ),
                               ),
-                            ))
-                      ]),
-                      SizedBox(
-                        height: 14,
-                      ),
-                      Row(
-                        children: [
-                          Expanded(
-                            child: Padding(
-                              padding:
-                                  const EdgeInsets.symmetric(horizontal: 8.0),
-                              child: MyTextField(
-                                textController: _fname,
-                                hintText: _fname.text.isEmpty ? snapshot.data!['fname'] : '',
-                              ),
                             ),
                           ),
-                          Expanded(
-                            child: Padding(
-                              padding:
-                                  const EdgeInsets.symmetric(horizontal: 8.0),
-                              child: MyTextField(
-                                textController: _lname,
-                                hintText: _lname.text.isEmpty ? snapshot.data!['lname'] : '',
+                        ]),
+                        SizedBox(height: 14),
+                        Row(
+                          children: [
+                            Expanded(
+                              child: Padding(
+                                padding:
+                                    const EdgeInsets.symmetric(horizontal: 8.0),
+                                child: MyTextField(
+                                  labelText: "fname",
+                                  textController: _fname,
+                                  hintText: fname.toString(),
+                                  fieldName: 'fname',
+                                  defaultValue: fname.toString(),
+                                ),
                               ),
                             ),
-                          ),
-                        ],
-                      ),
-                      SizedBox(
-                        height: 10,
-                      ),
-                      TextField(
-                        controller: _phone_no,
-                        decoration: InputDecoration(
-                          hintText: _phone_no.text.isEmpty
-                              ? snapshot.data!['phone no'].toString()
-                              : null,
-                          filled: true,
-                          fillColor: Colors.white,
-                          border: OutlineInputBorder(
-                            borderRadius: BorderRadius.circular(10.0),
-                          ),
-                          enabledBorder: OutlineInputBorder(
-                            borderSide:
-                                BorderSide(color: Colors.blue, width: 2.0),
-                            borderRadius: BorderRadius.circular(10.0),
-                          ),
-                          focusedBorder: OutlineInputBorder(
-                            borderSide:
-                                BorderSide(color: Colors.blue, width: 2.0),
-                            borderRadius: BorderRadius.circular(10.0),
-                          ),
+                            Expanded(
+                              child: Padding(
+                                padding:
+                                    const EdgeInsets.symmetric(horizontal: 8.0),
+                                child: MyTextField(
+                                  labelText: "lname",
+                                  textController: _lname,
+                                  hintText: lname.toString(),
+                                  fieldName: 'lname',
+                                  defaultValue: lname.toString(),
+                                ),
+                              ),
+                            ),
+                          ],
                         ),
-                      ),
-                      SizedBox(
-                        height: 10,
-                      ),
-                      MyTextField(
+                        SizedBox(height: 10),
+                        MyTextField(
+                          labelText: "phone no",
+                          textController: _phone_no,
+                          hintText: phnno.toString(),
+                          fieldName: 'phone no',
+                          defaultValue: phnno.toString(),
+                        ),
+                        SizedBox(height: 10),
+                        MyTextField(
+                          labelText: "email",
                           textController: _email,
-                          hintText: _email.text.isEmpty ?snapshot.data!['email'].toString() : ''),
-                      SizedBox(
-                        height: 10,
-                      ),
-                      MyTextField(
-                        textController: _bio,
-                        hintText: _bio.text.isEmpty ? snapshot.data!['bio'] : null,
-                      ),
-
-                      SizedBox(
-                        height: 10,
-                      ),
-                      MyTextField(
+                          hintText: mail.toString(),
+                          fieldName: 'email',
+                          defaultValue: mail.toString(),
+                        ),
+                        SizedBox(height: 10),
+                        MyTextField(
+                          labelText: "bio",
+                          textController: _bio,
+                          hintText: bio.toString(),
+                          fieldName: 'bio',
+                          defaultValue: bio.toString(),
+                        ),
+                        SizedBox(height: 10),
+                        MyTextField(
+                          labelText: "designation",
                           textController: _designation,
-                          hintText: _designation.text.isEmpty ? snapshot.data!['designation'] : null),
-                      SizedBox(
-                        height: 10,
-                      ),
-                      ElevatedButton(
-                        onPressed: () async {
-                          checkbutton();
-                          setState(() {
-                            _loading = true;
-                          });
-                          await uploadImageToFirebaseStorage();
-                          if (button && _imageUrl != null) {
-                            addMenteeToFirestore(
+                          hintText: edq.toString(),
+                          fieldName: 'designation',
+                          defaultValue: edq.toString(),
+                        ),
+                        SizedBox(height: 10),
+                        ElevatedButton(
+                          onPressed: () async {
+                            setState(() {
+                              _loading = true;
+                            });
+                            await uploadImageToFirebaseStorage();
+                            editMentorToFirestore(
                               _user.uid,
-                              fname: _fname.text,
-                              lname: _lname.text,
-                              phnno: phnno,
-                              email: mail,
-                              edq: edq,
-                              ppic: _imageUrl!,
+                              _fname.text,
+                              _lname.text,
+                              _email.text,
+                              _bio.text,
+                              _designation.text,
+                              _imageUrl.toString(),
+                                num.tryParse(_phone_no.text)!
                             );
 
-                            Navigator.of(context)
-                                .push(MaterialPageRoute(builder: (context) {
-                              return ProfilePage();
-                            }));
+                            Navigator.pop(context);
                             setState(() {
                               _loading = false;
                             });
-                          } else {
-                            setState(() {
-                              _loading = false;
-                            });
-                            ScaffoldMessenger.of(context).showSnackBar(SnackBar(
-                              content: Text(
-                                  'Please enter all the fields and upload images'),
-                              duration: Duration(seconds: 2),
-                            ));
-                          }
-                        },
-                        style: ElevatedButton.styleFrom(
+                          },
+                          style: ElevatedButton.styleFrom(
                             backgroundColor: Colors.green,
                             elevation: 4,
                             shape: RoundedRectangleBorder(
-                                borderRadius: BorderRadius.circular(10))),
-                        child: Padding(
-                          padding: const EdgeInsets.symmetric(
-                              vertical: 12, horizontal: 24),
-                          child: Text(
-                            'Save',
-                            style: TextStyle(
+                              borderRadius: BorderRadius.circular(10),
+                            ),
+                          ),
+                          child: Padding(
+                            padding: const EdgeInsets.symmetric(
+                                vertical: 12, horizontal: 24),
+                            child: Text(
+                              'Save',
+                              style: TextStyle(
                                 color: Colors.white,
                                 fontWeight: FontWeight.bold,
-                                fontSize: 16),
+                                fontSize: 16,
+                              ),
+                            ),
                           ),
                         ),
-                      )
-                    ],
+                      ],
+                    ),
                   ),
-                ),
-              );
-            }
-          },
+                );
+              }
+            },
+          ),
         ),
       ),
-    ));
+    );
   }
 
-  void checkbutton() {
-    setState(() {
-      button = fname != null &&
-          fname!.isNotEmpty &&
-          lname != null &&
-          lname!.isNotEmpty &&
-          mail != null &&
-          mail!.isNotEmpty &&
-          phnno != null &&
-          edq != null &&
-          edq!.isNotEmpty;
-    });
+  void editMentorToFirestore(String uid, String fname, String lname,
+      String email, String biodata, String designation, String ppic,num phnno) {
+    FirebaseFirestore firestore = FirebaseFirestore.instance;
+    Mentor mentor = Mentor(
+        fname: fname,
+        lname: lname,
+        email: email,
+        phnno: phnno,
+        bio: biodata,
+        designation: designation,
+        ppic: ppic);
+
+    firestore
+        .collection('mentor') // Replace 'mentees' with your collection name
+        .doc(_user.uid) // Document ID is set to the UID
+        .update(mentor.toMap())
+        .then((value) => print("Mentee added successfully"))
+        .catchError((error) => print("Failed to add mentee: $error"));
+  }
+}
+
+class Mentor {
+  String fname;
+  String lname;
+  String email;
+  String bio;
+  String ppic;
+  String? designation;
+  num? phnno;
+
+  Mentor(
+      {required this.fname,
+      required this.lname,
+      required this.email,
+      required this.bio,
+      required this.ppic,
+      required this.designation,
+      required this.phnno});
+
+  // Convert Mentor object to a Map
+  Map<String, dynamic> toMap() {
+    return {
+      'fname': fname,
+      'lname': lname,
+      'email': email,
+      'bio': bio,
+      'ppic': ppic,
+      'designation': designation,
+      'phone no': phnno
+    };
   }
 }

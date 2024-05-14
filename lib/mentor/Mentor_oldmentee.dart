@@ -43,28 +43,41 @@ class _MentorOldMenteeState extends State<MentorOldMentee> {
           Map<String, dynamic> menteeData = snapshot.data!.data()!;
 
           return Padding(
-            padding: const EdgeInsets.symmetric(vertical: 10.0),
+            padding: const EdgeInsets.symmetric(vertical: 6.0),
             child: Card(
-              color: Color.fromARGB(255, 174, 234, 238),
-              elevation: 2,
+              color: Color.fromARGB(255, 223, 226, 227),
+              elevation: 7,
               shape: RoundedRectangleBorder(
                   borderRadius: BorderRadius.circular(15)),
               child: ListTile(
                 contentPadding:
-                    EdgeInsets.symmetric(horizontal: 16.0, vertical: 8.0),
+                    EdgeInsets.symmetric(horizontal: 16.0, vertical: 15.0),
                 leading: CircleAvatar(
                   radius: 30,
                   backgroundImage: NetworkImage(menteeData['ppic']),
                 ),
                 title: Text(menteeData['fname']),
+                subtitle: Column(
+                  children: [
+                    SizedBox(
+                      height: 5,
+                    ),
+                    Text(
+                      'About: ${menteeData['bio']}',
+                      style: TextStyle(fontStyle: FontStyle.italic),
+                    ),
+                    SizedBox(
+                      height: 5,
+                    ),
+                    Text('Qualification : ${menteeData['education']}')
+                  ],
+                ),
                 trailing: IconButton(
                   onPressed: () {
-
                     Navigator.of(context).push(MaterialPageRoute(
                         builder: (_) => ChatPage(
-                              mentee: menteeData,
+                              otheruser: menteeData,
                             )));
-
                   },
                   icon: Icon(Icons.message),
                 ),

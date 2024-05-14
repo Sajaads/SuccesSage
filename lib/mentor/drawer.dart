@@ -1,5 +1,5 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
-import 'package:firebase_auth/firebase_auth.dart'as FirebaseAuth;
+import 'package:firebase_auth/firebase_auth.dart' as FirebaseAuth;
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
@@ -39,13 +39,15 @@ class _MyDrawerState extends State<MyDrawer> {
       }
     });
   }
+
   @override
   AuthService auth = AuthService();
 
   Widget build(BuildContext context) {
     return StreamBuilder<Map<String, dynamic>>(
       stream: _fetchMentorDataStream(),
-      builder: (BuildContext context, AsyncSnapshot<Map<String, dynamic>> snapshot) {
+      builder:
+          (BuildContext context, AsyncSnapshot<Map<String, dynamic>> snapshot) {
         if (snapshot.connectionState == ConnectionState.waiting) {
           return CircularProgressIndicator();
         } else if (snapshot.hasError) {
@@ -62,10 +64,11 @@ class _MyDrawerState extends State<MyDrawer> {
                   children: [
                     // Your drawer content
                     GestureDetector(
-                      onTap: (){
+                      onTap: () {
                         Navigator.push(
                           context,
-                          MaterialPageRoute(builder: (context)=>const ProfilePage()),
+                          MaterialPageRoute(
+                              builder: (context) => const ProfilePage()),
                         );
                       },
                       child: DrawerHeader(
@@ -83,7 +86,9 @@ class _MyDrawerState extends State<MyDrawer> {
                                   ),
                                 ),
                               ),
-                              SizedBox(height: 5,),
+                              SizedBox(
+                                height: 5,
+                              ),
                               Text("${snapshot.data!['fname']}"),
                             ],
                           ),
@@ -94,7 +99,7 @@ class _MyDrawerState extends State<MyDrawer> {
                     Padding(
                       padding: const EdgeInsets.only(left: 25),
                       child: ListTile(
-                        title: const Text('H O M E'),
+                        title: const Text('HOME'),
                         leading: const Icon(Icons.home),
                         onTap: () {
                           Navigator.pop(context);
@@ -105,27 +110,32 @@ class _MyDrawerState extends State<MyDrawer> {
                     Padding(
                       padding: const EdgeInsets.only(left: 25),
                       child: ListTile(
-                        title: const Text('S E T T I N G S'),
+                        title: const Text('SETTINGS'),
                         leading: const Icon(Icons.settings),
-                        onTap: (){
+                        onTap: () {
                           Navigator.pop(context);
                           Navigator.push(
                             context,
-                            MaterialPageRoute(builder: (context)=>const SettingsPage()),
+                            MaterialPageRoute(
+                                builder: (context) => const SettingsPage()),
                           );
                         },
                       ),
                     ),
                     Padding(
-                      padding: const EdgeInsets.only(left: 25,),
+                      padding: const EdgeInsets.only(
+                        left: 25,
+                      ),
                       child: ListTile(
-                        title: const Text("C H A T S"),
+                        title: const Text("CHATS"),
                         leading: const Icon(Icons.chat),
                         onTap: () {
                           Navigator.pop(context);
-                          Navigator.push(context, MaterialPageRoute(
-                            builder: (context) => const ChatList(),
-                          ));
+                          Navigator.push(
+                              context,
+                              MaterialPageRoute(
+                                builder: (context) => const ChatList(),
+                              ));
                         },
                       ),
                     ),
@@ -136,9 +146,11 @@ class _MyDrawerState extends State<MyDrawer> {
                         leading: const Icon(Icons.rate_review),
                         onTap: () {
                           Navigator.pop(context);
-                          Navigator.push(context, MaterialPageRoute(
-                            builder: (context) => const Reviews(),
-                          ));
+                          Navigator.push(
+                              context,
+                              MaterialPageRoute(
+                                builder: (context) => const Reviews(),
+                              ));
                         },
                       ),
                     ),
@@ -154,31 +166,33 @@ class _MyDrawerState extends State<MyDrawer> {
                           context: context,
                           builder: (BuildContext context) {
                             return AlertDialog(
-                              title: Text('Connfirm Sign Out'),
-                              content: Text('Confirm Sign Out'),
+                              title: Text(' Confirm logout'),
+                              content: Text('Are you sure you want to logout'),
                               actions: <Widget>[
                                 TextButton(
                                     onPressed: () {
                                       Navigator.of(context).pop();
                                     },
-                                    child: Text('No')
-                                ),
+                                    child: Text(
+                                      'No',
+                                      style: TextStyle(color: Colors.white),
+                                    )),
                                 TextButton(
-                                  child: Text('Yes'),
+                                  child: Text('Yes',
+                                      style: TextStyle(
+                                          color: Colors.red, fontSize: 18)),
                                   onPressed: () {
                                     auth.signOut();
                                     Navigator.of(context).pushAndRemoveUntil(
                                         MaterialPageRoute(
                                           builder: (context) => ScreenLogin(),
                                         ),
-                                            (route) => false
-                                    );
+                                        (route) => false);
                                   },
                                 ),
                               ],
                             );
-                          }
-                      );
+                          });
                     },
                   ),
                 ),
@@ -189,5 +203,4 @@ class _MyDrawerState extends State<MyDrawer> {
       },
     );
   }
-
 }

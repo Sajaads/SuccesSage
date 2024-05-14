@@ -351,8 +351,16 @@ class _MentorScheduleState extends State<MentorSchedule> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: CustomAppBar(title: 'Schedule Your Sessions',onDrawerIconTap: (){Scaffold.of(context).openDrawer();},),
-      drawer: MyDrawer(),
+      appBar: AppBar(
+        centerTitle: true,
+        title: Text(
+          'SuccesSage',
+          style: TextStyle(
+            color: Color.fromARGB(255, 3, 0, 82),
+            fontWeight: FontWeight.bold,
+          ),
+        ),
+      ),
       body: Column(
         children: [
           SizedBox(

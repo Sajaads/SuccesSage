@@ -1,6 +1,7 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
+import 'package:successage/chats/chat_pages.dart';
 import 'package:successage/utils/app_layouts.dart';
 import 'package:vs_scrollbar/vs_scrollbar.dart';
 
@@ -55,7 +56,11 @@ class Menteeconnectedmentorprofile extends StatelessWidget {
                               height: 20,
                             ),
                             ElevatedButton(
-                              onPressed: () {},
+                              onPressed: () {
+                                Navigator.of(context).push(MaterialPageRoute(
+                                    builder: (_) =>
+                                        ChatPage(otheruser: Mentor)));
+                              },
                               style: ElevatedButton.styleFrom(
                                 backgroundColor:
                                     const Color.fromARGB(255, 2, 48, 71),
@@ -73,15 +78,37 @@ class Menteeconnectedmentorprofile extends StatelessWidget {
                                 style: TextStyle(color: Colors.white),
                               ),
                             ),
-                            ElevatedButton(onPressed: (){
-                              showDialog(
-                                context: context,
-                                builder: (BuildContext context) {
-                                  return CommentDialog(mentorid:Mentor['uid'],menteeid:menteeid,);
+                            SizedBox(
+                              height: 12,
+                            ),
+                            ElevatedButton(
+                                onPressed: () {
+                                  showDialog(
+                                    context: context,
+                                    builder: (BuildContext context) {
+                                      return CommentDialog(
+                                        mentorid: Mentor['uid'],
+                                        menteeid: menteeid,
+                                      );
+                                    },
+                                  );
                                 },
-                              );
-
-                            }, child: Text("Add Reviews")),
+                                style: ElevatedButton.styleFrom(
+                                  backgroundColor:
+                                      Color.fromARGB(255, 227, 229, 231),
+                                  padding: EdgeInsets.symmetric(
+                                    horizontal: 67,
+                                    vertical: 10,
+                                  ),
+                                  shape: RoundedRectangleBorder(
+                                    borderRadius: BorderRadius.circular(30),
+                                  ),
+                                  elevation: 3,
+                                ),
+                                child: Text("Add Reviews")),
+                            SizedBox(
+                              height: 7,
+                            ),
                           ],
                         ),
                       ),

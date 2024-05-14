@@ -50,51 +50,50 @@ class _MenteeListState extends State<MenteeList> {
           return Text('Error: ${snapshot.error}');
         } else {
           Map<String, dynamic>? menteeData = snapshot.data!;
-          return Container(
-            padding: EdgeInsets.symmetric(vertical: 12, horizontal: 20),
-            decoration: BoxDecoration(
-              color: Color.fromARGB(255, 158, 178, 175),
-              borderRadius: BorderRadius.circular(12),
-            ),
-            child: Row(
-              mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-              children: [
-                Padding(
-                  padding: const EdgeInsets.only(right: 20),
-                  child: CircleAvatar(
-                    radius: 40,
-                    backgroundImage: NetworkImage(menteeData['ppic']),
+          return Card(
+            elevation: 7,
+            child: Padding(
+              padding: const EdgeInsets.all(8.0),
+              child: Row(
+                mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                children: [
+                  Padding(
+                    padding: const EdgeInsets.only(right: 20),
+                    child: CircleAvatar(
+                      radius: 30,
+                      backgroundImage: NetworkImage(menteeData['ppic']),
+                    ),
                   ),
-                ),
-                Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    Text(
-                      menteeData['fname'],
-                      style: TextStyle(fontWeight: FontWeight.bold),
-                    ),
-                    Text(widget.schedulelist['title']),
-                    Text(DateFormat('dd-MM-yy').format(
-                        (widget.schedulelist['date'] as Timestamp).toDate())),
-                    Text(DateFormat('hh:mm a').format(
-                        (widget.schedulelist['time'] as Timestamp).toDate())),
-                    SizedBox(
-                      height: 10,
-                    ),
-                  ],
-                ),
-                Padding(
-                  padding: const EdgeInsets.only(left: 20),
-                  child: IconButton(
-                      onPressed: () {
-                        Navigator.of(context).push(MaterialPageRoute(
-                            builder: (_) => ChatPage(
-                                  mentee: menteeData,
-                                )));
-                      },
-                      icon: Icon(Icons.message)),
-                )
-              ],
+                  Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Text(
+                        menteeData['fname'],
+                        style: TextStyle(fontWeight: FontWeight.bold),
+                      ),
+                      Text(widget.schedulelist['title']),
+                      Text(DateFormat('dd-MM-yy').format(
+                          (widget.schedulelist['date'] as Timestamp).toDate())),
+                      Text(DateFormat('hh:mm a').format(
+                          (widget.schedulelist['time'] as Timestamp).toDate())),
+                      SizedBox(
+                        height: 10,
+                      ),
+                    ],
+                  ),
+                  Padding(
+                    padding: const EdgeInsets.only(left: 20),
+                    child: IconButton(
+                        onPressed: () {
+                          Navigator.of(context).push(MaterialPageRoute(
+                              builder: (_) => ChatPage(
+                                    otheruser: menteeData,
+                                  )));
+                        },
+                        icon: Icon(Icons.message)),
+                  )
+                ],
+              ),
             ),
           );
         }

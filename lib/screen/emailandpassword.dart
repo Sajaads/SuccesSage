@@ -4,6 +4,7 @@ import 'package:flutter/material.dart';
 import 'package:successage/mentee/mentee_home_screen.dart';
 import 'package:successage/mentor/mentor_home_screen.dart';
 import 'package:successage/mentor/mentor_personal_data.dart';
+import 'package:successage/mentor/mentor_reg_success.dart';
 import 'package:successage/screen/auth.dart';
 import 'package:successage/screen/screen_mentee_info.dart';
 
@@ -21,6 +22,7 @@ class _EmailAndPasswordState extends State<EmailAndPassword> {
   final TextEditingController _emailController = TextEditingController();
   final TextEditingController _passwordController = TextEditingController();
   bool _isPasswordVisible = false;
+  bool _isLoading = false;
 
   AuthService auth = AuthService();
 
@@ -43,6 +45,7 @@ class _EmailAndPasswordState extends State<EmailAndPassword> {
                   TextField(
                     controller: _emailController,
                     decoration: InputDecoration(
+                      fillColor: Colors.white,
                       labelText: 'Email',
                       border: OutlineInputBorder(borderSide: BorderSide.none),
                       filled: true,
@@ -54,6 +57,7 @@ class _EmailAndPasswordState extends State<EmailAndPassword> {
                     controller: _passwordController,
                     obscureText: !_isPasswordVisible,
                     decoration: InputDecoration(
+                      fillColor: Colors.white,
                       labelText: 'Password',
                       border: OutlineInputBorder(borderSide: BorderSide.none),
                       filled: true,
@@ -74,13 +78,21 @@ class _EmailAndPasswordState extends State<EmailAndPassword> {
                   ),
                   SizedBox(height: 20),
                   ElevatedButton(
-                    onPressed: () async {
-                      if (widget.loginorsignup == 'signup') {
-                        _signUp();
-                      } else {
-                        _signIn();
-                      }
-                    },
+                    onPressed: _isLoading
+                        ? null
+                        : () async {
+                            setState(() {
+                              _isLoading = true;
+                            });
+                            if (widget.loginorsignup == 'signup') {
+                              await _signUp();
+                            } else {
+                              await _signIn();
+                            }
+                            setState(() {
+                              _isLoading = false;
+                            });
+                          },
                     style: ElevatedButton.styleFrom(
                         backgroundColor: const Color.fromARGB(
                             255, 2, 48, 71), // Stylish button color
@@ -91,10 +103,14 @@ class _EmailAndPasswordState extends State<EmailAndPassword> {
                               30), // Rounded button corners
                         ),
                         elevation: 10),
-                    child: Text(
-                      widget.loginorsignup == 'signup' ? 'Signup' : 'Login',
-                      style: TextStyle(color: Colors.white),
-                    ),
+                    child: _isLoading
+                        ? CircularProgressIndicator() // Show circular progress indicator if loading
+                        : Text(
+                            widget.loginorsignup == 'signup'
+                                ? 'Signup'
+                                : 'Login',
+                            style: TextStyle(color: Colors.white),
+                          ),
                   ),
                 ],
               ),
@@ -192,13 +208,19 @@ class _EmailAndPasswordState extends State<EmailAndPassword> {
               .doc(user.uid)
               .get();
           if (snapshot.exists) {
-            Navigator.of(context).pushReplacement(
-              MaterialPageRoute(
-                builder: (context) => MentorHomeScreen(
-                  mentorid: user.uid,
+            DocumentSnapshot verified = snapshot;
+            if (verified['verified'] == 'yes') {
+              Navigator.of(context).pushReplacement(
+                MaterialPageRoute(
+                  builder: (context) => MentorHomeScreen(
+                    mentorid: user.uid,
+                  ),
                 ),
-              ),
-            );
+              );
+            } else {
+              Navigator.of(context).pushReplacement(MaterialPageRoute(
+                  builder: (_) => MentorRegistrationSuccess(uid: user.uid)));
+            }
           } else {
             ScaffoldMessenger.of(context).showSnackBar(
               SnackBar(content: Text('User does not exist')),

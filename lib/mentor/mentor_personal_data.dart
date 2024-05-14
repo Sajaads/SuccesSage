@@ -22,19 +22,27 @@ class _MentorPersonalDataState extends State<MentorPersonalData> {
   String? designation;
   num? phnno;
   bool button = false;
-  File? _image;
+  File? _profileImage;
+  File? _proofImage;
+
   String? _imageUrl;
+  String? _proofImageUrl; // New variable for proof image URL
   bool _loading = false;
   final picker = ImagePicker();
 
-  Future getImageFromSource(ImageSource source) async {
+  Future getImageFromSource(ImageSource source,
+      {bool isProfileImage = true}) async {
     final pickedFile = await picker.pickImage(
       source: source,
     );
 
     setState(() {
       if (pickedFile != null) {
-        _image = File(pickedFile.path);
+        if (isProfileImage) {
+          _profileImage = File(pickedFile.path);
+        } else {
+          _proofImage = File(pickedFile.path);
+        }
       } else {
         print('No image selected.');
       }
@@ -43,7 +51,7 @@ class _MentorPersonalDataState extends State<MentorPersonalData> {
 
   Future<void> uploadImageToFirebaseStorage() async {
     try {
-      if (_image != null) {
+      if (_profileImage != null) {
         // Upload image to Firebase Storage
         firebase_storage.Reference ref = firebase_storage
             .FirebaseStorage.instance
@@ -51,7 +59,7 @@ class _MentorPersonalDataState extends State<MentorPersonalData> {
             .child('images')
             .child(
                 'mentee_profile_${DateTime.now().millisecondsSinceEpoch}.jpg');
-        await ref.putFile(_image!);
+        await ref.putFile(_profileImage!);
 
         // Get the download URL of the uploaded image
         String downloadURL = await ref.getDownloadURL();
@@ -64,6 +72,31 @@ class _MentorPersonalDataState extends State<MentorPersonalData> {
       }
     } catch (e) {
       print('Error uploading image: $e');
+    }
+  }
+
+  Future<void> uploadProofImageToFirebaseStorage() async {
+    try {
+      if (_proofImage != null) {
+        // Upload proof image to Firebase Storage
+        firebase_storage.Reference ref = firebase_storage
+            .FirebaseStorage.instance
+            .ref()
+            .child('proof_images')
+            .child('proof_${DateTime.now().millisecondsSinceEpoch}.jpg');
+        await ref.putFile(_proofImage!);
+
+        // Get the download URL of the uploaded proof image
+        String downloadURL = await ref.getDownloadURL();
+
+        setState(() {
+          _proofImageUrl = downloadURL;
+        });
+      } else {
+        print('No proof image selected.');
+      }
+    } catch (e) {
+      print('Error uploading proof image: $e');
     }
   }
 
@@ -333,7 +366,8 @@ class _MentorPersonalDataState extends State<MentorPersonalData> {
                                 leading: Icon(Icons.photo_library),
                                 title: Text('Choose from Gallery'),
                                 onTap: () {
-                                  getImageFromSource(ImageSource.gallery);
+                                  getImageFromSource(ImageSource.gallery,
+                                      isProfileImage: true);
                                   Navigator.pop(context);
                                 },
                               ),
@@ -341,7 +375,8 @@ class _MentorPersonalDataState extends State<MentorPersonalData> {
                                 leading: Icon(Icons.camera_alt),
                                 title: Text('Take a Photo'),
                                 onTap: () {
-                                  getImageFromSource(ImageSource.camera);
+                                  getImageFromSource(ImageSource.camera,
+                                      isProfileImage: true);
                                   Navigator.pop(context);
                                 },
                               ),
@@ -356,6 +391,95 @@ class _MentorPersonalDataState extends State<MentorPersonalData> {
                 const SizedBox(
                   height: 20,
                 ),
+                if (_profileImage != null)
+                  Container(
+                    width: 200,
+                    height: 200,
+                    decoration: BoxDecoration(
+                      borderRadius: BorderRadius.circular(10.0),
+                      boxShadow: [
+                        BoxShadow(
+                          color: Colors.black.withOpacity(0.2),
+                          spreadRadius: 2,
+                          blurRadius: 5,
+                          offset: Offset(0, 3),
+                        ),
+                      ],
+                      image: DecorationImage(
+                        image: FileImage(_profileImage!),
+                        fit: BoxFit.cover,
+                      ),
+                    ),
+                  ),
+                SizedBox(
+                  height: 30,
+                ),
+                ElevatedButton(
+                  style: ElevatedButton.styleFrom(
+                    foregroundColor: Colors.white,
+                    backgroundColor:
+                        const Color.fromARGB(255, 2, 48, 71), // Text color
+                  ),
+                  onPressed: () {
+                    showModalBottomSheet(
+                      context: context,
+                      builder: (BuildContext context) {
+                        return SafeArea(
+                          child: Column(
+                            mainAxisSize: MainAxisSize.min,
+                            children: <Widget>[
+                              ListTile(
+                                leading: Icon(Icons.photo_library),
+                                title: Text('Choose from Gallery'),
+                                onTap: () {
+                                  getImageFromSource(ImageSource.gallery,
+                                      isProfileImage: false);
+                                  Navigator.pop(context);
+                                },
+                              ),
+                              ListTile(
+                                leading: Icon(Icons.camera_alt),
+                                title: Text('Take a Photo'),
+                                onTap: () {
+                                  getImageFromSource(ImageSource.camera,
+                                      isProfileImage: false);
+                                  Navigator.pop(context);
+                                },
+                              ),
+                            ],
+                          ),
+                        );
+                      },
+                    );
+                  },
+                  child: Text('Upload Proof'),
+                ),
+                SizedBox(
+                  height: 20,
+                ),
+                if (_proofImage != null)
+                  Container(
+                    width: 200,
+                    height: 200,
+                    decoration: BoxDecoration(
+                      borderRadius: BorderRadius.circular(10.0),
+                      boxShadow: [
+                        BoxShadow(
+                          color: Colors.black.withOpacity(0.2),
+                          spreadRadius: 2,
+                          blurRadius: 5,
+                          offset: Offset(0, 3),
+                        ),
+                      ],
+                      image: DecorationImage(
+                        image: FileImage(_proofImage!),
+                        fit: BoxFit.cover,
+                      ),
+                    ),
+                  ),
+                SizedBox(
+                  height: 10,
+                ),
                 ElevatedButton(
                   style: ElevatedButton.styleFrom(
                     foregroundColor: Colors.white,
@@ -367,14 +491,18 @@ class _MentorPersonalDataState extends State<MentorPersonalData> {
                       _loading = true;
                     });
                     await uploadImageToFirebaseStorage();
-                    if (button && _imageUrl != null) {
+                    await uploadProofImageToFirebaseStorage(); // Upload proof image
+                    if (button && _imageUrl != null && _proofImageUrl != null) {
+                      // Adding mentor data to Firestore
                       addMentorToFirestore(widget.uid,
                           fname: fname,
                           lname: lname,
                           phnno: phnno,
                           email: mail,
                           ppic: _imageUrl!,
-                          designation: designation);
+                          designation: designation,
+                          proof: _proofImageUrl!); // Include proof image URL
+
                       setState(() {
                         _loading = false;
                       });
